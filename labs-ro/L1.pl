@@ -119,18 +119,21 @@ move(gatwick,plane,rome).
 woman(ana).
 woman(sara).
 woman(ema).
-woman(maria). % … adăugați restul faptelor acestui predicat
+woman(maria). 
+% … adăugați restul faptelor acestui predicat
 
 % Predicatul man/1
 man(andrei).
 man(george).
-man(alex). % … adăugați restul faptelor acestui predicat
+man(alex). 
+% … adăugați restul faptelor acestui predicat
 
 % Predicatul parent/2
 parent(maria, ana). % maria este părintele anei
 parent(george, ana). % george este părintele anei
 parent(maria, andrei).
-parent(george, andrei). % … adăugați restul faptelor acestui predicat
+parent(george, andrei). 
+% … adăugați restul faptelor acestui predicat
 
 
 

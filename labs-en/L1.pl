@@ -116,20 +116,23 @@ move(gatwick,plane,rome).
 woman(ana).
 woman(sara).
 woman(ema).
-woman(maria). % … add the remaining facts of this predicate
+woman(maria). 
+% … add the remaining facts of this predicate
 
 
 % The man/1 predicate
 man(andrei).
 man(george).
-man(alex). % … add the remaining facts of this predicate
+man(alex). 
+% … add the remaining facts of this predicate
 
 
 % The parent/2 predicate
 parent(maria, ana). % maria is the parent of ana
 parent(george, ana). % george is the parent of ana
 parent(maria, andrei).
-parent(george, andrei). % … add the remaining facts of this predicate
+parent(george, andrei). 
+% … add the remaining facts of this predicate
 
 
 

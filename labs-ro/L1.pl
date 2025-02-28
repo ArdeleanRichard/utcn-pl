@@ -90,7 +90,7 @@ happy(adriana).
 on_route(rome).
 % regula on_route/1 – o regulă recursivă
 on_route(Place):-
-	move(Place,Method,NewPlace),
+	move(Place,_,NewPlace), % move(Place,Method,NewPlace) - 'Method' a fost inlocuit cu _ pentru a evita 'singleton variable' warning
 	on_route(NewPlace).
 
 % predicatul move/3, format din 3 fapte
@@ -140,28 +140,20 @@ parent(george, andrei).
 
 
 % 1.1. Testați următoarele întrebări:
-% este george bărbat?
+% Este george bărbat?
 % ?- man(george). 
 % true.
 
-% cine este bărbat?
+% Cine este bărbat?
 % ?- man(X). 
 % X = andrei ? ; % repetăm întrebarea cu ; sau n sau spațiu
 % X = george ? ;
-% X = alex ? ;
-% false.
+% X = alex.
 
 % Cine sunt părinții lui andrei?
 % ?- parent(X, andrei). 
 % X = maria ? ;
-% X = george ? ;
-% false.
-
-% Cine sunt copii mariei?
-% ?- parent(maria, X). 
-% X = ana ? ;
-% X = andrei ? ;
-% false.
+% X = george.
 
 
 

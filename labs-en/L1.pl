@@ -88,7 +88,7 @@ happy(adriana).
 % the recursive on_route/1 predicate
 on_route(rome).
 on_route(Place):-
-	move(Place,Method,NewPlace),
+	move(Place,_,NewPlace), % move(Place,Method,NewPlace) - 'Method' was replaced with _ to avoid 'singleton variable' warning
 	on_route(NewPlace).
 
 % the move/3 predicate which has 3 facts
@@ -137,14 +137,19 @@ parent(george, andrei).
 
 
 % 1.1. Test the following queries:
-% is george a man?
+% Is george a man?
 % ?- man(george). 
+% X = andrei ? ;	% we can repeat the question using ; or n or space
+% X = george ? ;
+% X = alex.
 
-% who is a man?
+% Who is a man?
 % ?- man(X). 
 
 % Who are the parents of andrei?
 % ?- parent(X, andrei). 
+% X = maria ? ;
+% X = george.
 
 
 % The mother/2 predicate – based on the parent and woman predicates

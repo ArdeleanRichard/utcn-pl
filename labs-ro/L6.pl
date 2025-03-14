@@ -83,7 +83,7 @@ heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
 heads2([],[],_).
 heads2([],[],_).
 % dacă flag=1 atunci suntem la început de lista și putem extrage capul
-listei; în apelul recursiv setam flag=0
+% listei; în apelul recursiv setam flag=0
 heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).
 % dacă flag=0 atunci nu suntem la primul element atomic și
 % atunci continuam cu restul elementelor

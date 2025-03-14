@@ -152,7 +152,7 @@ height(t(_, L, R), H):-
 %%%%%% 				EXERCIȚII				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Arbori:
-tree1(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil))).
+binary_tree(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil))).
 ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil, nil, nil), t(9, t(3, nil, nil, nil), nil, nil))).
 
 
@@ -200,7 +200,7 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 
 %--------------------------------------------------
 % 4. Scrieți un predicat care colectează într-o listă toate cheile din frunzele arborelui binar de căutare.
-% ?- tree1(T), leaf_list(T, R).
+% ?- binary_tree(T), leaf_list(T, R).
 % R=[2,5,7], T= ... ;
 % false.
 
@@ -211,7 +211,7 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 
 %--------------------------------------------------
 % 5. Scrieți un predicat care colectează într-o listă toate cheile interne (nonfrunze) a unui arbore binar de căutare.
-% ?- tree1(T), internal_list(T, R).
+% ?- binary_tree(T), internal_list(T, R).
 % R = [4, 6, 9], T = ... ;
 % false.
 
@@ -222,7 +222,7 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 
 %--------------------------------------------------
 % 6. Scrieți un predicat care colectează într-o listă toate nodurile de la aceeași adâncime (inversa înălțimii) din arborele binar.
-% ?- tree1(T), same_depth(T, 2, R).
+% ?- binary_tree(T), same_depth(T, 2, R).
 % R = [4, 9], T = ... ;
 % false.
 
@@ -233,7 +233,7 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 %--------------------------------------------------
 % 7. Scrieți un predicat care calculează diametrul unui arbore binar.
 % 𝑑𝑖𝑎𝑚(𝑇) = max {𝑑𝑖𝑎𝑚(𝑇. 𝑙𝑒𝑓𝑡), 𝑑𝑖𝑎𝑚(𝑇. 𝑟𝑖𝑔ℎ𝑡), ℎ𝑒𝑖𝑔ℎ𝑡(𝑇. 𝑙𝑒𝑓𝑡) + ℎ𝑒𝑖𝑔ℎ𝑡(𝑇. 𝑟𝑖𝑔ℎ𝑡) + 1}
-% ?- tree1(T), diam(T, D).
+% ?- binary_tree(T), diam(T, D).
 % D = 5, T = ... ;
 % false.
 
@@ -246,9 +246,9 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 % arbore binar este simetric dacă subarborele stâng este imaginea în
 % oglindă a subarborelui drept. Ne interesează structura arborelui nu și
 % valorile (cheile) din noduri. 
-% ?- tree1(T), symmetric(T).
+% ?- binary_tree(T), symmetric(T).
 % false.
-% ?- tree1(T), delete_key(2, T, T1), symmetric(T1).
+% ?- binary_tree(T), delete_key(2, T, T1), symmetric(T1).
 % T = t(6,t(4,t(2,nil,nil),t(5,nil,nil)),t(9,t(7,nil,nil),nil)),
 % T1 = t(6,t(4,nil,t(5,nil,nil)),t(9,t(7,nil,nil),nil));
 % false.
@@ -260,10 +260,10 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 
 %--------------------------------------------------
 % 9. Rescrieți predicatul delete_key folosind nodul succesor (arbori binari de căutare).
-% ?- tree1(T), delete_key(5, T, T1), delete_key_succ(5, T, T2).
+% ?- binary_tree(T), delete_key(5, T, T1), delete_key_succ(5, T, T2).
 % T1 = T2, T2 = t(6,t(4,t(2,nil,nil),nil),t(9,t(7,nil,nil),nil)),
 % T = t(6,t(4,t(2,nil,nil),t(5,nil,nil)),t(9,t(7,nil,nil),nil)).
-% ?- tree1(T), delete_key(6, T, T1), delete_key_succ(6, T, T2).
+% ?- binary_tree(T), delete_key(6, T, T1), delete_key_succ(6, T, T2).
 % T = t(6,t(4,t(2,nil,nil),t(5,nil,nil)),t(9,t(7,nil,nil),nil)),
 % T1 = t(5,t(4,t(2,nil,nil),nil),t(9,t(7,nil,nil),nil)),
 % T2 = t(7,t(4,t(2,nil,nil),t(5,nil,nil)),t(9,nil,nil))

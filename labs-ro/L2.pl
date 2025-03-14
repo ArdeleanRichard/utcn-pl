@@ -1,5 +1,5 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%% 			LABORATORUL 12 EXEMPLE		%%%%%%
+%%%%%% 			LABORATORUL 2 EXEMPLE		%%%%%%
 %%%%%% 			Operații aritmetice			%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -207,7 +207,7 @@ for(Inter,Inter,0).
 for(Inter,Out,In):-
 	In>0,
 	NewIn is In-1,
-	% % *IMPLEMENTAȚI AICI* <do_something_to_Inter_to_get_Intermediate>
+	Intermediate=Inter % *STERGEȚI LINIA, IMPLEMENTAȚI AICI* <do_something_to_Inter_to_get_Intermediate>
 	for(Intermediate,Out,NewIn).
 
 

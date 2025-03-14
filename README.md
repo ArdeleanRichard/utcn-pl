@@ -1,5 +1,5 @@
 # Logic Programming laboratories at the Technical University of Cluj-Napoca 
-[First iteration]
+[v1.1]
 
 In this repository you can find the documentation for every laboratory session in both English and Romanian. Moreover, you can find a template for each laboratory session upon which to implement your own code.
 
@@ -12,7 +12,7 @@ This semester, you will learn a new programming language, called Prolog. The sol
 
 #### Rules
 - The Laboratory Materials must be read before the laboratory session
-- la finalul fiecărui laborator, trebuie sa urci codul sursa pe moodle
+- At the end of each laboratory session, you must upload your code on Moodle
 - Attendance is mandatory
 - One absence can be recovered (the corresponding assignment MUST be delivered and verified the following week) 
 - A second and third absence can be recovered in the special laboratory session at the end of the semester (surcharge) by solving additional assignments (solving the corresponding assignment of the missed session will NOT be considered)

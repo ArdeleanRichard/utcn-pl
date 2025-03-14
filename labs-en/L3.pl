@@ -39,7 +39,7 @@ append1([H|T], L2, [H|TailR]) :- append1(T, L2, TailR).
 % if it reaches empty list (second argument) means that the element was
 % not found and we can return an empty list (third argument)
 delete1(X, [X|T], T).
-delete1 (X, [H|T], [H|R]) :- delete1(X, T, R).
+delete1(X, [H|T], [H|R]) :- delete1(X, T, R).
 delete1(_, [], []).
 
 % Follow the execution of:

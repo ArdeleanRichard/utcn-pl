@@ -209,7 +209,7 @@ for(Inter,Inter,0).
 for(Inter,Out,In):-
 	In>0,
 	NewIn is In-1,
-	% *IMPLEMENTATION HERE* <do_something_to_Inter_to_get_Intermediate>
+	Intermediate=Inter, % *DELETE LINE, IMPLEMENTATION HERE* <do_something_to_Inter_to_get_Intermediate>
 	for(Intermediate,Out,NewIn).
 
 

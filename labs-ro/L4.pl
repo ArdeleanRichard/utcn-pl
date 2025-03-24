@@ -190,6 +190,9 @@ union([H|T], L2, [H|R]) :- union(T, L2, R).
 % R = [1, 2] ;
 % false
 
+delete_all(X, [X|T], R) :- delete_all(X, T, R).
+delete_all(X, [H|T], [H|R]) :- delete_all(X, T, R).
+delete_all(_, [], []).
 
 % del_min(L, R):-  % *IMPLEMENTAȚI AICI*
 

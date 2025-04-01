@@ -161,24 +161,9 @@ merge(L, [], L).
 
 
 
-%--------------------------------------------------
-% 2. Rescrieți predicatul ins_sort utilizând recursivitate forward, folosind
-% denumirea ins_sort_fwd/2.
-% Recomandare: predicatul de insertion sort este format din două
-% predicate, ambele folosind o abordare backwards, incercați să le
-% modificați pe ambele într-o abordare forwards.
-% ?- ins_sort_fwd([3,4,1,2,5], R).
-% R = [1, 2, 3, 4, 5];
-% false
-
-
-% ins_sort_fwd(L, R):-  % *IMPLEMENTAȚI AICI*
-
-
-
 
 %--------------------------------------------------
-% 3. Implementați bubble sort cu un număr fix de treceri prin lista de intrare,
+% 2. Implementați bubble sort cu un număr fix de treceri prin lista de intrare,
 % folosind denumirea bubble_sort_fixed/3.
 % ?- bubble_sort_fixed([3,5,4,1,2], 2, R).
 % R = [3, 1, 2, 4, 5]
@@ -192,7 +177,7 @@ merge(L, [], L).
 
 
 %--------------------------------------------------
-% 4. Scrieți un predicat care să sorteze o listă de caractere ASCII. (Puteți folosi
+% 3. Scrieți un predicat care să sorteze o listă de caractere ASCII. (Puteți folosi
 % o metodă de sortare la alegere).
 % Sugestie: folosiți predicatul predefinit char_code/2
 % ?- sort_chars([e, t, a, v, f], L).
@@ -206,7 +191,7 @@ merge(L, [], L).
 
 
 %--------------------------------------------------
-% Scrieți un predicat care să sorteze o lista de sub-liste în funcție de lungimea sub-listelor
+% 4. Scrieți un predicat care să sorteze o lista de sub-liste în funcție de lungimea sub-listelor
 % ?- sort_lens([[a, b, c], [f], [2, 3, 1, 2], [], [4, 4]], R).
 % R = [[], [f], [4, 4], [a, b, c], [2, 3, 1, 2]] ;
 % false
@@ -227,6 +212,26 @@ merge(L, [], L).
 
 
 % sort_lens2(L, R):-  % *IMPLEMENTAȚI AICI*
+
+
+
+
+%--------------------------------------------------
+% 5. Rescrieți predicatul ins_sort utilizând recursivitate forward, folosind
+% denumirea ins_sort_fwd/2.
+% Recomandare: predicatul de insertion sort este format din două
+% predicate, ambele folosind o abordare backwards, incercați să le
+% modificați pe ambele într-o abordare forwards.
+% ?- ins_sort_fwd([3,4,1,2,5], R).
+% R = [1, 2, 3, 4, 5];
+% false
+
+
+% ins_sort_fwd(L, R):-  % *IMPLEMENTAȚI AICI*
+
+
+
+
 
 
 

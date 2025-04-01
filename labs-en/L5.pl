@@ -163,22 +163,7 @@ merge(L, [], L).
 
 
 %--------------------------------------------------
-% 2. Write a forward recursive implementation of the ins_sort/2 predicate,
-% name it ins_sort_fwd/2.
-% Recommendation: the insertion sort predicate is made of two predicates,
-% both using a backwards approach, try to modify them both into a forwards approach.
-% ?- ins_sort_fwd([3,4,1,2,5], R).
-% R = [1, 2, 3, 4, 5];
-% false
-
-
-% ins_sort_fwd(L, R):-  % *IMPLEMENTATION HERE*
-
-
-
-
-%--------------------------------------------------
-% 3. Implement bubble sort using a fixed number of passes through the input
+% 2. Implement bubble sort using a fixed number of passes through the input
 % sequence, name it bubble_sort_fixed/3.
 % ?- bubble_sort_fixed([3,5,4,1,2], 2, R).
 % R = [3, 1, 2, 4, 5]
@@ -192,7 +177,7 @@ merge(L, [], L).
 
 
 %--------------------------------------------------
-% 4. Write a predicate that sorts a list of ASCII characters. (You can use a
+% 3. Write a predicate that sorts a list of ASCII characters. (You can use a
 % sorting method of your choice).
 % Suggestion: use the char_code/2 built-in predicate
 % ?- sort_chars([e, t, a, v, f], L).
@@ -206,7 +191,7 @@ merge(L, [], L).
 
 
 %--------------------------------------------------
-% 5. Write a predicate that sorts a list of sub-lists according to the lengths of
+% 4. Write a predicate that sorts a list of sub-lists according to the lengths of
 % the sub-lists. (You can use a sorting method of your choice).
 % ?- sort_lens([[a, b, c], [f], [2, 3, 1, 2], [], [4, 4]], R).
 % R = [[], [f], [4, 4], [a, b, c], [2, 3, 1, 2]] ;
@@ -228,6 +213,24 @@ merge(L, [], L).
 
 
 % sort_lens2(L, R):-  % *IMPLEMENTATION HERE*
+
+
+
+
+%--------------------------------------------------
+% 5. Write a forward recursive implementation of the ins_sort/2 predicate,
+% name it ins_sort_fwd/2.
+% Recommendation: the insertion sort predicate is made of two predicates,
+% both using a backwards approach, try to modify them both into a forwards approach.
+% ?- ins_sort_fwd([3,4,1,2,5], R).
+% R = [1, 2, 3, 4, 5];
+% false
+
+
+% ins_sort_fwd(L, R):-  % *IMPLEMENTATION HERE*
+
+
+
 
 
 

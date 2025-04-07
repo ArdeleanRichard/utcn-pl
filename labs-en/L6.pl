@@ -103,8 +103,8 @@ member1(X, L):- flatten(L,L1), member(X,L1).
 
 % Variant 2
 member2(H, [H|_]).
-member2(X, [H|_]):- member1(X,H). % H is a list
-member2(X, [_|T]):- member1(X,T).
+member2(X, [H|_]):- member2(X,H). % H is a list
+member2(X, [_|T]):- member2(X,T).
 
 % Test the following queries:
 % ?– member2(1,L1).

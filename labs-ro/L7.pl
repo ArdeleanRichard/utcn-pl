@@ -153,7 +153,7 @@ height(t(_, L, R), H):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Arbori:
 binary_tree(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil))).
-ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil, nil, nil), t(9, t(3, nil, nil, nil), nil, nil))).
+ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(5, nil, nil, nil)), t(7, nil, nil, nil), t(9, t(8, nil, nil, nil), nil, nil))).
 
 
 %--------------------------------------------------
@@ -164,11 +164,11 @@ ternary_tree(t(6, t(4, t(2, nil, nil, nil), nil, t(7, nil, nil, nil)), t(5, nil,
 
 
 % ?- ternary_tree(T), ternary_preorder(T, L).
-% L = [6, 4, 2, 7, 5, 9, 3], T= ...
+% L = [6, 4, 2, 5, 7, 9, 8], T= ... 
 % ?- ternary_tree(T), ternary_inorder(T, L).
-% L = [2, 4, 7, 6, 5, 3, 9], T= ...
+% L = [2, 4, 5, 6, 7, 8, 9], T= ... 
 % ?- ternary_tree(T), ternary_postorder(T, L).
-% L = [2, 7, 4, 5, 3, 9, 6], T= ... 
+% L = [2, 5, 4, 7, 8, 9, 6], T= ...  
 
 
 % ternary_preorder(T, List):- % *IMPLEMENTAȚI AICI*

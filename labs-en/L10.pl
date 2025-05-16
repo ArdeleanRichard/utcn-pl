@@ -190,6 +190,11 @@ path(X,Y,PPath,FPath,LPath):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--------------------------------------------------
+% Each exercise has its own graph allocated to it. As such, in your implementation you should 
+% use the edges of that graph. For example, when solving Exercise 1, the predicate should call edge_ex1/2.
+
+
+
 % 1. Continue the implementation of the Hamiltonian Cycle using the hamilton/3 predicate.
 % ?- hamilton(5, a, P).
 % P = [a, e, d, c, b, a]
@@ -217,8 +222,7 @@ hamilton(NN, X, Path):-
 %--------------------------------------------------
 % 2. Write the euler/3 predicate that can find Eulerian paths in a given graf starting from a given source node.
 % ?- euler(5, a, R).
-% R = [[b, a], [e, b], [d, e], [c, d], [a, c]];
-% R = [[c, a], [d, c], [e, d], [b, e], [a, b]]
+% R = [[b, a], [e, b], [d, e], [c, d], [a, c]]
 
 
 edge_ex2(a,b).

@@ -197,6 +197,9 @@ path(X,Y,PPath,FPath,LPath):-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--------------------------------------------------
+% Fiecare exercițiu are alocat propriul său graf. Așadar, în implementarea ta ar trebui să 
+% folosești muchiile acelui graf. De exemplu, când rezolvi Exercițiul 1, predicatul ar trebui să apeleze edge_ex1/2.
+
 % 1. Continuă implementarea la ciclul Hamiltonian folosind predicatul hamilton/3.
 
 % ?- hamilton(5, a, P).

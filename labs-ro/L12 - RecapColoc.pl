@@ -119,15 +119,18 @@
 
 
 %18. Codificați o listă cu RLE (Run-length encoding). Două sau mai multe elemente consecutive se
-%înlocuiesc cu (element, nr_apariții).
+%înlocuiesc cu [element, nr_apariții].
 %?- rle_encode([a,a,a,a,b,c,c,a,a,d,e,e,e,e], R).
 %R = [[a,4], [b,1] ,[c,2], [a,2], [d,1] , [e,4]].
 
+
+
+
 %19. Codificați o listă cu RLE (Run-length encoding). Două sau mai multe elemente consecutive se
-%înlocuiesc cu (element, nr_apariții). Dar dacă numărul de apariții este egal cu 1 atunci se
+%înlocuiesc cu [element, nr_apariții]. Dar dacă numărul de apariții este egal cu 1 atunci se
 %scrie doar elementul.
 %?- rle_encode1([1,1,1,2,3,3,4,4], R).
-%R = [(1,3), 2, (3,2), (4,2)].
+%R = [[1,3], 2, [3,2], [4,2]]. 
 
 
 
@@ -340,6 +343,7 @@ node(3).
 
 %46. Calculați gradul interior/exterior al fiecărui nod dintr-un graf folosind predicatul dinamic info(Node, OutDegree, InDegree).  
 %Ex: edge(1,2). edge(2,1). edge(1,4). edge(1,3). edge(3,2). 
+%?- gen_info.
 %=> info(1,3,1). info(2,1,2). info(3,1,1). info(4,0,1).
 
 edge(1,2).

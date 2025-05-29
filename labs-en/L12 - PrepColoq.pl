@@ -118,17 +118,15 @@
 
 
 
-%18. Encode a list with RLE. Two or more consecutive elements are replaced by (element,
-%no_occurrences).
+%18. Encode a list with RLE. Two or more consecutive elements are replaced by [element, no_occurrences].
 %?- rle_encode([a,a,a,a,b,c,c,a,a,d,e,e,e,e], R).
 %R = [[a,4], [b,1] ,[c,2], [a,2], [d,1] , [e,4]].
 
 
-%19. Encode a list with RLE. Two or more consecutive elements are replaced by (element,
-%no_occurrences). But if the number of occurrences is equal to 1 then only the element is
-%written.
+%19. Encode a list with RLE. Two or more consecutive elements are replaced by [element, no_occurrences]. 
+% But if the number of occurrences is equal to 1 then only the element is written.
 %?- rle_encode1([1,1,1,2,3,3,4,4], R).
-%R = [(1,3), 2, (3,2), (4,2)]. 
+%R = [[1,3], 2, [3,2], [4,2]]. 
 
 
 
@@ -342,6 +340,7 @@ node(3).
 
 %46. Compute the indegree and the outdegree for each node in a graph using the dynamic predicate info(Node, OutDegree, InDegree). 
 %Ex: edge(1,2). edge(2,1). edge(1,4). edge(1,3). edge(3,2). 
+%?- gen_info.
 %=> info(1,3,1). info(2,1,2). info(3,1,1). info(4,0,1).
 
 edge(1,2).

@@ -1,5 +1,5 @@
 # Logic Programming laboratories at the Technical University of Cluj-Napoca 
-[v1.1]
+[v2.0]
 
 In this repository you can find the documentation for every laboratory session in both English and Romanian. Moreover, you can find a template for each laboratory session upon which to implement your own code.
 

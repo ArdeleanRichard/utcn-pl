@@ -1,0 +1,233 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% 			LABORATORY 10 EXAMPLES		%%%%%%
+%%%%%%   				Side Effects  		%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%--------------------------------------------------
+%--------------------------------------------------
+% SIDE EFFECTS %
+%--------------------------------------------------
+%--------------------------------------------------
+
+% Your first query with side effects:
+% ?- assert(insect(ant)), assert(insect(bee)), (retract(insect(I)), writeln(I), retract(insect(II)), fail.
+
+
+%--------------------------------------------------
+% The FIBONACCI predicate %
+%--------------------------------------------------
+:- dynamic memofib/2.
+
+fib(N,F):-
+	memofib(N,F),!.
+	fib(N,F):- N>1,
+	N1 is N-1,
+	N2 is N-2,
+	fib(N1,F1),
+	fib(N2,F2),
+	F is F1+F2,
+	assertz(memofib(N,F)).
+fib(0,1).
+fib(1,1).
+
+
+% Follow the execution of (run the queries sequentially):
+% ?- listing(memo_fib/2). % lists all definitions of the predicate memo_fib with 2 arguments
+% ?- fib(4,F), listing(memo_fib/2).
+% ?- fib(10,F), listing(memo_fib/2).
+
+
+
+
+%--------------------------------------------------
+% The PRINT FIBONACCI predicate - Printing memorised results %
+%--------------------------------------------------
+print_all:-
+	memofib(N,F),
+	write(N),
+	write(' - '),
+	write(F),
+	nl,
+	fail.
+print_all.
+
+% Follow the execution of:
+% ?-print_all.
+% ?-retractall(memo_fib(_,_)).
+% ?-print_all.
+
+
+%--------------------------------------------------
+% Collecting memorised results %
+%--------------------------------------------------
+
+% Follow the execution of:
+% ?- findall(X, append(X,_,[1,2,3,4]), List).
+% ?- findall(lists(X,Y), append(X,Y,[1,2,3,4]), List).
+% ?- findall(X, member(X,[1,2,3]), List).
+
+
+%PERM
+perm(L, [H|R]):-append(A, [H|T], L), append(A, T, L1), perm(L1, R).
+perm([], []).
+
+all_perm(L,_):-
+	perm(L,L1),
+	assertz(p(L1)),
+	fail.
+all_perm(_,R):-
+	collect_perms(R).
+	
+collect_perms([L1|R]):-
+	retract(p(L1)),
+	!,
+	collect_perms(R).
+collect_perms([]).
+
+% ?- all_perm([1,2,3],L).
+% L=[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
+% no.
+
+
+% Follow the execution of:
+% ?- retractall(p(_)), all_perm([1,2],R), listing(p/1).
+% ?- retractall(p(_)), all_perm([1,2,3],R), listing(p/1).
+
+
+
+%--------------------------------------------------
+% Failure driven loop vs recursion %
+%--------------------------------------------------
+
+:-dynamic p/1.
+
+p(1).
+p(2).
+p(3).
+p(4).
+p(5).
+
+% does not require the retract
+failure_driven_loop1:-
+    p(X),
+    assert(q(X)),
+    fail.
+failure_driven_loop1:-listing(q/1).
+
+% but can be implemented with it
+failure_driven_loop2:-
+    retract(p(X)),
+    assert(q(X)),
+    fail.
+failure_driven_loop2:-listing(q/1).
+
+
+% must make the retract, otherwise infinite loop
+recursion1:-
+    retract(p(X)),
+    assert(q(X)),
+    recursion1.
+recursion1:-listing(q/1).
+
+
+% to keep p/1 in knowledge base, requires additional predicate, highly inefficient
+recursion2:-
+    p(X),
+	not(seen(X)),!,
+	assert(seen(X)),
+    assert(q(X)), % might be nonsensic here, simple case, yet when q/1 is a process, it is needed
+    recursion2.
+recursion2:-listing(q/1).
+
+
+
+%--------------------------------------------------
+% Univ predicate %
+%--------------------------------------------------
+% map(+Predicate, +List, -MappedList)
+map(_, [], []).
+map(Pred, [H|T], [H1|R]) :-
+    P=..[Pred, H, H1],
+    call(P), !,
+    map(Pred, T, R).
+
+double(X, Y) :- Y is X * 2.
+halve(X, Y) :- Y is X / 2.
+% ... add any function that you want
+
+% Follow the execution of:
+% ?- trace, map(double, [1, 2, 3], Result).
+% Result = [2, 4, 6].
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%% 				EXERCISES				%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Trees:
+complete_tree(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil))).
+incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
+
+
+
+
+
+%--------------------------------------------------
+% 1. Generates a list with all the possible decompositions of a list into 2 lists,
+% without using the built-in predicate findall.
+% ?- all_decompositions([1,2,3], List).
+% List=[ [[], [1,2,3]], [[1], [2,3]], [[1,2], [3]], [[1,2,3], []] ] ;
+% false
+
+
+% all_decompositions(L, R):- % *IMPLEMENTATION HERE*
+
+
+
+
+
+% 2. Filters out elements based on a given function (suggestion: univ predicate).
+% ?- filter(even, [1, 2, 3, 4], Result).
+% Result = [2, 4].
+
+% filter(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+
+
+
+
+% 3. Returns true if any elements satisfies a given function (suggestion: univ predicate).
+% ?- any(greater_than_three, [1, 2, 4]).
+% true.
+
+% any(Pred, L):- % *IMPLEMENTAȚI AICI*
+
+
+
+
+
+% 4. Returns true if all elements satisfy a given function (suggestion: univ predicate).
+% ?- all(positive, [1, 2, 3]).
+% true.
+
+% all(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+
+
+
+
+% 5. Collects (using retracts through a 2-step process) in a difference list all even elements of a given incomplete list.
+% ?- even_dl([1,2,3|_], S, E).
+% S = [2|E]
+
+% even_dl(T, _, _):- % *IMPLEMENTAȚI AICI*
+% even_dl(_, S, E):- % *IMPLEMENTAȚI AICI*
+
+
+
+
+
+% 6. Collects (using retracts through a 2-step process) all internal nodes of an incomplete binary tree.
+% ?- incomplete_tree(T), internal_list(T, R).
+% R = [7, 5|_].
+
+% internal_list(T, _):- % *IMPLEMENTAȚI AICI*
+% internal_list(_, R):- % *IMPLEMENTAȚI AICI*

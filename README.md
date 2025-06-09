@@ -1,12 +1,14 @@
-# Logic Programming laboratories at the Technical University of Cluj-Napoca 
+# Logic Programming at the Technical University of Cluj-Napoca 
 [v2.0]
 
-In this repository you can find the documentation for every laboratory session in both English and Romanian. Moreover, you can find a template for each laboratory session upon which to implement your own code.
+In this repository you can find the 
+- documentation for every course session and the code shown throughout
+- documentation for every laboratory session in both English and Romanian. Moreover, you can find a template for each laboratory session upon which to implement your own code.
 
 ## Laboratory Guide
 
 ### About the laboratory
-This semester, you will learn a new programming language, called Prolog. The solutions to the exercises will be written in a text editor (ex: Notepad++) and will be loaded and tested in a Prolog interpretor (ex: SWI Prolog, SWISH Prolog).
+This semester, you will learn a new programming language, called Prolog. The solutions to the exercises will be written and tested in a Prolog interpretor (SWISH Prolog).
 
 ### Laboratory Format
 

@@ -1,5 +1,5 @@
 # Logic Programming at the Technical University of Cluj-Napoca 
-[v2.0]
+[v2.1]
 
 In this repository you can find the 
 - documentation for every course session and the code shown throughout

@@ -36,18 +36,18 @@
 % The GCD predicate %
 %--------------------------------------------------
 % Variant 1
-gcd(X,X,X). % The third parameter is the result of GCD
-gcd(X,Y,Z) :- X>Y, Diff is X-Y, gcd(Diff,Y,Z).
-gcd(X,Y,Z) :- X<Y, Diff is Y-X, gcd(X,Diff,Z).
+gcd1(X,X,X). % The third parameter is the result of GCD
+gcd1(X,Y,Z) :- X>Y, Diff is X-Y, gcd1(Diff,Y,Z).
+gcd1(X,Y,Z) :- X<Y, Diff is Y-X, gcd1(X,Diff,Z).
 
 % Variant 2
 gcd2(X,0,X). % The third parameter is the result of GCD
 gcd2(X,Y,Z) :- Y\=0, Rest is X mod Y, gcd2(Y,Rest,Z).
 
 % Follow the execution of the following:
-% ?- trace, gcd(30,24,X).
-% ?- trace, gcd(15,2,X).
-% ?- trace, gcd(4,1,X).
+% ?- trace, gcd1(30,24,X).
+% ?- trace, gcd1(15,2,X).
+% ?- trace, gcd1(4,1,X).
 
 
 

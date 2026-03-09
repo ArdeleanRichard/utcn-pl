@@ -4,7 +4,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %--------------------------------------------------
-% The IS predicate %
+% Predicatul IS %
 %--------------------------------------------------
 % Urmărește intrebările:
 
@@ -55,17 +55,17 @@ cmmdc2(X,Y,Z) :- Y\=0, Rest is X mod Y, cmmdc2(Y,Rest,Z).
 %--------------------------------------------------
 % Predicatul FACTORIAL %
 %--------------------------------------------------
-% Variant 1 - using backwards recursion
+% Varianta 1 - folosind recursivitate inapoi (backwards)
 fact_bwd(0,1).
 fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
 
 
-% Variant 2 - using forwards recursion
+% Varianta 2 - folosind recursivitate inainte (forwards)
 fact_fwd(0,Acc,F) :- F = Acc.
 fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
 
-% the wrapper
-fact_fwd(N,F) :- fact_fwd(N,1,F). % the accumulator is initialized with 1
+% wrapper-ul cu acumulatorul initializat cu 1
+fact_fwd(N,F) :- fact_fwd(N,1,F). 
 
 
 

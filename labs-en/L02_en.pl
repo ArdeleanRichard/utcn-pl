@@ -197,7 +197,7 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 
 
 %--------------------------------------------------
-% 7. For: Write the for/3 predicate after the specifications given in section 2.4
+% 7. For: Write the for/3 predicate after the specifications given in section 1.4
 % that calculates the sum of all numbers smaller than a given number.
 % ?- for(0, S, 9).
 % S=45;

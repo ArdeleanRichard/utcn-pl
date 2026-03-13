@@ -61,7 +61,7 @@ fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
 
 
 % Variant 2 - using forwards recursion
-fact_fwd(0,Acc,F) :- F = Acc.
+fact_fwd(0,F,F).
 fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
 
 % the wrapper with the accumulator initialized with 1

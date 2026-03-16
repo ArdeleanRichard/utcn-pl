@@ -61,7 +61,7 @@ fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
 
 
 % Variant 2 - using forwards recursion
-fact_fwd(0,Acc,F) :- F = Acc.
+fact_fwd(0,F,F).
 fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
 
 % the wrapper with the accumulator initialized with 1
@@ -197,7 +197,7 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 
 
 %--------------------------------------------------
-% 7. For: Write the for/3 predicate after the specifications given in section 2.4
+% 7. For: Write the for/3 predicate after the specifications given in section 1.4
 % that calculates the sum of all numbers smaller than a given number.
 % ?- for(0, S, 9).
 % S=45;

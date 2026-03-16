@@ -61,7 +61,7 @@ fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
 
 
 % Varianta 2 - folosind recursivitate inainte (forwards)
-fact_fwd(0,Acc,F) :- F = Acc.
+fact_fwd(0,F,F).
 fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
 
 % wrapper-ul cu acumulatorul initializat cu 1
@@ -88,7 +88,7 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 % Z=24;
 % false.
 
-% cmmc(X, Y, Z). - calculeză cel mai mic multiplu comun dintre X și Y și returneză rezultatul în Z
+% cmmmc(X, Y, Z). - calculeză cel mai mic multiplu comun dintre X și Y și returneză rezultatul în Z
 
 % cmmmc(X, Y, Z):-  % *IMPLEMENTAȚI AICI*
 
@@ -196,7 +196,7 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 
 
 %--------------------------------------------------
-% 7. For: Scrieți predicatul for/3 după specificațiile date în secțiunea 2.4 care
+% 7. For: Scrieți predicatul for/3 după specificațiile date în secțiunea 1.4 care
 % calculează suma tuturor numerelor mai mici decât un număr dat. 
 % ?- for(0, S, 9).
 % S=45;
@@ -207,7 +207,7 @@ for(Inter,Inter,0).
 for(Inter,Out,In):-
 	In>0,
 	NewIn is In-1,
-	Intermediate=Inter % *STERGEȚI LINIA, IMPLEMENTAȚI AICI* <do_something_to_Inter_to_get_Intermediate>
+	Intermediate=Inter, % *STERGEȚI LINIA, IMPLEMENTAȚI AICI* <do_something_to_Inter_to_get_Intermediate>
 	for(Intermediate,Out,NewIn).
 
 

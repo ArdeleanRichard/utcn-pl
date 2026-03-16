@@ -3,6 +3,8 @@
 %%%%%% 			Operații pe liste			%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+% ?- [H|T]=[].
+% ?- [H|T]=[1,2,3], X=3, L=[X|T].
 
 %--------------------------------------------------
 % Predicatul MEMBER %
@@ -21,8 +23,8 @@ member1(X, [_|T]) :- member1(X, T).
 %--------------------------------------------------
 % Predicatul APPEND %
 %--------------------------------------------------
-append1([], L2, L2).
-append1([H|T], L2, [H|TailR]) :- append1(T, L2, TailR).
+append1([], L, L).
+append1([H|T], L, [H|R]) :- append1(T, L, R).
 
 % Urmărește execuția la:
 % ?- trace, append1([a,b],[c,d],R).

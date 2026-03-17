@@ -6,6 +6,8 @@
 % ?- [H|T]=[].
 % ?- [H|T]=[1,2,3], X=3, L=[X|T].
 
+
+% Aceste predicate deja exista (sunt predefinite) in Prolog, astfel le denumim cu un '1' aditional
 %--------------------------------------------------
 % Predicatul MEMBER %
 %--------------------------------------------------
@@ -102,16 +104,16 @@ delete_all(_, [], []).
 
 %--------------------------------------------------
 % 3. Scrieți un predicat care realizează suma elementelor dintr-o lista dată. 
-% ?- sum_bwd([1,2,3,4], S).
+% ?- sum_bw([1,2,3,4], S).
 % R=10.
-% ?- sum_fwd([1,2,3,4], S).
+% ?- sum_fw([1,2,3,4], S).
 % R=10.
 
 % sum(L, S). – calculează suma elementelor din L și returnează suma în S
 
-% sum_bwd(L, S):-  % *IMPLEMENTAȚI AICI*
+% sum_bw(L, S):-  % *IMPLEMENTAȚI AICI*
 
-% sum_fwd(L, S):-  % *IMPLEMENTAȚI AICI*
+% sum_fw(L, S):-  % *IMPLEMENTAȚI AICI*
 
 
 

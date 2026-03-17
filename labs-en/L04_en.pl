@@ -33,25 +33,25 @@ delete1(_, [], []).
 % The LENGTH predicate %
 %--------------------------------------------------
 % Variant 1 (backwards recursion)
-length1([], 0).
-length1([_|T], Len) :- length1(T, Lcoada), Len is 1+Lcoada.
+len_bw([], 0).
+len_bw([_|T], Len) :- len_bw(T, Lcoada), Len is 1+Lcoada.
 
 
 % Variant 2 (forward recursion –> accumulator = second argument)
-length2([], Acc, Len) :- Len=Acc.
-length2([_|T], Acc, Len) :- Acc1 is Acc + 1, length2(T, Acc1, Len).
+len_fw([], Len, Len).
+len_fw([_|T], Acc, Len) :- Acc1 is Acc + 1, len_fw(T, Acc1, Len).
 
-length2(L, R) :- length2(L, 0, R).
-% length2/2 = wrapper of the length2/3 predicate that uses an accumulator
+% len_fw/2 = wrapper of the len_fw/3 predicate that uses an accumulator
+len_fw(L, R) :- len_fw(L, 0, R).
 
 
 % Follow the execution of:
-% ?- trace, length1([a, b, c, d], Len).
-% ?- trace, length1([1, [2], [3|[4]]], Len).
-% ?- trace, length2([a, b, c, d], 0, Res).
-% ?- trace, length2([a, b, c, d], Len).
-% ?- trace, length2([1, [2], [3|[4]]], Len).
-% ?- trace, length2([a, b, c, d], 3, Len).
+% ?- trace, len_bw([a, b, c, d], Len).
+% ?- trace, len_bw([1, [2], [3|[4]]], Len).
+% ?- trace, len_fw([a, b, c, d], 0, Res).
+% ?- trace, len_fw([a, b, c, d], Len).
+% ?- trace, len_fw([1, [2], [3|[4]]], Len).
+% ?- trace, len_fw([a, b, c, d], 3, Len).
 
 
 
@@ -60,21 +60,20 @@ length2(L, R) :- length2(L, 0, R).
 % The REVERSE predicate %
 %--------------------------------------------------
 % Variant 1 (backward recursion)
-reverse1([], []).
-reverse1([H|T], R) :- reverse1(T, Rtail), append1(Rtail, [H], R).
+rev_bw([], []).
+rev_bw([H|T], R) :- rev_bw(T, Rtail), append1(Rtail, [H], R).
 
-append1([], L2, L2).
-append1([H|T], L2, [H|CoadaR]) :- append(T, L2, CoadaR).
+append1([], R, R).
+append1([H|T], L, [H|R]) :- append1(T, L, R).
 
 
 
 % Variant 2 (forward recursion –> accumulator = second argument)
-reverse2([], Acc, R) :- Acc=R.
-reverse2([H|T], Acc, R) :- Acc1=[H|Acc], reverse2(T, Acc1, R).
+rev_fw([], R, R).
+rev_fw([H|T], Acc, R) :- Acc1=[H|Acc], rev_fw(T, Acc1, R).
 
-reverse2(L, R) :- reverse2(L, [], R).
-% reverse2/2 = wrapper of the reverse2/3 predicate that
-% uses an accumulator.
+% rev_fw/2 = wrapper of the rev_fw/3 predicate that uses an accumulator.
+rev_fw(L, R) :- rev_fw(L, [], R).
 
 % In contrast to the accumulators used until now, here we have
 % operations with lists, we will instantiate it with an empty list.
@@ -82,11 +81,11 @@ reverse2(L, R) :- reverse2(L, [], R).
 
 
 % Follow the execution of:
-% ?- trace, reverse1([a, b, c, d], R).
-% ?- trace, reverse1([1, [2], [3|[4]]], R).
-% ?- trace, reverse2([a, b, c, d], R).
-% ?- trace, reverse2([1, [2], [3|[4]]], R).
-% ?- trace, reverse2([a, b, c, d], [1, 2], R).
+% ?- trace, rev_bw([a, b, c, d], R).
+% ?- trace, rev_bw([1, [2], [3|[4]]], R).
+% ?- trace, rev_fw([a, b, c, d], R).
+% ?- trace, rev_fw([1, [2], [3|[4]]], R).
+% ?- trace, rev_fw([a, b, c, d], [1, 2], R).
 
 
 
@@ -96,27 +95,27 @@ reverse2(L, R) :- reverse2(L, [], R).
 %--------------------------------------------------
 
 % Variant 1 (forward recursion –> accumulator = second argument)
-min1([], Mp, M) :- M=Mp.
-min1([H|T], Mp, M) :- H<Mp, !, min1(T, H, M).
-min1([_|T], Mp, M) :- min1(T, Mp, M).
+min_fw([], Mp, M) :- M=Mp.
+min_fw([H|T], Mp, M) :- H<Mp, !, min_fw(T, H, M).
+min_fw([_|T], Mp, M) :- min_fw(T, Mp, M).
 
-min1([H|T], M) :- min1(T, H, M).
-% In contrast to the accumulators used until now,
-% for the min1/3 predicate,
+% In a similar fashion, min_fw/2 is a wrapper.
+min_fw([H|T], M) :- min_fw(T, H, M).
+
+% In contrast to the accumulators used until now, for the min_fw/3 predicate,
 % the accumulator (2nd argument) will be initialized with the first element
-% In a similar fashion, min1/2 is a wrapper.
 
 
 % Variant 2 (backward recursion)
-min2([H|T], M) :- min2(T, M), M<H, !.
-min2([H|_], H).
+min_bw([H|T], M) :- min_bw(T, M), M<H, !.
+min_bw([H|_], H).
 
 
 % Follow the execution of:
-% ?- trace, min1([], M).
-% ?- trace, min1([3, 2, 6, 1, 4, 1, 5], M).
-% ?- trace, min2([], M).
-% ?- trace, min2([3, 2, 6, 1, 4, 1, 5], M).
+% ?- trace, min_fw([], M).
+% ?- trace, min_fw([3, 2, 6, 1, 4, 1, 5], M).
+% ?- trace, min_bw([], M).
+% ?- trace, min_bw([3, 2, 6, 1, 4, 1, 5], M).
 
 
 
@@ -124,10 +123,11 @@ min2([H|_], H).
 %--------------------------------------------------
 % The SET OPERATIONS  %
 %--------------------------------------------------
-% Through the use of the member predicate and recursion, we check each
-% element (H) of list L1, if it already is an element of L2:
-% if it is -> we do not add it to the result R.
-% Otherwise, we add it to R.
+% Through the use of the member/2 predicate and recursion, 
+% we check each element (H) of list L1, if it already is an element of L2:
+% 	if it is -> we do not add it to the result R.
+% 	Otherwise, we add it to R.
+
 union([], L, L).
 union([H|T], L2, R) :- member(H, L2), !, union(T, L2, R).
 union([H|T], L2, [H|R]) :- union(T, L2, R).
@@ -203,7 +203,7 @@ delete_all(_, [], []).
 % del_min1(L, R):-  % *IMPLEMENTATION HERE*
 
 
-% del_max2(L, R):-  % *IMPLEMENTATION HERE*
+% del_max1(L, R):-  % *IMPLEMENTATION HERE*
 
 
 
@@ -237,12 +237,12 @@ delete_all(_, [], []).
 %--------------------------------------------------
 % Optional. Can you modify this predicate such that if the element is singular (has
 % no consecutive equal values), it keeps that element instead of adding the pair?
-% ?- rle_encode2([1, 1, 1, 2, 3, 3, 1, 1], R).
+% ?- rle_encode1([1, 1, 1, 2, 3, 3, 1, 1], R).
 % R = [[1, 3], 2, [3, 2], [1, 2]] ;
 % false
 
 
-% rle_encode2(L, R):-  % *IMPLEMENTATION HERE*
+% rle_encode1(L, R):-  % *IMPLEMENTATION HERE*
 
 
 

@@ -6,6 +6,8 @@
 % ?- [H|T]=[].
 % ?- [H|T]=[1,2,3], X=3, L=[X|T].
 
+
+% These predicates already exist (are predefined) in Prolog, as such we name them with an added '1'
 %--------------------------------------------------
 % The MEMBER predicate %
 %--------------------------------------------------
@@ -99,16 +101,16 @@ delete_all(_, [], []).
 
 %--------------------------------------------------
 % 3. Write a predicate that calculates the sum of all elements in a given list.
-% ?- sum_bwd([1,2,3,4], S).
+% ?- sum_bw([1,2,3,4], S).
 % R=10.
-% ?- sum_fwd([1,2,3,4], S).
+% ?- sum_fw([1,2,3,4], S).
 % R=10.
 
 % sum(L, S). – computes the sum of all elements of L and returns the sum in S
 
-% sum_bwd(L, S):-  % *IMPLEMENTATION HERE*
+% sum_bw(L, S):-  % *IMPLEMENTATION HERE*
 
-% sum_fwd(L, S):-  % *IMPLEMENTATION HERE*
+% sum_fw(L, S):-  % *IMPLEMENTATION HERE*
 
 
 

@@ -36,25 +36,25 @@ delete1(_, [], []).
 % Predicatul LENGTH %
 %--------------------------------------------------
 % Varianta 1 (recursivitate înapoi)
-length1([], 0).
-length1([_|T], Len) :- length1(T, Lcoada), Len is 1+Lcoada.
+len_bw([], 0).
+len_bw([_|T], Len) :- len_bw(T, Lcoada), Len is 1+Lcoada.
 
 
 % Varianta 2 (recursivitate înainte -> acumulator = al doilea argument)
-length2([], Acc, Len) :- Len=Acc.
-length2([_|T], Acc, Len) :- Acc1 is Acc + 1, length2(T, Acc1, Len).
+len_fw([], Len, Len).
+len_fw([_|T], Acc, Len) :- Acc1 is Acc + 1, len_fw(T, Acc1, Len).
 
-length2(L, R) :- length2(L, 0, R).
-% length2/2 = wrapper al predicatului length2/3 care folosește un acumulator
+% len_fw/2 = wrapper al predicatului len_fw/3 care folosește un acumulator
+len_fw(L, R) :- len_fw(L, 0, R).
 
 
 % Urmărește execuția la:
-% ?- trace, length1([a, b, c, d], Len).
-% ?- trace, length1([1, [2], [3|[4]]], Len).
-% ?- trace, length2([a, b, c, d], 0, Res).
-% ?- trace, length2([a, b, c, d], Len).
-% ?- trace, length2([1, [2], [3|[4]]], Len).
-% ?- trace, length2([a, b, c, d], 3, Len).
+% ?- trace, len_bw([a, b, c, d], Len).
+% ?- trace, len_bw([1, [2], [3|[4]]], Len).
+% ?- trace, len_fw([a, b, c, d], 0, Res).
+% ?- trace, len_fw([a, b, c, d], Len).
+% ?- trace, len_fw([1, [2], [3|[4]]], Len).
+% ?- trace, len_fw([a, b, c, d], 3, Len).
 
 
 
@@ -64,21 +64,20 @@ length2(L, R) :- length2(L, 0, R).
 % Predicatul REVERSE %
 %--------------------------------------------------
 % Varianta 1 (recursivitate înapoi)
-reverse1([], []).
-reverse1([H|T], R) :- reverse1(T, Rtail), append1(Rtail, [H], R).
+rev_bw([], []).
+rev_bw([H|T], R) :- rev_bw(T, Rtail), append1(Rtail, [H], R).
 
-append1([], L2, L2).
-append1([H|T], L2, [H|CoadaR]) :- append(T, L2, CoadaR).
+append1([], R, R).
+append1([H|T], L, [H|R]) :- append1(T, L, R).
 
 
 
 % Varianta 2 (recursivitate înainte –> acumulator = al doilea argument)
-reverse2([], Acc, R) :- Acc=R.
-reverse2([H|T], Acc, R) :- Acc1=[H|Acc], reverse2(T, Acc1, R).
+rev_fw([], R, R).
+rev_fw([H|T], Acc, R) :- Acc1=[H|Acc], rev_fw(T, Acc1, R).
 
-reverse2(L, R) :- reverse2(L, [], R).
-% reverse2/2 = wrapper a predicatului reverse2/3 care
-% folosește un acumulator
+% rev_fw/2 = wrapper a predicatului rev_fw/3 care folosește un acumulator
+rev_fw(L, R) :- rev_fw(L, [], R).
 
 % În contrast cu acumulatoarele de până acum, aici avem operații cu liste,
 % astfel va fi instanțiată cu o listă vidă
@@ -86,11 +85,11 @@ reverse2(L, R) :- reverse2(L, [], R).
 
 
 % Urmărește execuția la:
-% ?- trace, reverse1([a, b, c, d], R).
-% ?- trace, reverse1([1, [2], [3|[4]]], R).
-% ?- trace, reverse2([a, b, c, d], R).
-% ?- trace, reverse2([1, [2], [3|[4]]], R).
-% ?- trace, reverse2([a, b, c, d], [1, 2], R).
+% ?- trace, rev_bw([a, b, c, d], R).
+% ?- trace, rev_bw([1, [2], [3|[4]]], R).
+% ?- trace, rev_fw([a, b, c, d], R).
+% ?- trace, rev_fw([1, [2], [3|[4]]], R).
+% ?- trace, rev_fw([a, b, c, d], [1, 2], R).
 
 
 
@@ -101,28 +100,28 @@ reverse2(L, R) :- reverse2(L, [], R).
 %--------------------------------------------------
 
 % Varianta 1 (recursivitate înainte –> acumulator = al doilea argument)
-min1([], Mp, M) :- M=Mp.
-min1([H|T], Mp, M) :- H<Mp, !, min1(T, H, M).
-min1([_|T], Mp, M) :- min1(T, Mp, M).
+min_fw([], Mp, M) :- M=Mp.
+min_fw([H|T], Mp, M) :- H<Mp, !, min_fw(T, H, M).
+min_fw([_|T], Mp, M) :- min_fw(T, Mp, M).
 
-min1([H|T], M) :- min1(T, H, M).
-% În contrast cu acumulatoarea folosite până acum
-% pentru predicatul min1/3,
+% Într-un mod similar, min_fw/2 este un wrapper.
+min_fw([H|T], M) :- min_fw(T, H, M).
+
+% În contrast cu acumulatoare folosite până acum pentru predicatul min_fw/3,
 % acumulatorul (al doilea argument) va fi inițializat cu primul element
-% Într-un mod similar, min1/2 este un wrapper.
 
 
 
 % Varianta 2 (recursivitate înapoi)
-min2([H|T], M) :- min2(T, M), M<H, !.
-min2([H|_], H).
+min_bw([H|T], M) :- min_bw(T, M), M<H, !.
+min_bw([H|_], H).
 
 
 % Urmărește execuția la:
-% ?- trace, min1([], M).
-% ?- trace, min1([3, 2, 6, 1, 4, 1, 5], M).
-% ?- trace, min2([], M).
-% ?- trace, min2([3, 2, 6, 1, 4, 1, 5], M).
+% ?- trace, min_fw([], M).
+% ?- trace, min_fw([3, 2, 6, 1, 4, 1, 5], M).
+% ?- trace, min_bw([], M).
+% ?- trace, min_bw([3, 2, 6, 1, 4, 1, 5], M).
 
 
 
@@ -131,10 +130,11 @@ min2([H|_], H).
 %--------------------------------------------------
 % Operații pe Seturi %
 %--------------------------------------------------
-% Prin folosirea predicatului member și recursivitate, putem verifica fiecare
-% element (H) a listei L1 dacă este un element și a L2:
-% dacă este -> nu va fi adăugat în rezultatul R
-% Altfel, îl adăugăm in R.
+% Prin folosirea predicatului member/2 și recursivitate, 
+% putem verifica fiecare element (H) a listei L1 dacă este un element și a L2:
+% 	Dacă este -> nu va fi adăugat în rezultatul R
+% 	Altfel, îl adăugăm in R.
+
 union([], L, L).
 union([H|T], L2, R) :- member(H, L2), !, union(T, L2, R).
 union([H|T], L2, [H|R]) :- union(T, L2, R).
@@ -204,13 +204,13 @@ delete_all(_, [], []).
 
 
 %--------------------------------------------------
-% Exercițiu greu: Încercați să implementați fiecare din aceste predicate folosind o singură traversare a listei (del_min1/2 și del_max1/2). (del_min1/2 and del_max1/2).
+% Exercițiu greu: Încercați să implementați fiecare din aceste predicate folosind o singură traversare a listei (del_min1/2 și del_max1/2). 
 
 
 % del_min1(L, R):-  % *IMPLEMENTAȚI AICI*
 
 
-% del_max2(L, R):-  % *IMPLEMENTAȚI AICI*
+% del_max1(L, R):-  % *IMPLEMENTAȚI AICI*
 
 
 
@@ -250,7 +250,7 @@ delete_all(_, [], []).
 % false
 
 
-% rle_encode2(L, R):-  % *IMPLEMENTAȚI AICI*
+% rle_encode1(L, R):-  % *IMPLEMENTAȚI AICI*
 
 
 

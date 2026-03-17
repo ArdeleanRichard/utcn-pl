@@ -56,16 +56,16 @@ gcd2(X,Y,Z) :- Y\=0, Rest is X mod Y, gcd2(Y,Rest,Z).
 % The FACTORIAL predicate %
 %--------------------------------------------------
 % Variant 1 - using backwards recursion
-fact_bwd(0,1).
-fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
+fact_bw(0,1).
+fact_bw(N,F) :- N > 0, N1 is N-1, fact_bw(N1,F1), F is N*F1.
 
 
 % Variant 2 - using forwards recursion
-fact_fwd(0,F,F).
-fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
+fact_fw(0,F,F).
+fact_fw(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fw(N1,Acc1,F).
 
 % the wrapper with the accumulator initialized with 1
-fact_fwd(N,F) :- fact_fwd(N,1,F). 
+fact_fw(N,F) :- fact_fw(N,1,F). 
 
 
 
@@ -138,12 +138,12 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 
 %--------------------------------------------------
 % 4. Write the predicates for raising a number to a chosen power using:
-% • forward recursion: power_fwd/3
-% • backword recusion: power_bwd/3
-% ?- power_fwd(2, 3, Z).
+% • forward recursion: power_fw/3
+% • backword recusion: power_bw/3
+% ?- power_fw(2, 3, Z).
 % Z=8;
 % false.
-% ?- power_bwd(2, 3, Z).
+% ?- power_bw(2, 3, Z).
 % Z=8;
 % false.
 
@@ -151,9 +151,9 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 % power(X, Y, Z). – will calculate X to the power of Y and return it in Z
 
 
-% power_fwd(X, Y, Z):-   % *IMPLEMENTATION HERE*
+% power_fw(X, Y, Z):-   % *IMPLEMENTATION HERE*
 
-% power_bwd(X, Y, Z):-   % *IMPLEMENTATION HERE*
+% power_bw(X, Y, Z):-   % *IMPLEMENTATION HERE*
 
 
 
@@ -216,16 +216,16 @@ for(Inter,Out,In):-
 
 
 %--------------------------------------------------
-% 8. For: Write the for_bwd/2 predicate using backwards recursion that
+% 8. For: Write the for_bw/2 predicate using backwards recursion that
 % calculates the sum of all numbers smaller than a given number.
-% ?- for_bwd(9, S).
+% ?- for_bw(9, S).
 % S=45;
 % false.
 
-% for_bwd(In,Out). – will compute the sum of all values between 0 and In and return the result in Out
+% for_bw(In,Out). – will compute the sum of all values between 0 and In and return the result in Out
 
 
-% for_bwd(In, Out):-   % *IMPLEMENTATION HERE*
+% for_bw(In, Out):-   % *IMPLEMENTATION HERE*
 
 
 

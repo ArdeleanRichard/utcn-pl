@@ -56,16 +56,16 @@ cmmdc2(X,Y,Z) :- Y\=0, Rest is X mod Y, cmmdc2(Y,Rest,Z).
 % Predicatul FACTORIAL %
 %--------------------------------------------------
 % Varianta 1 - folosind recursivitate inapoi (backwards)
-fact_bwd(0,1).
-fact_bwd(N,F) :- N > 0, N1 is N-1, fact_bwd(N1,F1), F is N*F1.
+fact_bw(0,1).
+fact_bw(N,F) :- N > 0, N1 is N-1, fact_bw(N1,F1), F is N*F1.
 
 
 % Varianta 2 - folosind recursivitate inainte (forwards)
-fact_fwd(0,F,F).
-fact_fwd(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fwd(N1,Acc1,F).
+fact_fw(0,F,F).
+fact_fw(N,Acc,F) :- N > 0, N1 is N-1, Acc1 is Acc*N, fact_fw(N1,Acc1,F).
 
 % wrapper-ul cu acumulatorul initializat cu 1
-fact_fwd(N,F) :- fact_fwd(N,1,F). 
+fact_fw(N,F) :- fact_fw(N,1,F). 
 
 
 
@@ -136,13 +136,13 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 
 %--------------------------------------------------
 % 4. Scrieți predicatul care calculează ridicarea unui număr la o putere aleasă folosind:
-% • recursivitate înainte: power_fwd/3
-% • recursivitatea înapoi: power_bwd/3
+% • recursivitate înainte: power_fw/3
+% • recursivitatea înapoi: power_bw/3
 
-% ?- power_fwd(2, 3, Z).
+% ?- power_fw(2, 3, Z).
 % Z=8;
 % false.
-% ?- power_bwd(2, 3, Z).
+% ?- power_bw(2, 3, Z).
 % Z=8;
 % false.
 
@@ -150,9 +150,9 @@ fact_fwd(N,F) :- fact_fwd(N,1,F).
 % power(X, Y, Z). – will calculate X to the power of Y and return it in Z
 
 
-% power_fwd(X, Y, Z):-   % *IMPLEMENTAȚI AICI*
+% power_fw(X, Y, Z):-   % *IMPLEMENTAȚI AICI*
 
-% power_bwd(X, Y, Z):-   % *IMPLEMENTAȚI AICI*
+% power_bw(X, Y, Z):-   % *IMPLEMENTAȚI AICI*
 
 
 
@@ -214,18 +214,18 @@ for(Inter,Out,In):-
 
 
 %--------------------------------------------------
-% 8. For: Scrieți predicatul for_bwd/2 folosind recursivitate înapoi care
+% 8. For: Scrieți predicatul for_bw/2 folosind recursivitate înapoi care
 % calculează suma tuturor numerelor mai mici decât un număr dat.
-% ?- for_bwd(9, S).
+% ?- for_bw(9, S).
 % S=45;
 % false.
 
-% for_bwd(In,Out). – va calcula suma toturor valorilor între 0 și In
+% for_bw(In,Out). – va calcula suma toturor valorilor între 0 și In
 % și va returna rezultatul în Out
 
 
 
-% for_bwd(In, Out):-   % *IMPLEMENTAȚI AICI*
+% for_bw(In, Out):-   % *IMPLEMENTAȚI AICI*
 
 
 

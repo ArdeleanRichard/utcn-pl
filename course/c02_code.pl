@@ -39,6 +39,6 @@
 % ?- X=Y+1, Y=2, Z is X.
 % X=2+1, Y=2, Z=3.
 
-member1(H,[H|T]). 
-member1(X,[H|T])
+member1(X,[X|_]). 
+member1(X,[_|T]):-
 	member1(X,T).

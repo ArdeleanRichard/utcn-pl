@@ -85,15 +85,15 @@ delete1(X,[H|T],[H|R]):-
 	delete1(X,T,R). 	
 delete1(_,[],[]). 
 
-delete2(H,[H|T],T):- !.	
+delete2(X,[X|T],T):- !.	
 delete2(X,[H|T],[H|R]):- 		
 	delete2(X,T,R). 	
 delete2(_,[],[]).
 
 
-delete_all(H,[H|T],R):-
+delete_all(X,[X|T],R):-
 	!,
-	delete_all(H,T,R). 	
+	delete_all(X,T,R). 	
 delete_all(X,[H|T],[H|R]):- 	
 	delete_all(X,T,R). 	
 delete_all(_,[],[]). 

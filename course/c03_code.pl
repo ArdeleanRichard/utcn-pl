@@ -4,19 +4,19 @@ length1([_|T],N):-
 	length1(T,N1),	 	% length of tail calculated as N1
 	N is N1+1.			% add 1 to the length of tail 
 
-% ?- length1(InList,Result).
+% ?- length1(List,Result).
 
 % length2/2 (Length, List)
-length2([],Res,Res).
+length2([],FR,FR).
 length2([_|T],PR,FR):-
 	NPR is PR+1, 	
 	length2(T,NPR,FR).
 
-length2(InList,Result):-
-	length2(InList,0,Result).
+length2(List,Result):-
+	length2(List,0,Result).
 
-% ?- length2(InList,0,Result).
-% ?- length2(InList,Result).
+% ?- length2(List,0,Result).
+% ?- length2(List,Result).
 
 
 % reverse1/2 (List, Rev_list)

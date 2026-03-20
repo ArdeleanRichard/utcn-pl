@@ -1,101 +1,23 @@
-partition(X,[H|T],[H|Left],Right):- 
-	H<X,!,
-	partition(X,T,Left,Right).
-partition(X,[H|T],Left,[H|Right]):-
-	partition(X,T,Left,Right).
-partition(_,[],[],[]).
+:-dynamic p/1.
+
+p(1).
+p(2).
+p(3).
+p(4).
+p(5).
+
+q1:-assertz(p(6)), fail.
+q1.
+
+% ?- listing(p/1).
+% ?- q1, listing(p/1).
 
 
+q2:-retract(p(_)), fail.
+q2.
 
-quicksort([H|T],Result):-
-	partition(H,T,Left,Right),
-	quicksort(Left,SortedLeft),
-	quicksort(Right,SortedRight),
-	append(SortedLeft,[H|SortedRight],Result).
-quicksort([],[]).
-
-
-%qsort_DL2/3 (InList, FirstOutList,LastOutList)
-qsort_DL2([H|T],LFirst,LLast):-
-	partition(H,T,Left,Right),
-	qsort_DL2(Left,LFirst,[H|Inter]),
-	qsort_DL2(Right,Inter,LLast).
-qsort_DL2([],List,List).
-
-
-%enqueue/5 (El2enQ, FirstQBefore, LastQBefore, FirstQAfter, LastQAfter)
-
-enqueue1(El,First,[El|Last],First,Last).
-
-% Means:
-enqueue(El,FQB,LQB,FQA,LQA):-
-	FQA=FQB,    % after adding in the Q, it starts in the same place
-	LQB=[H|LQA],% before adding, the list ends IN FRONT 		
-	H = El. 	% of the item to be added
-
-
-% ?-enqueue(Item,FB,LB,FA,LA).
-
-
-%dequeue/5 (El2deQ, FirstQBefore, LastQBefore, FirstQAfter, LastQAfter)
-
-dequeue1(El,[El|First],Last,First,Last).
-
-% Means:
-dequeue(El,FQB,LQB,FQA,LQA):-
-	FQB=[H|FI], % extracted element H from the front of Q
-	El=H, 		% assign it to our argument	
-	FI=FQA, 	% Q without first element is our FirstQueueAfter 	
-	LQA=LQB. 	% list ends are the same as removal is from front
-
-
-% ?-dequeue(Item,FB,LB,FA,LA).
-
-
-
-
-
-
-
-
-
-
-% What is a deep list?
-% L=[1,1,[2,2,2,[3,3,[4],3],2,2,[3,[4,[5,5,5]]],2]]
-
-
-%deep2flat/2 (DeepList,FlatList).
-deep2flat([],[]):-!.
-deep2flat([H|T],[H|FlattenedTail]):-
-	atomic(H),!,
-	deep2flat(T,FlattenedTail).
-deep2flat([H|T],FlattenedList):-
-	deep2flat(H,FlattenedHead),
-	deep2flat(T,FlattenedTail),
-	append(FlattenedHead,FlattenedTail,FlattenedList).
-
-% [q] ?- deep2flat([1,1,[2,2,2,[3,3,[4],3],2,2,[3,[4,[5,5,5]]],2]], R)
-% R=[1, 1, 2, 2, 2, 3, 3, 4, 3, 2, 2, 3, 4, 5, 5, 5, 2]
-
-
-
-%deep2flat_dl/3 (DeepList, FirstFlatList, LastFlatList).
-deep2flat_dl([],Last,Last):-!.
-deep2flat_dl([H|T],[H|FlattenedTail],Last):-
-		atomic(H),!,
-		deep2flat_dl(T,FlattenedTail,Last).
-deep2flat_dl([H|T],FlattenedList,Last):-
-		deep2flat_dl(H,FlattenedList,Int),
-		deep2flat_dl(T,Int,Last).
-
-flatten(Deep,Flat):-
-	 deep2flat_dl(Deep,Flat,[]).
-
-
-
-
-
-
+% ?- listing(p/1).
+% ?- q2, listing(p/1).
 
 
 

@@ -43,24 +43,23 @@ inorder3(n(Left,Key,Right),Lout):-
 
 %insert_bst/3(In_tree, Key_to_ins, Out_tree).
 
-insert_bst(nil, K, t(nil,K,nil)):-!. % insert_bst(T, K, R):-T=nil,!, R = t(nil,K,nil). 
-insert_bst(t(Left,K,Right), K, t(Left,K,Right)):-!,
-	write("in tree").
-insert_bst(t(Left,Key,Right), K, t(NewLeft,Key,Right)):-
+insert_bst(nil, K, n(nil,K,nil)):-!. 			% insert_bst(T, K, R):- T=nil,!, R = t(nil,K,nil). 
+insert_bst(n(Left,K,Right), K, n(Left,K,Right)):-!, write("in tree").
+insert_bst(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
 	K<Key,!,
 	insert_bst(Left,K,NewLeft).
-insert_bst(t(Left,Key,Right), K, t(Left,Key,NewRight)):-
+insert_bst(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
 	insert_bst(Right,K,NewRight).
 
 
 %insert/3(In_tree, Key_to_ins, Out_tree).
 
-insert(nil, K, t(nil,K,nil)):-!. 				% insert(Tin, K, Tout):-Tin=nil, !, Tout=t(nil,Key,nil).
-insert(t(Left,K,Right), K, t(Left,K,Right)):- 	% insert(Tin,K,Tout):-
+insert(nil, K, n(nil,K,nil)):-!. 				% insert(Tin, K, Tout):-Tin=nil, !, Tout=t(nil,Key,nil).
+insert(n(Left,K,Right), K, n(Left,K,Right)):- 	% insert(Tin,K,Tout):-
 	!, write("in tree"). 						% Tin=t(Left,K,Right),!,write("in tree"),Tout= t(Left,K,Right)).
-insert(t(Left,Key,Right), K, t(NewLeft,Key,Right)):-
+insert(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
 	insert(Left,  K, NewLeft).
-insert(t(Left,Key,Right), K, t(Left,Key,NewRight)):-
+insert(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
 	insert(Right, K, NewRight).
 
 
@@ -111,27 +110,31 @@ search_tree(N, n(Left,_,_)):-
 search_tree(N, n(_,_,Right)):-
 	search_tree(N, Right).
 
-% ?-tree(T),search_tree(a(R,john),T).
-% ?-tree(T),search_tree(a(9,X),T).
+% ?-tree(T), search_tree(a(R,john),T).
+% ?-tree(T), search_tree(a(9,X),T).
+
+
+
+
 
 % search part
-delete_bst(t(Left,Key,Right), K, t(NewLeft,Key,Right)):-
+delete_bst(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
 	K<Key,!,
 	delete_bst(Left, K, NewLeft).
-delete_bst(t(Left,Key,Right), K, t(Left,Key,NewRight)):-
+delete_bst(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
 	K>Key,!,
 	delete_bst(Right, K, NewRight).
 
 % cases of no children or 1 child
 delete_bst(nil,K,nil):-!,write(K),write('not found').	
-delete_bst(t(nil,K,Right), K, Right):-!.
-delete_bst(t(Left,K,nil), K, Left):-!.
+delete_bst(n(nil,K,Right), K, Right):-!.
+delete_bst(n(Left,K,nil), K, Left):-!.
 
 % case of 2 children
-delete_bst(t(Left,Key,Right),Key,t(NewLeft,MaxLeft,Right)):-!,
+delete_bst(n(Left,Key,Right),Key,n(NewLeft,MaxLeft,Right)):-!,
 	deleteMaxFromTree(Left,MaxLeft,NewLeft).
 
-deleteMaxFromTree(t(Left,Key,Right),MaxKey,t(Left,Key,NewRight)):-
+deleteMaxFromTree(n(Left,Key,Right),MaxKey,n(Left,Key,NewRight)):-
 	deleteMaxFromTree(Right,MaxKey,NewRight).
-deleteMaxFromTree(t(Left,MaxKey,nil),MaxKey,Left):-!.
+deleteMaxFromTree(n(Left,MaxKey,nil),MaxKey,Left):-!.
 

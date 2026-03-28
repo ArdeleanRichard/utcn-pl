@@ -64,7 +64,7 @@ insert(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
 
 
 
-tree(
+tree_kv(
 	n(
 		n(
 			nil, 
@@ -110,8 +110,8 @@ search_tree(N, n(Left,_,_)):-
 search_tree(N, n(_,_,Right)):-
 	search_tree(N, Right).
 
-% ?-tree(T), search_tree(a(R,john),T).
-% ?-tree(T), search_tree(a(9,X),T).
+% ?-tree_kv(T), search_tree(a(R,john),T).
+% ?-tree_kv(T), search_tree(a(9,X),T).
 
 
 

@@ -10,12 +10,13 @@
 % L5 = [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]
 % L6 = [alpha,2,[beta],[gamma,[8]]]
 
-list1([1,2,3,[4]])
-list2([[1],[2],[3],[4,5]])
-list3([[],2,3,4,[5,[6]],[7]])
-list4([[[[1]]],1,[1]])
-list5([1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]])
-list6([alpha,2,[beta],[gamma,[8]]])
+list1( [1,2,3,[4]] ).
+list2( [[1],[2],[3],[4,5]] ).
+list3( [[],2,3,4,[5,[6]],[7]] ).
+list4( [[[[1]]],1,[1]] ).
+list5( [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]] ).
+list6( [alpha,2,[beta],[gamma,[8]]] ).
+
 
 % Test the following queries:
 % ?- member(2,[1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]).
@@ -97,7 +98,7 @@ heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
 heads2([],[],_).
 heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).					% if flag=1, it means that we are at the beginning of the list and we can extract the head, but on the recursive call we must set the flag to 0
 heads2([H|T],R,0):- atomic(H), !, heads2(T,R,0).						% if flag=0, then we are not at the first atomic element and we must continue with the rest of the elements
-heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,0), append(R1,R2,R).	% if we reach this clause it means that the first element is not atomic and we must call recursively on this element as well
+heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,1), append(R1,R2,R).	% if we reach this clause it means that the first element is not atomic and we must call recursively on this element as well
 
 % wrapper for heads predicate
 heads2(L,R):- heads2(L, R, 1).

@@ -100,7 +100,7 @@ heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
 heads2([],[],_).
 heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).					% dacă flag=1 atunci suntem la început de lista și putem extrage capul listei; în apelul recursiv setam flag=0
 heads2([H|T],R,0):- atomic(H), !, heads2(T,R,0).						% dacă flag=0 atunci nu suntem la primul element atomic și atunci continuam cu restul elementelor
-heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,0), append(R1,R2,R). 	% dacă am ajuns la aceasta clauza înseamnă că primul element nu este atomic și atunci trebuie să apelam recursiv și pe acest element
+heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,1), append(R1,R2,R). 	% dacă am ajuns la aceasta clauza înseamnă că primul element nu este atomic și atunci trebuie să apelam recursiv și pe acest element
 
 % un wrapper pentru predicatul heads
 heads2(L,R):- heads2(L, R, 1).

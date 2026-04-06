@@ -83,14 +83,20 @@ flatten([H|T], R):- flatten(H,R1), flatten(T,R2), append(R1,R2,R).
 %--------------------------------------------------
 % Variant 1
 skip([],[]).
-skip([H|T],R):- atomic(H),!,skip(T,R).
+skip([H|T],R):- atomic(H), !, skip(T,R).
 skip([H|T],[H|R]):- skip(T,R).
 
 % takes the first element from each list,
 % then skips the rest of atomic elements, calls recursively for lists.
 heads1([],[]).
-heads1([H|T],[H|R]):- atomic(H),!,skip(T,T1), heads1(T1,R).
-heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
+heads1([H|T],[H|R]):- atomic(H), !, skip(T,T1), heads1(T1,R).
+heads1([H|T],R):- heads1(H,R1), skip(T,T1), heads1(T1,R2), append(R1,R2,R).
+
+% when the head is a list, 
+% naturally the tail at that level will not contain a head
+% therefore we can skip/2
+
+
 
 
 
@@ -98,7 +104,7 @@ heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
 heads2([],[],_).
 heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).					% if flag=1, it means that we are at the beginning of the list and we can extract the head, but on the recursive call we must set the flag to 0
 heads2([H|T],R,0):- atomic(H), !, heads2(T,R,0).						% if flag=0, then we are not at the first atomic element and we must continue with the rest of the elements
-heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,1), append(R1,R2,R).	% if we reach this clause it means that the first element is not atomic and we must call recursively on this element as well
+heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,0), append(R1,R2,R).	% if we reach this clause it means that the first element is not atomic and we must call recursively on this element as well
 
 % wrapper for heads predicate
 heads2(L,R):- heads2(L, R, 1).

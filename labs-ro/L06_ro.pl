@@ -84,15 +84,21 @@ flatten([H|T], R):- flatten(H,R1), flatten(T,R2), append(R1,R2,R).
 
 % Variant 1
 skip([],[]).
-skip([H|T],R):- atomic(H),!,skip(T,R).
+skip([H|T],R):- atomic(H), !, skip(T,R).
 skip([H|T],[H|R]):- skip(T,R).
 
 % luăm primul element din fiecare listă,
 % după trecem peste restul elementelor
 % prin apelul predicatului skip, și apelăm recursiv pentru liste
 heads1([],[]).
-heads1([H|T],[H|R]):- atomic(H),!,skip(T,T1), heads1(T1,R).
-heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
+heads1([H|T],[H|R]):- atomic(H), !, skip(T,T1), heads1(T1,R).
+heads1([H|T],R):- heads1(H,R1), skip(T,T1), heads1(T1,R2), append(R1,R2,R).
+
+% când capul este o listă,
+% în mod natural coada la acel nivel nu va conține un cap,
+% astfel putem da skip/2
+
+
 
 
 

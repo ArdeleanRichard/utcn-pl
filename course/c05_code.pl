@@ -5,7 +5,7 @@
 % 	inorder(Right)
 
 
-tree(n(n(nil,2,nil),7,n(nil,9,nil))).
+tree(n(n(nil,5,nil),7,n(nil,9,nil))).
 
 
 % forward inorder

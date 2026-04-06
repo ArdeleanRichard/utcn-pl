@@ -1,9 +1,9 @@
 member_IL(_,L):-
 	var(L),!, 		% this order: check, cut, fail
 	fail. 		
-member_IL(H,[H|_]):-!.	% cut mandatory
-member_IL(H,[_|T]):-	 	
-	member_IL(H,T).
+member_IL(X,[X|_]):-!.	% cut mandatory
+member_IL(X,[_|T]):-	 	
+	member_IL(X,T).
 	
 % [q1] ?- L=[1,2,3|_],member_IL(2,L).
 % true, L=[1,2,3|_]. 		%exe stops on clause 2
@@ -13,9 +13,9 @@ member_IL(H,[_|T]):-
 
 
 
-insert_IL(H,[H|_]):-!.
-insert_IL(H,[_|T]):-	 	
-	insert_IL(H,T).
+insert_IL(X,[X|_]):-!.
+insert_IL(X,[_|T]):-	 	
+	insert_IL(X,T).
 
 % [q1] ?- L=[1,2,3|_], insert_IL(4,L).
 % true, L=[1,2,3,4|_].
@@ -31,20 +31,18 @@ insert_IL(H,[_|T]):-
 
 tree(t(7, t(5,_,_),t(9,t(8,_,_),_))).
 
-search(Key, t(Key,_,_)):-!,
-	write(“found”).
+search(Key, t(Key,_,_)):-!, write(“found”).
 search(Key, t(K,L,_)):-
-	Key<K,!,
+	Key<K, !,
 	search(Key, L).
 search(Key, t(_,_,R)):-
 	search(Key, R).
 
 
 
-search_ins(Key,t(Key,_,_)):-!,
-	write(“found”).
+search_ins(Key,t(Key,_,_)):- !, write(“found”).
 search_ins(Key, t(K,L,_)):-
-	Key<K,!,
+	Key<K, !,
 	search_ins(Key, L).
 search_ins(K, t(_,_,R)):-
 	search_ins(Key, R).
@@ -61,11 +59,9 @@ search_ins(K, t(_,_,R)):-
 search_IT(_, T):-
 	var(T), !,
 	fail.
-search_IT(Key,t(Key,_,_)):- 
-	!,
-	write(“found”).
+search_IT(Key,t(Key,_,_)):-  !, write(“found”).
 search_IT(Key, t(K,L,_)):-
-	Key<K,!,
+	Key<K, !,
 	search_IT(Key, L).
 search_IT(Key, t(_,_,R)):-
 	search_IT(Key, R). 
@@ -81,7 +77,7 @@ tree2(
 ).
 
 
-search_ins(Key, Info, n(_,a(Key,Info),_)):-!. 
+search_ins(Key, Info, n(_,a(Key,Info),_)):- !. 
 search_ins(Key, Info, n(L,a(K,_),_)):-
 	Key<K, !,
 	search_ins(Key, Info, L).	

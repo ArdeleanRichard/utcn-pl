@@ -10,14 +10,22 @@
 % L5 = [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]
 % L6 = [alpha,2,[beta],[gamma,[8]]]
 
+list1( [1,2,3,[4]] ).
+list2( [[1],[2],[3],[4,5]] ).
+list3( [[],2,3,4,[5,[6]],[7]] ).
+list4( [[[[1]]],1,[1]] ).
+list5( [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]] ).
+list6( [alpha,2,[beta],[gamma,[8]]] ).
+
 % Testați următoarele întrebări:
-% ?- member(2,L5).
-% ?- member([2], L5).
-% ?- member(X, L5).
-% ?- append(L1,R,L2).
-% ?- append(L4,L5,R).
-% ?- delete(1, L4,R).
-% ?- delete(13,L5,R)
+% ?- member(2,[1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]).
+% ?- list5(L5), member(2, L5).
+% ?- list5(L5), member([2], L5).
+% ?- list5(L5), member(X, L5).
+% ?- list1(L1), list2(L2), append(L1, R, L2).
+% ?- list4(L4), list5(L5), append(L4, L5, R).
+% ?- list4(L4), delete(1, L4, R).
+% ?- list5(L5), delete(13, L5, R).
 
 
 %--------------------------------------------------
@@ -35,7 +43,6 @@
 %--------------------------------------------------
 % Predicatul DEPTH %
 %--------------------------------------------------
-
 max(A, B, A):- A>B, !.
 max(_, B, B).
 
@@ -45,7 +52,12 @@ depth([H|T],R):- depth(H,R1), depth(T,R2), R3 is R1+1, max(R3,R2,R).
 
 
 % Testați predicatul pentru listele L1-L6 de mai sus, de exemplu: 
-% ?- trace, depth(L1, R).
+% ?- trace, list1(L1), depth(L1, R).
+% ?- trace, list2(L2), depth(L2, R).
+% ?- trace, list3(L3), depth(L3, R).
+% ?- trace, list4(L4), depth(L4, R).
+% ?- trace, list5(L5), depth(L5, R).
+% ?- trace, list6(L6), depth(L6, R).
 
 
 
@@ -58,7 +70,12 @@ flatten([H|T], [H|R]):- atomic(H), !, flatten(T,R).
 flatten([H|T], R):- flatten(H,R1), flatten(T,R2), append(R1,R2,R).
 
 % Testați predicatul pentru listele L1-L6 de mai sus, de exemplu: 
-% ?- flatten(L1, R).
+% ?- trace, list1(L1), flatten(L1, R).
+% ?- trace, list2(L2), flatten(L2, R).
+% ?- trace, list3(L3), flatten(L3, R).
+% ?- trace, list4(L4), flatten(L4, R).
+% ?- trace, list5(L5), flatten(L5, R).
+% ?- trace, list6(L6), flatten(L6, R).
 
 
 %--------------------------------------------------
@@ -81,23 +98,17 @@ heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
 
 % Variant 2
 heads2([],[],_).
-heads2([],[],_).
-% dacă flag=1 atunci suntem la început de lista și putem extrage capul
-% listei; în apelul recursiv setam flag=0
-heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).
-% dacă flag=0 atunci nu suntem la primul element atomic și
-% atunci continuam cu restul elementelor
-heads2([H|T],R,0):- atomic(H), !, heads2(T,R,0).
-% dacă am ajuns la aceasta clauza înseamnă că primul element nu este
-% atomic și atunci trebuie să apelam recursiv și pe acest element
-heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,0), append(R1,R2,R).
+heads2([H|T],[H|R],1):- atomic(H), !, heads2(T,R,0).					% dacă flag=1 atunci suntem la început de lista și putem extrage capul listei; în apelul recursiv setam flag=0
+heads2([H|T],R,0):- atomic(H), !, heads2(T,R,0).						% dacă flag=0 atunci nu suntem la primul element atomic și atunci continuam cu restul elementelor
+heads2([H|T],R,_):- heads2(H,R1,1), heads2(T,R2,0), append(R1,R2,R). 	% dacă am ajuns la aceasta clauza înseamnă că primul element nu este atomic și atunci trebuie să apelam recursiv și pe acest element
+
 % un wrapper pentru predicatul heads
 heads2(L,R):- heads2(L, R, 1).
 
 
 % Testați predicatul pentru listele L1-L6 de mai sus, de exemplu: 
-% ?- trace, heads1(L1, R).
-% ?- trace, heads2(L1, R).
+% ?- trace, list1(L1), heads1(L1, R).
+% ?- trace, list1(L1), heads2(L1, R).
 
 
 %--------------------------------------------------
@@ -108,18 +119,17 @@ heads2(L,R):- heads2(L, R, 1).
 member1(X, L):- flatten(L,L1), member(X,L1).
 
 % Variant 2
-member2(H, [H|_]).
+member2(X, [X|_]).
 member2(X, [H|_]):- member2(X,H). % H is a list
 member2(X, [_|T]):- member2(X,T).
 
 % Testați următoarele întrebări:
-% ?– trace, member2(1,L1).
-% ?– trace, member2(4,L2).
-% ?– trace, member2([5,[6]], L3).
-% ?– trace, member2(X,L4).
-% ?– trace, member2(X,L6).
-% ?– trace, member2(14,L5).
-
+% ?– trace, list1(L1), member2(1,L1).
+% ?– trace, list2(L2), member2(4,L2).
+% ?– trace, list3(L3), member2([5,[6]], L3).
+% ?– trace, list4(L4), list1(L1), member2(X,L4).
+% ?– trace, list5(L5), member2(14,L5).
+% ?– trace, list6(L6), member2(X,L6).
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

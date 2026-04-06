@@ -7,8 +7,17 @@
 tree1(t(6, t(4, t(2, nil, nil), t(5, nil, nil)), t(9, t(7, nil, nil), nil))).
 tree2(t(8, t(5, nil, t(7, nil, nil)), t(9, nil, t(11, nil, nil)))). 
 % …
+
+
+% we may give the tree as an argument,
+% but it becomes bothersome for multiple queries
+% ?- operation_on_tree(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil)), …, R).
+% R = … .
+
+% we can store the tree as a fact, the Prolog answer will contain the tree as well
 % through this query, the T variable unifies with the tree in the tree1/1 fact.
-% ? - tree1(T), operation_on_tree(T, …).
+% ?- tree1(T), operation_on_tree(T, …, R).
+% R = …, T= … .
 
 
 %--------------------------------------------------
@@ -64,7 +73,9 @@ pretty_print(t(K,L,R), D):-
 % and inserts a new line (through nl)
 print_key(K, D):-D>0, !, D1 is D-1, tab(8), print_key(K, D1).
 print_key(K, _):-write(K), nl.
-% write('\n') is equivalent to nl/0
+
+
+% Observation: write('\n') is equivalent to nl/0
 
 % Follow the execution of:
 % ?- tree2(T), pretty_print(T).
@@ -86,8 +97,8 @@ search_key(Key, t(_, _, R)):-search_key(Key, R).
 %--------------------------------------------------
 % The INSERT predicate %
 %--------------------------------------------------
-insert_key(Key, nil, t(Key, nil, nil)). % insert key in tree
-insert_key(Key, t(Key, L, R), t(Key, L, R)):- !. % key already exists
+insert_key(Key, nil, t(Key, nil, nil)). 						% insert key in tree
+insert_key(Key, t(Key, L, R), t(Key, L, R)):- !. 				% key already exists
 insert_key(Key, t(K,L,R), t(K,NL,R)):- Key<K,!,insert_key(Key,L,NL).
 insert_key(Key, t(K,L,R), t(K,L,NR)):- insert_key(Key, R, NR).
 

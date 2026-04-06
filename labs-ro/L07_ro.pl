@@ -1,15 +1,23 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% 			LABORATORUL 7 EXEMPLE		%%%%%%
-%%%%%% 					Trees				%%%%%%
+%%%%%% 					Arbori				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 %EXEMPLE DE ARBORI
-tree1(t(6, t(4, t(2, nil, nil), t(5, nil, nil)), t(9, t(7, nil, nil), nil))).
-tree2(t(8, t(5, nil, t(7, nil, nil)), t(9, nil, t(11, nil, nil)))). 
+tree1( t(6, t(4, t(2, nil, nil), t(5, nil, nil)), t(9, t(7, nil, nil), nil)) ).
+tree2( t(8, t(5, nil, t(7, nil, nil)), t(9, nil, t(11, nil, nil))) ). 
 % …
+
+
+% putem să dăm arborele ca și argument,
+% dar devine neplăcut pentru query-uri multiple
+% ?- operatie_pe_arbore(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil)), …, R).
+% R = … .
+
+% putem stoca arborele ca și fapt, răspunsul de la Prolog va conține si arborele
 % prin această întrebare, variabila T se unifică cu arborele din faptul tree1/1
 % ?- tree1(T), operatie_pe_arbore(T, …).
-
+% R = …, T= … .
 
 
 %--------------------------------------------------
@@ -66,7 +74,9 @@ pretty_print(t(K,L,R), D):-
 % și inserează o linie nouă (prin nl)
 print_key(K, D):-D>0, !, D1 is D-1, tab(8), print_key(K, D1).
 print_key(K, _):-write(K), nl.
-% write('\n') echivalent cu nl/0
+
+
+% Observatie: write('\n') este echivalent cu nl/0
 
 % Urmărește execuția la:
 % ?- tree2(T), pretty_print(T).
@@ -90,15 +100,15 @@ search_key(Key, t(_, _, R)):-search_key(Key, R).
 %--------------------------------------------------
 % Predicatul INSERT %
 %--------------------------------------------------
-insert_key(Key, nil, t(Key, nil, nil)). % inserează cheia în arbore
-insert_key(Key, t(Key, L, R), t(Key, L, R)):- !. % cheia există deja
+insert_key(Key, nil, t(Key, nil, nil)). 				% inserează cheia în arbore
+insert_key(Key, t(Key, L, R), t(Key, L, R)):- !. 		% cheia există deja
 insert_key(Key, t(K,L,R), t(K,NL,R)):- Key<K,!,insert_key(Key,L,NL).
 insert_key(Key, t(K,L,R), t(K,L,NR)):- insert_key(Key, R, NR).
 
 
 % Urmărește execuția la:
-% ?- tree1(T),pretty_print(T),insert_key(8,T,T1),pretty_print(T1).
-% ?- tree1(T),pretty_print(T),insert_key(5,T,T1),pretty_print(T1).
+% ?- tree1(T), pretty_print(T), insert_key(8,T,T1), pretty_print(T1).
+% ?- tree1(T), pretty_print(T), insert_key(5,T,T1), pretty_print(T1).
 % ?- insert_key(7, nil, T1), insert_key(12, T1, T2), insert_key(6, T2, T3), insert_key(9, T3, T4), insert_key(3, T4, T5), insert_key(8, T5, T6), insert_key(3, T6, T7), pretty_print(T7).
 
 

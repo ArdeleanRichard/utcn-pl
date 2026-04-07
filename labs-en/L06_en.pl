@@ -10,12 +10,13 @@
 % L5 = [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]
 % L6 = [alpha,2,[beta],[gamma,[8]]]
 
-list1([1,2,3,[4]])
-list2([[1],[2],[3],[4,5]])
-list3([[],2,3,4,[5,[6]],[7]])
-list4([[[[1]]],1,[1]])
-list5([1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]])
-list6([alpha,2,[beta],[gamma,[8]]])
+list1( [1,2,3,[4]] ).
+list2( [[1],[2],[3],[4,5]] ).
+list3( [[],2,3,4,[5,[6]],[7]] ).
+list4( [[[[1]]],1,[1]] ).
+list5( [1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]] ).
+list6( [alpha,2,[beta],[gamma,[8]]] ).
+
 
 % Test the following queries:
 % ?- member(2,[1,[2],[[3]],[[[4]]],[5,[6,[7,[8,[9],10],11],12],13]]).
@@ -82,14 +83,20 @@ flatten([H|T], R):- flatten(H,R1), flatten(T,R2), append(R1,R2,R).
 %--------------------------------------------------
 % Variant 1
 skip([],[]).
-skip([H|T],R):- atomic(H),!,skip(T,R).
+skip([H|T],R):- atomic(H), !, skip(T,R).
 skip([H|T],[H|R]):- skip(T,R).
 
 % takes the first element from each list,
 % then skips the rest of atomic elements, calls recursively for lists.
 heads1([],[]).
-heads1([H|T],[H|R]):- atomic(H),!,skip(T,T1), heads1(T1,R).
-heads1([H|T],R):- heads1(H,R1), heads1(T,R2),append(R1,R2,R).
+heads1([H|T],[H|R]):- atomic(H), !, skip(T,T1), heads1(T1,R).
+heads1([H|T],R):- heads1(H,R1), skip(T,T1), heads1(T1,R2), append(R1,R2,R).
+
+% when the head is a list, 
+% naturally the tail at that level will not contain a head
+% therefore we can skip/2
+
+
 
 
 

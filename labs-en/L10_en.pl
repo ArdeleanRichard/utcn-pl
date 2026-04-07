@@ -17,17 +17,17 @@
 %--------------------------------------------------
 % The FIBONACCI predicate %
 %--------------------------------------------------
-:- dynamic memofib/2.
+:- dynamic memo_fib/2.
 
-fib(N,F):-
-	memofib(N,F),!.
-	fib(N,F):- N>1,
-	N1 is N-1,
-	N2 is N-2,
-	fib(N1,F1),
-	fib(N2,F2),
-	F is F1+F2,
-	assertz(memofib(N,F)).
+fib(N,F):- memo_fib(N,F), !.
+fib(N,F):- 
+    N>1, 
+    N1 is N-1, 
+    N2 is N-2, 
+    fib(N1,F1),
+    fib(N2,F2),
+    F is F1+F2,
+    assertz(memo_fib(N,F)).
 fib(0,1).
 fib(1,1).
 
@@ -42,19 +42,16 @@ fib(1,1).
 %--------------------------------------------------
 % The PRINT FIBONACCI predicate - Printing memorised results %
 %--------------------------------------------------
-print_all:-
-	memofib(N,F),
-	write(N),
-	write(' - '),
-	write(F),
-	nl,
+print_memo_fib:-
+	memo_fib(N,F),
+	format('memo_fib(~w, ~w).', [N, F]), nl,
 	fail.
-print_all.
+print_memo_fib.
 
 % Follow the execution of:
-% ?- print_all.
-% ?- retractall(memo_fib(_,_)).
-% ?- print_all.
+% ?- fib(4,F), print_memo_fib.
+% ?- fib(10,F), print_memo_fib.
+
 
 
 %--------------------------------------------------
@@ -73,16 +70,17 @@ perm([], []).
 
 all_perm(L,_):-
 	perm(L,L1),
-	assertz(p(L1)),
+	assertz(perm(L1)),
 	fail.
 all_perm(_,R):-
 	collect_perms(R).
 	
 collect_perms([L1|R]):-
-	retract(p(L1)),
+	retract(perm(L1)),
 	!,
 	collect_perms(R).
 collect_perms([]).
+
 
 % ?- all_perm([1,2,3],L).
 % L=[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
@@ -90,10 +88,22 @@ collect_perms([]).
 
 
 % Follow the execution of:
-% ?- retractall(p(_)), all_perm([1,2],R), listing(p/1).
-% ?- retractall(p(_)), all_perm([1,2,3],R), listing(p/1).
+% ?- retractall(perm(_)), all_perm([1,2],R), listing(perm/1).
+% ?- retractall(perm(_)), all_perm([1,2,3],R), listing(perm/1).
 
 
+
+
+store_nr_btw(Low, High):-
+    Low<High,
+    assertz(nr(Low)),
+    Low1 is Low+1,
+    store_nr_btw(Low1, High).
+store_nr_btw(High, High).
+
+% Follow the execution of:
+% ?- store_nr_btw(0, 2), listing(nr/1), store_nr_btw(0, 3), listing(nr/1).
+% ?- store_nr_btw(0, 2), listing(nr/1), retract_all(nr(_)), store_nr_btw(0, 3), listing(nr/1).
 
 %--------------------------------------------------
 % Failure driven loop vs recursion %
@@ -112,14 +122,14 @@ failure_driven_loop1:-
     p(X),
     assert(q(X)),
     fail.
-failure_driven_loop1:-listing(q/1).
+failure_driven_loop1:- listing(q/1).
 
 % but can be implemented with it
 failure_driven_loop2:-
     retract(p(X)),
     assert(q(X)),
     fail.
-failure_driven_loop2:-listing(q/1).
+failure_driven_loop2:- listing(q/1).
 
 
 % must make the retract, otherwise infinite loop
@@ -127,7 +137,7 @@ recursion1:-
     retract(p(X)),
     assert(q(X)),
     recursion1.
-recursion1:-listing(q/1).
+recursion1:- listing(q/1).
 
 
 % to keep p/1 in knowledge base, requires additional predicate, highly inefficient
@@ -137,7 +147,7 @@ recursion2:-
 	assert(seen(X)),
     assert(q(X)), 		% might be nonsensic here, simple case, yet when q/1 is a process, it is needed
     recursion2.
-recursion2:-listing(q/1).
+recursion2:- listing(q/1).
 
 % Follow the execution of:
 % ?- trace, failure_driven_loop1.
@@ -213,9 +223,9 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 % ?- filter(even, [1, 2, 3, 4], Result).
 % Result = [2, 4].
 
-% filter(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+% filter(Pred, L, R):- % *IMPLEMENTATION HERE*
 
-
+% even( ... ) :- % *IMPLEMENTATION HERE*
 
 
 
@@ -224,9 +234,9 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 % ?- any(greater_than_three, [1, 2, 4]).
 % true.
 
-% any(Pred, L):- % *IMPLEMENTAȚI AICI*
+% any(Pred, L):- % *IMPLEMENTATION HERE*
 
-
+% greater_than_three( ... ) :- % *IMPLEMENTATION HERE*
 
 
 
@@ -234,9 +244,9 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 % ?- all(positive, [1, 2, 3]).
 % true.
 
-% all(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+% all(Pred, L, R):- % *IMPLEMENTATION HERE*
 
-
+% positive( ... ) :- % *IMPLEMENTATION HERE*
 
 
 
@@ -245,8 +255,8 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 % ?- even_dl([1,2,3|_], S, E).
 % S = [2|E]
 
-% even_dl(T, _, _):- % *IMPLEMENTAȚI AICI*
-% even_dl(_, S, E):- % *IMPLEMENTAȚI AICI*
+% even_dl(T, _, _):- % *IMPLEMENTATION HERE*
+% even_dl(_, S, E):- % *IMPLEMENTATION HERE*
 
 
 
@@ -257,5 +267,5 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 % ?- incomplete_tree(T), internal_list(T, R).
 % R = [7, 5|_].
 
-% internal_list(T, _):- % *IMPLEMENTAȚI AICI*
-% internal_list(_, R):- % *IMPLEMENTAȚI AICI*
+% internal_list(T, _):- % *IMPLEMENTATION HERE*
+% internal_list(_, R):- % *IMPLEMENTATION HERE*

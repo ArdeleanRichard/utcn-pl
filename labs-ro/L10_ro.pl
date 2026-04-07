@@ -19,17 +19,17 @@
 % Predicatul FIBONACCI %
 %--------------------------------------------------
 
-:- dynamic memofib/2.
+:- dynamic memo_fib/2.
 
-fib(N,F):-
-	memofib(N,F),!.
-	fib(N,F):- N>1,
-	N1 is N-1,
-	N2 is N-2,
-	fib(N1,F1),
-	fib(N2,F2),
-	F is F1+F2,
-	assertz(memofib(N,F)).
+fib(N,F):- memo_fib(N,F), !.
+fib(N,F):- 
+    N>1, 
+    N1 is N-1, 
+    N2 is N-2, 
+    fib(N1,F1),
+    fib(N2,F2),
+    F is F1+F2,
+    assertz(memo_fib(N,F)).
 fib(0,1).
 fib(1,1).
 
@@ -43,19 +43,15 @@ fib(1,1).
 %--------------------------------------------------
 % Predicatul PRINT FIBONNACI - Afișarea rezultatelor memorizate %
 %--------------------------------------------------
-print_all:-
-	memofib(N,F),
-	write(N),
-	write(' - '),
-	write(F),
-	nl,
+print_memo_fib:-
+	memo_fib(N,F),
+	format('memo_fib(~w, ~w).', [N, F]), nl,
 	fail.
-print_all.
+print_memo_fib.
 
 % Urmărește execuția la:
-% ?- print_all.
-% ?- retractall(memo_fib(_,_)).
-% ?- print_all.
+% ?- fib(4,F), print_memo_fib.
+% ?- fib(10,F), print_memo_fib.
 
 
 %--------------------------------------------------
@@ -74,16 +70,17 @@ perm([], []).
 
 all_perm(L,_):-
 	perm(L,L1),
-	assertz(p(L1)),
+	assertz(perm(L1)),
 	fail.
 all_perm(_,R):-
 	collect_perms(R).
 	
 collect_perms([L1|R]):-
-	retract(p(L1)),
+	retract(perm(L1)),
 	!,
 	collect_perms(R).
 collect_perms([]).
+
 
 % ?- all_perm([1,2,3],L).
 % L=[[1,2,3],[1,3,2],[2,1,3],[2,3,1],[3,1,2],[3,2,1]];
@@ -91,8 +88,22 @@ collect_perms([]).
 
 
 % Urmărește execuția la:
-% ?- retractall(p(_)), all_perm([1,2],R), listing(p/1).
-% ?- retractall(p(_)), all_perm([1,2,3],R), listing(p/1).
+% ?- retractall(perm(_)), all_perm([1,2],R), listing(perm/1).
+% ?- retractall(perm(_)), all_perm([1,2,3],R), listing(perm/1).
+
+
+
+
+store_nr_btw(Low, High):-
+    Low<High,
+    assertz(nr(Low)),
+    Low1 is Low+1,
+    store_nr_btw(Low1, High).
+store_nr_btw(High, High).
+
+% Urmărește execuția la:
+% ?- store_nr_btw(0, 2), listing(nr/1), store_nr_btw(0, 3), listing(nr/1).
+% ?- store_nr_btw(0, 2), listing(nr/1), retract_all(nr(_)), store_nr_btw(0, 3), listing(nr/1).
 
 
 
@@ -114,14 +125,14 @@ failure_driven_loop1:-
     p(X),
     assert(q(X)),
     fail.
-failure_driven_loop1:-listing(q/1).
+failure_driven_loop1:- listing(p/1), listing(q/1).
 
 % dar se poate implementa cu
 failure_driven_loop2:-
     retract(p(X)),
     assert(q(X)),
     fail.
-failure_driven_loop2:-listing(q/1).
+failure_driven_loop2:- listing(p/1), listing(q/1).
 
 
 % retract este obligatoriu, 
@@ -130,7 +141,7 @@ recursion1:-
     retract(p(X)),
     assert(q(X)),
     recursion1.
-recursion1:-listing(q/1).
+recursion1:- listing(p/1), listing(q/1).
 
 
 % pentru a păstra p/1 
@@ -143,7 +154,7 @@ recursion2:-
 	assert(seen(X)),
     assert(q(X)), 				% se poate să pară non-sensic, este un caz simplu, dar când q/1 este un proces, este necesar
     recursion2.
-recursion2:-listing(q/1).
+recursion2:- listing(p/1), listing(q/1), listing(seen/1).
 
 
 % Urmărește execuția la:
@@ -230,6 +241,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 % any(Pred, L):- % *IMPLEMENTAȚI AICI*
 
+% greater_than_three( ... ) :- % *IMPLEMENTAȚI AICI*
 
 
 
@@ -242,6 +254,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 % all(Pred, L, R):- % *IMPLEMENTAȚI AICI*
 
+% positive( ... ) :- % *IMPLEMENTAȚI AICI*
 
 
 

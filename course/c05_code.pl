@@ -23,8 +23,7 @@ inorder1(Tree,Result):-
 
 
 % backward inorder
-% inorder2/2 (In_tree, Result_list)
-
+% inorder2/2 (+Tree, -ResultList)
 inorder2(nil,[]).	
 inorder2(n(Left,Key,Right),Lout):-
 	inorder2(Left,LLout),
@@ -41,8 +40,7 @@ inorder3(n(Left,Key,Right),Lout):-
 
 
 
-%insert_bst/3(In_tree, Key_to_ins, Out_tree).
-
+% insert_bst/3 (+Tree, +Key, -OutTree).
 insert_bst(nil, K, n(nil,K,nil)):-!. 			% insert_bst(T, K, R):- T=nil,!, R = t(nil,K,nil). 
 insert_bst(n(Left,K,Right), K, n(Left,K,Right)):-!, write("in tree").
 insert_bst(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
@@ -52,15 +50,16 @@ insert_bst(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
 	insert_bst(Right,K,NewRight).
 
 
-%insert/3(In_tree, Key_to_ins, Out_tree).
 
-insert(nil, K, n(nil,K,nil)):-!. 				% insert(Tin, K, Tout):-Tin=nil, !, Tout=t(nil,Key,nil).
-insert(n(Left,K,Right), K, n(Left,K,Right)):- 	% insert(Tin,K,Tout):-
-	!, write("in tree"). 						% Tin=t(Left,K,Right),!,write("in tree"),Tout= t(Left,K,Right)).
-insert(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
-	insert(Left,  K, NewLeft).
-insert(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
-	insert(Right, K, NewRight).
+
+% insert_tree/3 (+Tree, +Key, -OutTree).
+insert_tree(nil, K, n(nil,K,nil)):-!. 					% insert_tree(Tin, K, Tout):-Tin=nil, !, Tout=t(nil,Key,nil).
+insert_tree(n(Left,K,Right), K, n(Left,K,Right)):- 		% insert_tree(Tin,K,Tout):-
+	!, write("in tree"). 								% Tin=t(Left,K,Right),!,write("in tree"),Tout= t(Left,K,Right)).
+insert_tree(n(Left,Key,Right), K, n(NewLeft,Key,Right)):-
+	insert_tree(Left,  K, NewLeft).
+insert_tree(n(Left,Key,Right), K, n(Left,Key,NewRight)):-
+	insert_tree(Right, K, NewRight).
 
 
 
@@ -82,7 +81,7 @@ tree_kv(
 
 
 
-% search_bst/2(Node_searched,Tree)
+% search_bst/2 (+Node, +Tree)
 search_bst(N, n(_,Node,_)):-
 	eq(N, Node),!,
 	N=Node.
@@ -103,7 +102,7 @@ ord(a(K,_),a(Key,_)):-
 
 
 
-% search_tree/2(Key,Tree)
+% search_tree/2 (+Key, +Tree)
 search_tree(N, n(_,N,_)).	
 search_tree(N, n(Left,_,_)):-
 	search_tree(N, Left).

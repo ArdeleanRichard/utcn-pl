@@ -1,4 +1,4 @@
-% gen_preorder/3 (Tree, Start_difference_list, End_difference_list)
+% gen_preorder/3 (+Tree, -DifferenceListStart, -DifferenceListEnd)
 
 gen_preorder(nil, Start, End):- Start = End.
 gen_preorder(t(Left,Key,Right), Start, End):-
@@ -55,7 +55,7 @@ quicksort([H|T],Result):-
 quicksort([],[]).
 
 
-% quicksort_DL1/3 (InList, StartOutList,EndOutList)
+% quicksort_DL1/3 (+List, -OutListStart, -OutListEnd)
 
 quicksort_DL1([H|T],Start,End):-
 	partition(H,T,Left,Right),
@@ -68,7 +68,7 @@ quicksort_DL1([],L,L).
 
 
 
-%quicksort_DL2/3 (InList, FirstOutList,LastOutList)
+% quicksort_DL2/3 (+List, -OutListStart, -OutListEnd)
 quicksort_DL2([H|T],Start,End):-
 	partition(H,T,Left,Right),
 	quicksort_DL2(Left, Start,[H|Inter]),
@@ -77,30 +77,32 @@ quicksort_DL2([],List,List).
 
 
 
-%enqueue/5 (El2enQ, FirstQBefore, LastQBefore, FirstQAfter, LastQAfter)
+% enqueue/5 (+El2enQ, +QBeforeStart, +QBeforeEnd, -QAfterStart, -QAfterEnd)
 
 enqueue1(El,First,[El|Last],First,Last).
 
 % Means:
 enqueue(El,FQB,LQB,FQA,LQA):-
-	FQA=FQB,    % after adding in the Q, it starts in the same place
-	LQB=[H|LQA],% before adding, the list ends IN FRONT 		
-	H = El. 	% of the item to be added
+	FQA=FQB,    	% after adding in the Q, it starts in the same place
+	LQB=[H|LQA],	% before adding, the list ends IN FRONT 		
+	H = El. 		% of the item to be added
 
 
 % ?-enqueue(Item,FB,LB,FA,LA).
 
 
-%dequeue/5 (El2deQ, FirstQBefore, LastQBefore, FirstQAfter, LastQAfter)
+
+
+% dequeue/5 (+El2deQ, +QBeforeStart, +QBeforeEnd, -QAfterStart, -QAfterEnd)
 
 dequeue1(El,[El|First],Last,First,Last).
 
 % Means:
 dequeue(El,FQB,LQB,FQA,LQA):-
-	FQB=[H|FI], % extracted element H from the front of Q
-	El=H, 		% assign it to our argument	
-	FI=FQA, 	% Q without first element is our FirstQueueAfter 	
-	LQA=LQB. 	% list ends are the same as removal is from front
+	FQB=[H|FI], 	% extracted element H from the front of Q
+	El=H, 			% assign it to our argument	
+	FI=FQA, 		% Q without first element is our FirstQueueAfter 	
+	LQA=LQB. 		% list ends are the same as removal is from front
 
 
 % ?-dequeue(Item,FB,LB,FA,LA).
@@ -118,7 +120,7 @@ dequeue(El,FQB,LQB,FQA,LQA):-
 % L=[1,1,[2,2,2,[3,3,[4],3],2,2,[3,[4,[5,5,5]]],2]]
 
 
-%deep2flat/2 (DeepList,FlatList).
+% deep2flat/2 (+DeepList, -FlatList).
 deep2flat([],[]):-!.
 deep2flat([H|T],[H| Tflat]):-
 	atomic(H),!,
@@ -134,7 +136,7 @@ deep2flat([H|T],R):-
 
 
 
-%deep2flat_dl/3 (DeepList, FirstFlatList, LastFlatList).
+% deep2flat_dl/3 (+DeepList, -FlatListStart, -FlatListEnd).
 deep2flat_dl([], End, End):-!.
 deep2flat_dl([H|T],[H|Tflat],End):-
 		atomic(H),!,
@@ -145,11 +147,3 @@ deep2flat_dl([H|T],Start,End):-
 
 flatten(Deep,Flat):-
 	 deep2flat_dl(Deep,Flat,[]).
-
-
-
-
-
-
-
-

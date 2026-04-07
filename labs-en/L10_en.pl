@@ -33,10 +33,9 @@ fib(1,1).
 
 
 % Follow the execution of (run the queries sequentially):
-% ?- listing(memo_fib/2). % lists all definitions of the predicate memo_fib with 2 arguments
 % ?- fib(4,F), listing(memo_fib/2).
 % ?- fib(10,F), listing(memo_fib/2).
-
+% listing/1 - lists all clauses of the memo_fib predicate with 2 arguments
 
 
 
@@ -53,9 +52,9 @@ print_all:-
 print_all.
 
 % Follow the execution of:
-% ?-print_all.
-% ?-retractall(memo_fib(_,_)).
-% ?-print_all.
+% ?- print_all.
+% ?- retractall(memo_fib(_,_)).
+% ?- print_all.
 
 
 %--------------------------------------------------
@@ -136,15 +135,35 @@ recursion2:-
     p(X),
 	not(seen(X)),!,
 	assert(seen(X)),
-    assert(q(X)), % might be nonsensic here, simple case, yet when q/1 is a process, it is needed
+    assert(q(X)), 		% might be nonsensic here, simple case, yet when q/1 is a process, it is needed
     recursion2.
 recursion2:-listing(q/1).
 
+% Follow the execution of:
+% ?- trace, failure_driven_loop1.
+% ?- trace, failure_driven_loop2.
+% ?- trace, recursion1.
+% ?- trace, recursion2.
 
 
 %--------------------------------------------------
-% Univ predicate %
+% Univ predicate ..= %
 %--------------------------------------------------
+
+% ?- X=..[a,b,c,d].
+% X=a(b,c,d)
+% 
+% ?- X=..[member,a,[b,c]].
+% X=member(a,[b,c]).
+%
+% ?- f(a,b,c)=..X. 
+% X=[f,a,b,c].
+%
+% ?- append([H|T],L,[H|R])=..X.
+% X=[append,[H|T],L,[H|R]].
+
+
+
 % map(+Predicate, +List, -MappedList)
 map(_, [], []).
 map(Pred, [H|T], [H1|R]) :-
@@ -159,6 +178,9 @@ halve(X, Y) :- Y is X / 2.
 % Follow the execution of:
 % ?- trace, map(double, [1, 2, 3], Result).
 % Result = [2, 4, 6].
+% ?- trace, map(halve, [2, 4, 6], Result).
+% Result = [1, 2, 3].
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -186,11 +208,14 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
+
 % 2. Filters out elements based on a given function (suggestion: univ predicate).
 % ?- filter(even, [1, 2, 3, 4], Result).
 % Result = [2, 4].
 
 % filter(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+
+
 
 
 
@@ -214,12 +239,15 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
+
+
 % 5. Collects (using retracts through a 2-step process) in a difference list all even elements of a given incomplete list.
 % ?- even_dl([1,2,3|_], S, E).
 % S = [2|E]
 
 % even_dl(T, _, _):- % *IMPLEMENTAȚI AICI*
 % even_dl(_, S, E):- % *IMPLEMENTAȚI AICI*
+
 
 
 

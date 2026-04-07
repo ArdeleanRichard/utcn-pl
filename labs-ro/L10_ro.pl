@@ -35,10 +35,9 @@ fib(1,1).
 
 
 % Urmărește execuția la:
-% ?- listing(memo_fib/2). % lists all definitions of the predicate memo_fib with 2 arguments
 % ?- fib(4,F), listing(memo_fib/2).
 % ?- fib(10,F), listing(memo_fib/2).
-
+% listing/1 - afișează toate clauzele predicatului memo_fib cu 2 argumente
 
 
 %--------------------------------------------------
@@ -54,9 +53,9 @@ print_all:-
 print_all.
 
 % Urmărește execuția la:
-% ?-print_all.
-% ?-retractall(memo_fib(_,_)).
-% ?-print_all.
+% ?- print_all.
+% ?- retractall(memo_fib(_,_)).
+% ?- print_all.
 
 
 %--------------------------------------------------
@@ -110,14 +109,14 @@ p(3).
 p(4).
 p(5).
 
-% does not require the retract
+% nu necesită retract
 failure_driven_loop1:-
     p(X),
     assert(q(X)),
     fail.
 failure_driven_loop1:-listing(q/1).
 
-% but can be implemented with it
+% dar se poate implementa cu
 failure_driven_loop2:-
     retract(p(X)),
     assert(q(X)),
@@ -125,7 +124,8 @@ failure_driven_loop2:-
 failure_driven_loop2:-listing(q/1).
 
 
-% must make the retract, otherwise infinite loop
+% retract este obligatoriu, 
+% altfel buclă infinită
 recursion1:-
     retract(p(X)),
     assert(q(X)),
@@ -133,19 +133,44 @@ recursion1:-
 recursion1:-listing(q/1).
 
 
-% to keep p/1 in knowledge base, requires additional predicate, highly inefficient
+% pentru a păstra p/1 
+% în baza de predicate, 
+% necesită un predicat adițional, 
+% este foarte ineficient
 recursion2:-
     p(X),
 	not(seen(X)),!,
 	assert(seen(X)),
-    assert(q(X)), % might be nonsensic here, simple case, yet when q/1 is a process, it is needed
+    assert(q(X)), 				% se poate să pară non-sensic, este un caz simplu, dar când q/1 este un proces, este necesar
     recursion2.
 recursion2:-listing(q/1).
 
 
+% Urmărește execuția la:
+% ?- trace, failure_driven_loop1.
+% ?- trace, failure_driven_loop2.
+% ?- trace, recursion1.
+% ?- trace, recursion2.
+
+
 %--------------------------------------------------
-% Univ predicate %
+% Univ predicate ..= %
 %--------------------------------------------------
+
+% ?- X=..[a,b,c,d].
+% X=a(b,c,d)
+% 
+% ?- X=..[member,a,[b,c]].
+% X=member(a,[b,c]).
+%
+% ?- f(a,b,c)=..X. 
+% X=[f,a,b,c].
+%
+% ?- append([H|T],L,[H|R])=..X.
+% X=[append,[H|T],L,[H|R]].
+
+
+
 % map(+Predicate, +List, -MappedList)
 map(_, [], []).
 map(Pred, [H|T], [H1|R]) :-
@@ -160,7 +185,8 @@ halve(X, Y) :- Y is X / 2.
 % Urmărește execuția la:
 % ?- trace, map(double, [1, 2, 3], Result).
 % Result = [2, 4, 6].
-
+% ?- trace, map(halve, [2, 4, 6], Result).
+% Result = [1, 2, 3].
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -1,62 +1,68 @@
-% sum2/3 (In_list, Final_result, Accumulator_partial_result).
-
-sum2([],PartialSum,PartialSum). 		% final result, copies the value of the partial 
-										% result with default unification
-sum2([H|T],Sum,PartialSum):-
-	NewPartialSum is PartialSum + H, 	% do process the current item
-	sum2(T,Sum,NewPartialSum).			% go ahead with the remaining struct
-
-
-sum2(List,Sum):-	             		% same partial result as in case of backward
-	sum2(List,Sum,0).    				% nothing yet processed, null result. 			
-										% Same as in stop condition for bwd.
-
-
-% sum1/2 (In_list, Sum_of_els_in_arg_1).
-sum1([],0).		   						% result gets initialized. Empty input, null
-sum1([H|T],Sum):-
-	sum1(T,TailSum),	   				% call processing first on rest of the partition
-	Sum is TailSum + H. 				% do process the current item	
+% sum_fw/3 (+List, +Accumulator, -Result).
+sum_fw([],PartialSum,PartialSum). 			% final result, copies the value of the partial 
+											% result with default unification
+sum_fw([H|T],PartialSum,Sum):-
+	NewPartialSum is PartialSum + H, 		% do process the current item
+	sum_fw(T,NewPartialSum,Sum).			% go ahead with the remaining struct
 
 
 
 
+% sum_fw/2 (+List, -Result)
+sum_fw(List,Sum):-	      		% same partial result as in case of backward
+	sum_fw(List,0,Sum).     	% nothing yet processed, null result.
+								% same as in stop condition for bwd.
 
-% forward_recursion/3 (input argument, final result, partial result)
 
-% final result(arg 2) copies partial result(arg3) value with default unification
-forward_recursion([],PartialResult,PartialResult). 
 
-% partition data, here split into H and T
-forward_recursion([H|T],Result,PartialResult):- 
+% sum_bw/2 (+List, -Result).
+sum_bw([],0).		   			% result gets initialized. Empty input, null
+sum_bw([H|T],Sum):-
+	sum_bw(T,TailSum),			% call processing first on rest of the partition
+	Sum is TailSum + H. 		% do process the current item	
+
+
+
+
+
+
+% forward_recursion/3 (+Input, +Accumulator, -Output)
+
+% final result (arg 3) copies partial result(arg 2) value with default unification
+forward_recursion([],Result,Result). 
+
+% partition data, split into H and T
+forward_recursion([H|T],PartialResult,Result):- 
 	% start by processing the current item and thus 
-	% updating previous PartialResult to NewPartialResult via processing do
-	do(NewPartialResult,H,PartialResult), 
+	% updating previous PartialResult to NewPartialResult via processing do/3
+	do(PartialResult,H,NewPartialResult), 
 	
 	% process the rest of the structure with recursive call.
-	forward_recursion(T,Result,NewPartialResult). 
+	forward_recursion(T,NewPartialResult,Result). 
 
-%forward_recursion_call/2 (in, out)
+
+% forward_recursion_call/2 (+Input, -Output)
+% make the initialization with a separate predicate (wrapper) to avoid mandatory user initialization
 forward_recursion_call(Input,Output):-
-	forward_recursion(Input,Output,InitialValueOfResult) 
-% make the initialization with a separate predicate (wrapper) 
-% to avoid mandatory user initialization
+	forward_recursion(Input,InitialValueOfResult,Output)
 
 
-% backward_recursion/2 (input argument, output result)
+
+
+
+% backward_recursion/2 (+Input, -Output)
  
 % empty input, make initialization backwards
-backward_recursion([],InitialValue).	
-
-backward_recursion([H|T],PartialResult):-
+backward_recursion([],InitialValueOfResult).	
+backward_recursion([H|T],NewPartialResult):-
 	% starts with processing the rest of the structure; 
 	% all partition but the current item.
-	backward_recursion(T,NewPartialResult),
+	backward_recursion(T,PartialResult),
 
 	%process the current item
 	do(PartialResult,H,NewPartialResult).	
-	
-% No need for a specific initial call, hence, no wrapper predicate.
+
+
 
 
 append3_1(L1,L2,L3,Result):

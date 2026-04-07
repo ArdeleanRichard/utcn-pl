@@ -1,3 +1,23 @@
+% append/3 (+List1, +List2, -OutList)
+append([], L2, L2).
+append([H|T], L2, [H|R]):-
+	append(T, L2, R).
+
+% For Difference Lists (DL), each list has 2 arguments.
+% append_DL 	% Number of arguments?
+% /6 (+L1Start, +L1End, +L2Start, +L2End, -OutStart, -OutEnd)
+append_DL(LS1, LE1, LS2, LE2, RS, RE):-
+	RS = LS1,
+	LE1 = LS2,
+	RE = LE2.
+
+
+% ?- append_DL([1,2|E1], E1, [3,4|E2], E2, S, E).
+
+
+
+
+
 % gen_preorder/3 (+Tree, -DifferenceListStart, -DifferenceListEnd)
 
 gen_preorder(nil, Start, End):- Start = End.
@@ -79,33 +99,36 @@ quicksort_DL2([],List,List).
 
 % enqueue/5 (+El2enQ, +QBeforeStart, +QBeforeEnd, -QAfterStart, -QAfterEnd)
 
-enqueue1(El,First,[El|Last],First,Last).
+enqueue(El,Start,[El|End],Start,End).
 
 % Means:
-enqueue(El,FQB,LQB,FQA,LQA):-
-	FQA=FQB,    	% after adding in the Q, it starts in the same place
-	LQB=[H|LQA],	% before adding, the list ends IN FRONT 		
+enqueue1(El,QS,QE,Start,End):-
+	Start=QS,    	% after adding in the Q, it starts in the same place
+	QE=[H|End],		% before adding, the list ends IN FRONT 		
 	H = El. 		% of the item to be added
 
 
-% ?-enqueue(Item,FB,LB,FA,LA).
+% ?- enqueue(Item,QS,QE,Start,End).
 
 
 
 
-% dequeue/5 (+El2deQ, +QBeforeStart, +QBeforeEnd, -QAfterStart, -QAfterEnd)
 
-dequeue1(El,[El|First],Last,First,Last).
+% dequeue/5 (-El2deQ, +QBeforeStart, +QBeforeEnd, -QAfterStart, -QAfterEnd)
+
+dequeue(El,[El|Start],End,Start,End).
 
 % Means:
-dequeue(El,FQB,LQB,FQA,LQA):-
-	FQB=[H|FI], 	% extracted element H from the front of Q
+dequeue1(El,QS,QE,Start,End):-
+	QS=[H|Int], 	% extracted element H from the front of Q
 	El=H, 			% assign it to our argument	
-	FI=FQA, 		% Q without first element is our FirstQueueAfter 	
-	LQA=LQB. 		% list ends are the same as removal is from front
+	Int=Start,  	% Q without Start element is our StartQueueAfter
+	QE=End. 		% list ends are the same as removal is from front
 
 
-% ?-dequeue(Item,FB,LB,FA,LA).
+
+% ?- dequeue(Item,QS,QE,Start,End).
+
 
 
 
@@ -122,11 +145,11 @@ dequeue(El,FQB,LQB,FQA,LQA):-
 
 % deep2flat/2 (+DeepList, -FlatList).
 deep2flat([],[]):-!.
-deep2flat([H|T],[H| Tflat]):-
+deep2flat([H|T],[H| Tflat]):-	% [H|Tflat] - backwards reconstruction of result
 	atomic(H),!,
 	deep2flat(T, Tflat).
 deep2flat([H|T],R):-
-	deep2flat(H,Hflat), 	% H is a list
+	deep2flat(H,Hflat), 		% H is a list
 	deep2flat(T,Tflat),
 	append(Hflat, Tflat, R).
 
@@ -138,11 +161,11 @@ deep2flat([H|T],R):-
 
 % deep2flat_dl/3 (+DeepList, -FlatListStart, -FlatListEnd).
 deep2flat_dl([], End, End):-!.
-deep2flat_dl([H|T],[H|Tflat],End):-
+deep2flat_dl([H|T],[H|Tflat],End):-		% [H|Tflat] - backwards reconstruction of result
 		atomic(H),!,
 		deep2flat_dl(T,Tflat,End).
 deep2flat_dl([H|T],Start,End):-
-		deep2flat_dl(H,Start,Int),
+		deep2flat_dl(H,Start,Int),		% H is a list
 		deep2flat_dl(T,Int,End).
 
 flatten(Deep,Flat):-

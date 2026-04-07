@@ -107,7 +107,7 @@ min_fw([H|T], M) :- min_fw(T, H, M).
 
 
 % Variant 2 (backward recursion)
-min_bw([H|T], M) :- min_bw(T, M), M<H, !.
+min_bw([H|T], M) :- min_bw(T, M), H>M, !.
 min_bw([H|_], H).
 
 

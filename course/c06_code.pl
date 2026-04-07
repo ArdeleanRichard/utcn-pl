@@ -40,20 +40,20 @@ search(Key, t(_,_,R)):-
 
 
 
-search_ins(Key,t(Key,_,_)):- !, write(“found”).
-search_ins(Key, t(K,L,_)):-
+search_insert(Key,t(Key,_,_)):- !, write(“found”).
+search_insert(Key, t(K,L,_)):-
 	Key<K, !,
-	search_ins(Key, L).
-search_ins(K, t(_,_,R)):-
-	search_ins(Key, R).
+	search_insert(Key, L).
+search_insert(K, t(_,_,R)):-
+	search_insert(Key, R).
 
 
-% [q1] ?-tree(T), search_ins(9,T).
-% 	behaves as search (= search_ins)
+% [q1] ?-tree(T), search_insert(9,T).
+% 	behaves as search (= search_insert)
 
 
-% [q2] ?-tree(T), search_ins(6,T).
-% 	behaves as insert (= search_ins)
+% [q2] ?-tree(T), search_insert(6,T).
+% 	behaves as insert (= search_insert)
 
 
 search_IT(_, T):-
@@ -77,20 +77,20 @@ tree2(
 ).
 
 
-search_ins(Key, Info, n(_,a(Key,Info),_)):- !. 
-search_ins(Key, Info, n(L,a(K,_),_)):-
+search_insert(Key, Info, n(_,a(Key,Info),_)):- !. 
+search_insert(Key, Info, n(L,a(K,_),_)):-
 	Key<K, !,
-	search_ins(Key, Info, L).	
-search_ins(Key, Info, n(_,_,R)):-
-	search_ins(Key, Info, R).
+	search_insert(Key, Info, L).	
+search_insert(Key, Info, n(_,_,R)):-
+	search_insert(Key, Info, R).
 
 
-% [q1] ?- tree2(T), search_ins(9,I,T).
+% [q1] ?- tree2(T), search_insert(9,I,T).
 % true, I=peter
 
-% [q2] ?- tree2(T), search_ins(8,fred,T). 
+% [q2] ?- tree2(T), search_insert(8,fred,T). 
 % true, T increases	    		
 
-% [q3] ?- tree2(T), search_ins(5,T,maria).
+% [q3] ?- tree2(T), search_insert(5,T,maria).
 % true, T increases
 

@@ -60,11 +60,11 @@ move_disc(IP,OP):-
 	DO=..[OP,Size], 
 	asserta(DO).
 
-init_pole(_,[]):-!.
-init_pole(P,[N|L]):-
-	D=..[P,N],		% D=..[input, N] <--> D=input(1) / D=input(2) ...
-	asserta(D), 	% asserta(input(1)), assert(input(2)), ...
-	init_pole(P,L).
+init_tower(_,[]):-!.
+init_tower(T,[N|L]):-
+	D=..[T,N],			% % T name of tower, as x in example; N size   	% D=..[in, N] <--> D=in(1) / D=in(2) ...
+	asserta(D), 		% put on top									% asserta(in(1)), assert(in(2)), ...
+	init_tower(T,L).
 
 init_list(1,[1]):-!.
 init_list(N,[N|Rest]):- 
@@ -73,15 +73,31 @@ init_list(N,[N|Rest]):-
 
 hanoi(N):-
 	init_list(N,List), 				% List = [5, 4, 3, 2, 1]
-	init_pole(input,List),			% ?- init_list(3, List), init_pole(input, List), listing(input/1). % Creates pole as: input(1), input(2)
-	move_discs(N,input,int,out).	% input,int,out = x,y,z towers
+	init_tower(in,List),			% ?- init_list(3, List), init_pole(in, List), listing(in/1). 	% Creates tower as: in(1), in(2)
+	move_discs(N,in,int,out).		% in,int,out = x,y,z towers
 
-% ?- retractall(out(_)), hanoi(3), listing(input/1), listing(out/1).
-
-
+% ?- retractall(out(_)), hanoi(3), listing(in/1), listing(out/1).
 
 
+%--------------------------------------------------
+% Graphs %
+%--------------------------------------------------
+% neighb/2 (+Vertex, +NeighborList).
+neighb(a,[b,c]).
+neighb(z,[]).
 
+
+
+
+% edge/2 (+Vertex1, +Vertex2).
+edge(a,b).
+edge(a,c).
+edge(z,nil). 
+
+% is_edge/2 (+Vertex1, +Vertex2).
+is_edge(X,Y):-
+	edge(X,Y); % check one way
+	edge(Y,X). % and the other way
 
 
 
@@ -104,23 +120,24 @@ is_pass(X,Y):-
 
 
 
+% search/3 (+Source, +Target, -Path).
 
 
 
 
 % will have order reversed as try1/4 adds into the accumulator
-search_v1(X,Y,Way):-
+search1(X,Y,Way):-
 	try1(X,Y,[X],Way), 	% try a path from X to Y with the partial path 				
 						% containing just the starting vertex at this point
 	is_objective(Y),!. 	% why not start with this? 
 
 
 % Call it with:
-% ?- search_v1(a,X,Way_Out). 	% is X safe here? Not Y? 
+% ?- search1(a,X,Way). 	% is X safe here? Not Y? 
 
 
 
-%try1/4 (From_vertex,To_vertex,Partial_path,Final_path)
+%try1/4 (+Source, +Target, +PartialPath, -FinalPath)
 try1(X,X,L,L). 					% at every step, stop and check if over
 try1(X,Y,Thread,Way):-			% if not over (how do we know is not over here?)
 	is_pass(X,Z), 		  		% find next step to Z	
@@ -134,12 +151,12 @@ try1(X,Y,Thread,Way):-			% if not over (how do we know is not over here?)
 
 
 % will have correct order as try2/4 adds into result backwards
-search_v2(X,Y,Way):-
+search2(X,Y,Way):-
 	try2(X,Y,[X],Way), 	% try a path from X to Y with the partial path 				
 						% containing just the starting vertex at this point
 	is_objective(Y),!. 	% why not start with this? 
 
-%try2/4 (From_vertex,To_vertex,Partial_path,Final_path)
+%try2/4 (+Source, +Target, +PartialPath, -FinalPath)
 try2(X,X,_,[X]).
 try2(X,Y,Thread,[X|L]):-
 	is_pass(X,Z),
@@ -147,19 +164,20 @@ try2(X,Y,Thread,[X|L]):-
 	try2(Z,Y,[Z|Thread],L).
 
 
+% ?- search2(a,X,Way). 
 
 
 
 
 % will have correct order as try3/3 adds into result backwards
-search_v3(X,Y,Way):-
+search3(X,Y,Way):-
 	retractall(seen(_)),
 	try3(X,Y,Way), 		% try a path from X to Y with the partial path 				
 						% containing just the starting vertex at this point
 	is_objective(Y),!. 	% why not start with this? 
 
 
-% try/3 (From_vertex,To_vertex,Path).
+% try/3 (+Source, +Target, -FinalPath)
 try3(X,X,[X]). 
 try3(X,Y,[X|L]):-
 	is_pass(X,Z),
@@ -178,3 +196,4 @@ accept(X):-
 	retract(seen(X)),!, % cannot conclude with X in solution, remove and
 	fail.			  	% backtrack to try WITHOUT it!
 
+% ?- search3(a,X,Way). 

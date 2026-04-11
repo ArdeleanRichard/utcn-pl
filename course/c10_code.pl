@@ -1,3 +1,30 @@
+%--------------------------------------------------
+% Graph - Representations %
+%--------------------------------------------------
+% neighb/2 (+Vertex, +NeighborList).
+neighb(a,[b,c]).
+neighb(z,[]).	% isolated node
+
+
+
+
+% edge/2 (+Vertex1, +Vertex2).
+edge(a,b).
+edge(a,c).
+edge(z,nil). 	% isolated node
+
+% is_edge/2 (+Vertex1, +Vertex2).
+is_edge(X,Y):-
+	edge(X,Y); % check one way
+	edge(Y,X). % and the other way
+
+
+
+
+%--------------------------------------------------
+% Graph - Paths %
+%--------------------------------------------------
+
 is_door(a,b).
 is_door(b,c).
 is_door(b,e).
@@ -14,28 +41,29 @@ is_pass(X,Y):-
 
 
 
+% path/3 (+Source, +Target, -Path).
 
 
 
 
 % will have order reversed as try1/4 adds into the accumulator
-search_v1(X,Y,Way):-
-	try1(X,Y,[X],Way), 	% try a path from X to Y with the partial path 				
-						% containing just the starting vertex at this point
-	is_objective(Y),!. 	% why not start with this? 
+path1(X,Y,Path):-
+	try1(X,Y,[X],Path), 	% try a path from X to Y with the partial path 				
+								% containing just the starting vertex at this point
+	is_objective(Y), !. 		% why not start with this? 
 
 
 % Call it with:
-% ?- search_v1(a,X,Way_Out). 	% is X safe here? Not Y? 
+% ?- path1(a,X,Path). 		% is X safe here? Not Y? 
 
 
 
-%try1/4 (From_vertex,To_vertex,Partial_path,Final_path)
-try1(X,X,L,L). 					% at every step, stop and check if over
-try1(X,Y,Thread,Way):-			% if not over (how do we know is not over here?)
-	is_pass(X,Z), 		  		% find next step to Z	
-	not(member(Z,Thread)), 	  	% verify if unchecked door
-	try1(Z,Y,[Z|Thread],Way).	% make the step
+% try1 /4 (+Source, +Target, +PartialPath, -FinalPath)
+try1(Y,Y,FPath,FPath). 					% at every step, stop and check if over
+try1(X,Y,PPath,FPath):-					% if not over (how do we know is not over here?)
+	is_pass(X,Z), 		  				% find next step to Z	
+	not(member(Z,PPath)), 	  			% verify if unchecked door
+	try1(Z,Y,[Z|PPath],FPath).			% make the step
 
 
 
@@ -44,41 +72,43 @@ try1(X,Y,Thread,Way):-			% if not over (how do we know is not over here?)
 
 
 % will have correct order as try2/4 adds into result backwards
-search_v2(X,Y,Way):-
-	try2(X,Y,[X],Way), 	% try a path from X to Y with the partial path 				
-						% containing just the starting vertex at this point
-	is_objective(Y),!. 	% why not start with this? 
+path2(X,Y,Path):-
+	try2(X,Y,[X],Path), 	% try a path from X to Y with the partial path 				
+							% containing just the starting vertex at this point
+	is_objective(Y), !. 	% why not start with this? 
 
-%try2/4 (From_vertex,To_vertex,Partial_path,Final_path)
-try2(X,X,_,[X]).
-try2(X,Y,Thread,[X|L]):-
+%try2 /4 (+Source, +Target, +PartialPath, -FinalPath)
+try2(Y,Y,_,[Y]).
+try2(X,Y,PPath,[X|FPath]):-
 	is_pass(X,Z),
-	not(member(Z,Thread)),
-	try2(Z,Y,[Z|Thread],L).
+	not(member(Z,PPath)),
+	try2(Z,Y,[Z|PPath],FPath).
 
 
+% Call it with:
+% ?- path2(a,X,Path). 
 
 
 
 
 % will have correct order as try3/3 adds into result backwards
-search_v3(X,Y,Way):-
+path3(X,Y,Path):-
 	retractall(seen(_)),
-	try3(X,Y,Way), 		% try a path from X to Y with the partial path 				
-						% containing just the starting vertex at this point
-	is_objective(Y),!. 	% why not start with this? 
+	try3(X,Y,Path), 		% try a path from X to Y with the partial path 				
+							% containing just the starting vertex at this point
+	is_objective(Y), !. 		% why not start with this? 
 
 
-% try/3 (From_vertex,To_vertex,Path).
+% try /3 (+Source, +Target, -FinalPath)
 try3(X,X,[X]). 
-try3(X,Y,[X|L]):-
+try3(X,Y,[X|Path]):-
 	is_pass(X,Z),
-	accept(Z), 		% can Z be part of the thread
-	try3(Z,Y,L).
+	accept(Z), 			% can Z be part of the thread
+	try3(Z,Y,Path).
 
 :-dynamic seen/1.
 
-% accept/1 (Vertex). 
+% accept/1 (+Vertex). 
 accept(X):-
 	seen(X),!, 			% is the contradiction! The ONLY contradiction is that the vertex is 
 	fail.	 			% ALREADY in the solution. If there, don’t loop; fail to backtrack!
@@ -88,36 +118,47 @@ accept(X):-
 	retract(seen(X)),!, % cannot conclude with X in solution, remove and
 	fail.			  	% backtrack to try WITHOUT it!
 
+% Call it with:
+% ?- path3(a,X,Path). 
 
 
 
 
-
-
-
-
-
-
+%--------------------------------------------------
+% Graph - Best path %
+%--------------------------------------------------
 
 :-dynamic best/2.
-a_way(V,V,Thread,Th_length):-
-	is_objective(V), !, 
-	retract(best(_,_)), !,
-	asserta(best(Thread,Th_length)),
-	fail. 		% cut above. So, where does backtracking fail? Mistake?
-a_way(V1,V2, Thread,Th_length):-
-	best(_,BTh_length),
-	Th_length1 is Th_length +1,
-	Th_length1<BTh_length,
-	is_pass(V1,V3), 	% nondetermistic call. Why nondetermistic?
-	not(member(V3,Thread)),
-	a_way(V3,V2, [V3|Thread],Th_length1).
 
-best_way(V1,V2,_):-
-	assert(best([],1000)), % not a wise init; better sum of all weights
-	a_way(V1,V2,[V1],1).
-best_way(_,_,Thread):-
+best_path(X,Y,_):-
+	assert(best([],1000)), 			% not a wise init; better sum of all weights
+	a_path(X,Y,[X],1).
+best_path(_,_,Thread):-
 	retract(best(Thread,_)).
+
+
+
+a_path(Y,Y,Path,PathLen):-
+	is_objective(Y), !, 
+	retract(best(_,_)), !,
+	asserta(best(Path,PathLen)),
+	fail. 						% cut above. So, where does backtracking fail? Mistake?
+a_path(X,Y, Path,PathLen):-
+	best(_,BestLen),
+	PathLen1 is PathLen +1,
+	PathLen1 < BestLen,
+	is_pass(X,Z), 				% nondetermistic call. Why nondetermistic?
+	not(member(Z,Path)),
+	a_path(Z,Y, [Z|Path],PathLen1).
+
+
+% Call it with:
+% ?- best_path(a,X,Path).
+
+
+%--------------------------------------------------
+% Graph - All paths %
+%--------------------------------------------------
 
 
 % is_door(a,b).
@@ -129,71 +170,82 @@ best_way(_,_,Thread):-
 % is_door(e,g).
 
 
+
+
+
 neighb1(a, [b]).
-neighb1(b, [a,c,e]).
-neighb1(c, [b,d]).
-neighb1(d, [c,e]).
+neighb1(b, [c,e]).
+neighb1(c, [d]).
+neighb1(d, [e]).
 neighb1(e, [f,g]).
 
-
-neighb(a, [b]).
-neighb(b, [c,e]).
-neighb(c, [d]).
-neighb(d, [e]).
-neighb(e, [f,g]).
-
-
-% ?- ways([a], X, Way).
-%a_way/3 (First_vertex, Last_vertex, Path).
-a_way(V,V,[V]).
-a_way(V1,V2,[V1|Rest]):-
-	neighb(V1,L),
-	ways(L,V2,Rest).
-
-%ways/3 (List_of vertices_to_start_from, Last_vertex, Path).
-ways([V1|_],V2,Way):-
-	a_way(V1,V2,Way).
-ways([_|Rest],V2,Way):-
-	ways(Rest,V2,Way).
+% neighb2/2 due to the a-b and b-a generates an infinite path between them
+% neighb2(a, [b]).
+% neighb2(b, [a,c,e]).
+% neighb2(c, [b,d]).
+% neighb2(d, [c,e]).
+% neighb2(e, [f,g]).
 
 
+% a_path /3 (+Source, +Target, -Path).
+a_path(Y,Y,[Y]).
+a_path(X,Y,[X|Rest]):-
+	neighb1(X,L),
+	all_paths(L,Y,Rest).
+
+% all_paths /3 (+SourcesList, +Target, -Path).
+all_paths([X|_],Y,Path):-
+	a_path(X,Y,Path).
+all_paths([_|Rest],Y,Path):-
+	all_paths(Rest,Y,Path).
+
+% Call it with:
+% ?- all_paths([a], X, Path).
 
 
-% ?-is_restricted_way(a, X, [b,c,d], Way).
-% ?-is_restricted_way(a, X, [b,e,d], Way).
-is_restricted_way(NX,NY,Restrictions,Way):-
-	is_way_obj(NX,NY,Way),
-	is_in_order(Restrictions,Way).	% how else could we do?
+%--------------------------------------------------
+% Graph - Restricted path %
+%--------------------------------------------------
+% restricted_path /4 (+Source, +Target, +RestrictionsList, -Path)
+restricted_path(X,Y,Restrictions,Path):-
+	path_obj(X,Y,Path),
+	restrict(Restrictions,Path).	% how else could we do?
 
-is_way_obj(NX,NY,Way):-
-	nonvar(NX), 		 % meaning? Why needed?	
-	try2(NX,NY,[NX],Way), % any try from v1, v2, v3
-	is_objective(NY).	% why test here and not before try? Would it be better?
+path_obj(X,Y,Path):-
+	nonvar(X), 		 		% meaning? Why needed?	
+	try2(X,Y,[X],Path), 	% any try from v1, v2, v3
+	is_objective(Y).		% why test here and not before try? Would it be better?
 
-is_in_order([NX|TX],[NX|TY]):-!,		% what is this cut cutting?
-	is_in_order(TX,TY).
-is_in_order([NX|TX],[_|TY]):-
-	is_in_order([NX|TX],TY).
-is_in_order([],_).
+restrict([H|TR],[H|T]):- !,		% what is this cut cutting?
+	restrict(TR,T).
+restrict([HR|TR],[_|T]):-
+	restrict([HR|TR],T).
+restrict([],_).
+
+% Call it with:
+% ?- restricted_path(a, X, [b,c,d], Path).
+% ?- restricted_path(a, X, [b,e,d], Path).
 
 
 
-% findall/3 (Collected_var, Collector_predicate, Collector_var). 				
-findall(X,G,_):- 	
-	asserta(found(end)),	
-	G,					
 
-	asserta(found(X)),
-	fail. 	
-findall(_,_,L):-			
-	collect_found([],L). 	
-			
-collect_found(P,L):-
-	get_next(X),!, 	
-	collect_found([X|P],L). 
-collect_found(L,L).
 
-get_next(X):-
-	retract(found(X)),!, 	
-	X=/=end.		
 
+%--------------------------------------------------
+% Univ predicate in Graphs %
+%--------------------------------------------------
+
+% path1 /4 (+Graph, +Source, +Target, -Path)
+path1(Graph, X, Y, Path):- 
+	path1(Graph, X, Y, [X], Path).
+
+path1(_, Y, Y, _, []).
+path1(G, X, Y, PPath, [Z|FPath]):-
+ 	Edge=..[G, X, Z], 	% Edge becomes → G(X, Z),
+ 	call(Edge),
+ 	not(member(Z, PPath)),
+ 	path1(G, Z, Y, [Z|PPath], FPath).
+
+
+% Call it with:
+% ?- path1(edge, a, g, Path).

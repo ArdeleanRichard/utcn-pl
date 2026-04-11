@@ -1,3 +1,43 @@
+%--------------------------------------------------
+% findall %
+%--------------------------------------------------
+
+% findall1/3 (+CollectedVar, +CollectorPred, -CollectorVar). 	
+
+findall1(X,G,_):- 	
+	asserta(found(end)),	
+	G,					
+
+	asserta(found(X)),
+	fail. 	
+findall1(_,_,L):-			
+	collect_found([],L). 	
+
+
+collect_found(P,L):-
+	retract(found(X)),	
+	X\=end,!, 	
+	collect_found([X|P],L). 
+collect_found(L,L).
+
+
+% likes/2 (+Person, +Drink).
+likes(bill,  wine).
+likes(dick,  beer).
+likes(harry, beer).
+likes(john,  beer).
+likes(peter, wine).
+likes(tom,   beer).
+		
+% [q] ?- findall1(X, likes(X,beer), L).
+
+
+
+%--------------------------------------------------
+% For all is true %
+%--------------------------------------------------
+
+
 % ?- for_all_is_true(member(Char, ['a','b','c']), char_type(Char, lower)).
 % ?- for_all_is_true(member(Char, ['a','B','c']), char_type(Char, lower)).
 for_all_is_true(X,Y):-
@@ -8,7 +48,9 @@ for_all_is_true(_,_).
 
 
 
-
+%--------------------------------------------------
+% Equivalent graphs %
+%--------------------------------------------------
 
 % ?- same_graph
 % this garbage works only if unoriented, and all are provided only with 'edge1(a,b).neighbor1(a,[b]).' it fails
@@ -50,42 +92,46 @@ same_graph:- eq1, eq2.
 
 
 
-
+%--------------------------------------------------
+% Transform between graph representations %
+%--------------------------------------------------
 
 
 
 
 edge2(a, b, 15).
+
 is_edge2(X,Y,W):-
 	edge2(X,Y,W);
 	edge2(Y,X,W).
 
 :-dynamic neighbor/2.
 
-gen_graph2:-
+edge2neighb:-
 	is_edge2(X,_,_),
 	not(neighbor(X,L)),
-	findall(Z,succ(X,Z),L),
+	findall(Z,convert(X,Z),L),
 	assertz(neighbor(X,L)),
 	fail.
-gen_graph2.
+edge2neighb.
 
-succ(X,Z):-
+convert(X,Z):-
 	is_edge2(X,Y,W),
 	Z=p(Y,W).
 
-% ?- gen_graph2, listing(neighbor/2).
-
-
-
-
-
+% ?- edge2neighb, listing(neighbor/2).
 
 
 
 
 
 :-dynamic node/1.
+
+
+%--------------------------------------------------
+% DFS %
+%--------------------------------------------------
+
 
 edge3(a,b).
 % ...
@@ -94,20 +140,22 @@ is_edge3(X,Y):-
 	edge3(X,Y);
 	edge3(Y,X).
 
-df_search(X,_):-
+dfs(X,_):-
 	assertz(node(X)),	% place start/current node in Q
 	is_edge3(X,Y), 		% take first/next neighbor of current node X
 	not(node(Y)), 		% if already visited, backtrack to take another; 
 						% 	if not, continue from Y
-	df_search(Y,_).
-df_search(_,L):-
+	dfs(Y,_).
+dfs(_,L):-
 	assertz(node(end)),
 	collect2([],L). 		% similar to collect in findall, but on vert akb.
 
 
+%--------------------------------------------------
+% BFS %
+%--------------------------------------------------
 
-
-bf_search(X,_):-
+bfs(X,_):-
 	assertz(node(X)), 	% add at the end of the Q the current node
 	node(Y), 			% reads from front of Q (first time is first=X=ONLY one in Q) 
 						% current Y (gets Y instantiated)
@@ -116,7 +164,7 @@ bf_search(X,_):-
     not(node(Z)), 		% if Z already visited, backtrack to take another; 
 	assertz(node(Z)), 	% if not, put Z in Q and
 	fail.				% backtrack anyway to another neighbor of Y
-bf_search(_,L):-
+bfs(_,L):-
 	assertz(node(end)),
 	collect2([],L). 		% similar to collect in findall, but on node akb.
 
@@ -128,126 +176,49 @@ collect1(L, L).
 
 
 collect2(P, L):-
-    get_next(X), !,
+    retract(node(X)), 
+	X\=end, !,
 	collect2([X|P], L).
 collect2(L, L).
 
-get_next(X):-
-	retract(node(X)),!, X\=end.
+	.
+
+%--------------------------------------------------
+% BFS with Queue %
+%--------------------------------------------------
+
+
+% bfs /3 (+Queue, +ExpansionList, -Result).
+bfs(Cand,Exp,Exp):-			% when Q is empty, end exe, the Exp becomes Rez
+	var(Cand),!.
+bfs([X|Cand],Exp,Rez):-		% else, take first from Q
+	expand(X,Cand,Exp),				% and expand (put all white neighbors in Q) and
+	bfs(Cand,[X|Exp],Rez).	% continue by moving it in expanded 						% = make it black
+
+
+:-dynamic desc/1.
+
+expand(X,_,Exp):-
+	is_edge(X,Z,_), 		% nondeterministically take Z,  first neighbor of X (eventually all of them)
+	not(member(Z,Exp)),		% should NOT be already processed (=not  a black node)
+	assertz(desc(Z)), 		% potentially add it in Q
+	fail. 					% backtrack to evaluate another neighbor of X
+expand(_,Cand,_):-
+	assertz(desc(end)),		% mark end of akb
+	collect(Cand).
+
+collect(Cand):-
+	retract(desc(X)),		% take X and if not under processing (not a grey one)
+	X\=end,	!,				% as long as akb not empty
+	insert_IL(X,Cand),		% take one and if not under processing (not a grey one) add it in Q
+	collect(Cand).			% continue. How is possible with the SAME argument?
+collect(_).					% end when akb empty
 
 
 
+insert_IL(X,[X|_]):-!.
+insert_IL(X,[_|L]):-
+	insert_IL(X,L).
 
-
-
-
-graph1([
-	n(a,[b,c,d]),
-	n(b,[a,c]),
-	n(c,[a,b,d]),
-	n(d,[a,c])
-]).
-
-
-
-graph2([
-	n(1,[2,4]),
-	n(2,[1,3,4]),
-	n(3,[2,4]),
-	n(4,[1,2,3])
-]).
-
-
-
-% VERSION 1
-% ?- graph1(G1),graph2(G2),iso_graph1(G1,G2).
-
-iso_graph1(L1,L2):-eq_perm(L1,L2,eq_neighb).
-
-eq_perm([H1|T1],L2,EQ):- 	% is the perm predicate
-	delete(H2,L2,T2),		% with an equivalence predicate
-	P=..[EQ,H1,H2],			% which is created here
-	call(P),				% and called here
-	eq_perm(T1,T2,EQ).
-eq_perm([],[],_).
-
-eq_neighb(n(N1,L1),n(N2,L2)):- 	% 2 neighb pairs are equivalent
-	eq_node(N1,N2),				% if the nodes are equivalent
-	eq_perm(L1,L2,eq_node). 	% and the neighb lists are equivalent
-
-delete(X,[X|T],T).				% what if we add a cut here?
-delete(X,[H|T],[H|R]):-
-	delete(X,T,R).
-
-:-dynamic p/2.
-
-eq_node(N1,N2):-	% if nodes N1 and N2 already form a pair in the akb
-	p(N1,N2).		% the evaluation continues
-eq_node(N1,_):-		% if N1 forms a pair with some OTHER node
-	p(N1,_),!,		% we get an inconsistency, so should NOT allow
- 	fail.			% (N1,N2) form a pair, so, fail to backtrack
-eq_node(_,N2):-		% symmetric on N2
-	p(_,N2),!,
-	fail.
-eq_node(N1,N2):-			% if you reach here, the is no inconsistency
-	asserta(p(N1,N2)). 		% hence pair N1, N2 is a legitimate one.
-eq_node(N1,N2):-			% if at a later moment, although pair N1, N2 is a 	
-    retract(p(N1,N2)),!, 	% legitimate one, the reasoning cannot 	
-    fail.					% conclude, so remove it from the akb, and fail to 			
-							% backtrack and resume execution 
-							% WITHOUT the pair in the akb
-
-
-
-
-
-
-% VERSION 2 - can obtain result
-% ?- graph1(G1),graph2(G2),iso_graph2(G1,G2, R).
-iso_graph2(L1,L2,Lout):-eq_perm(L1,L2,eq_neighb,[],Lout).
-
-eq_perm([H1|T1],L2,EQ,LI,LO):-	% same as in v1
-	delete(H2,L2,T2),
-	P=..[EQ,H1,H2,LI,Lint], 	% just that with args
-	call(P),
-	eq_perm(T1,T2,EQ,Lint,LO).
-eq_perm([],[],_,L,L).
-
-eq_neighb(n(N1,L1),n(N2,L2),LI,LO):-
-	eq_node(N1,N2,LI,Lint), 
-	eq_perm(L1,L2,eq_node,Lint,LO).
-
-eq_node(N1,N2,LI,LI):-
-	member(p(N1,N2),LI),!.
-eq_node(N1,N2,LI,[p(N1,N2)|LI]):-
-	not(member(p(N1,_),LI)),
-	not(member(p(_,N2),LI)).
-
-
-
-
-% VERSION 3
-% ?- graph1(G1),graph2(G2),iso_graph3(G1,G2, R).
-iso_graph3(L1,L2,Lout):-eq_perm(L1,L2,eq_neighb,Lout).
-
-eq_perm([H1|T1],L2,EQ,LO):-	% same as in v1
-	delete(H2,L2,T2),
-	P=..[EQ,H1,H2,LO], 	% just that with args
-	call(P),
-	eq_perm(T1,T2,EQ,LO).
-eq_perm([],[],_,_).
-
-eq_neighb(n(N1,L1),n(N2,L2),LO):-
-	eq_node(N1, N2, LO),
-	eq_perm(L1,L2,eq_node,LO).
-
-
-eq_node(N1,N2,[p(N1,N2)|_]):-!.
-eq_node(N1,_,[p(N1,_)|_]):-
-	!,
-	fail.
-eq_node(_,N2,[p(_,N2)|_]):-
-	!,
-	fail.
-eq_node(N1,N2,[_|T]):-
-	eq_node(N1,N2,T).
+% ?- bfs([a|_],[],Rez). 
+% for the first graph – search for a path

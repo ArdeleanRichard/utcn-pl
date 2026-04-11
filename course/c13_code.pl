@@ -1,3 +1,46 @@
+%--------------------------------------------------
+% Hamiltonian cycle %
+%--------------------------------------------------
+edge(a,b,7).
+edge(a,c,1).
+edge(a,d,8).
+edge(b,c,2).
+edge(b,f,5).
+edge(b,e,10).
+edge(c,d,3).
+edge(d,f,4).
+edge(d,e,8).
+edge(f,e,3).
+
+is_edge(X,Y,W):-
+	edge(X,Y,W);
+	edge(Y,X,W).
+
+
+
+% ?- hamilton(6,a,Cycle,Cost).
+
+hamilton(N,X,Cycle,Cost):-
+	N1 is N-1,
+	try(N1,X,X,[X],Cycle,0,Cost).
+
+try(N,X,Y,Pway,Cycle,Pcost,Cost):-
+	is_edge(Y,Z,W),
+	not(member(Z,Pway)),
+	N1 is N-1, 
+	N1>0,
+	NewPcost is Pcost+W,
+	try(N1,X,Z,[Z|Pway],Cycle,NewPcost,Cost).
+try(0,X,Y,Pway,[X|Pway],Pcost,Cost):-
+	is_edge(Y,X,W),
+	Cost is Pcost+W.
+
+
+
+%--------------------------------------------------
+% Hamiltonian cycle with B&B %
+%--------------------------------------------------
+
 edge(a,b,7).
 edge(a,c,1).
 edge(a,d,8).

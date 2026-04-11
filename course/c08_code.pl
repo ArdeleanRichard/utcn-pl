@@ -87,25 +87,27 @@ get_args(Eq, C, N, [X|R]):-
     get_args(Eq, C1, N, R).
 
 % ?- f(a,b,c)=..L1, univ(f(a,b,c), L2).
-% L1 = L2 = [f, a, b, c] 		% equivalent
+% L1 = L2 = [f, a, b, c] 		% equiExprent
 
 % ?- F1=..[f,a,b,c], univ(F2, [f,a,b,c]).
-% F1 = F2 = f(a,b,c).			% equivalent
+% F1 = F2 = f(a,b,c).			% equiExprent
 
 
 %--------------------------------------------------
 % Substitution %
 %--------------------------------------------------
 
-% subst/4 (+OldSubExpr, +NewSubExpr, +OldExpr, -NewExpr).
+% subst /4 (+Old, +New, +OldExpr, -NewExpr).
+% subst_args /4 (+Old, +New, +ListOldArgs, -ListNewArgs).
+
 
 subst1(Old,New,Old,New):-!. 
 subst1(_,_,Old,Old):-	 	
 	atomic(Old),!.	
-subst1(OldSubExpr,NewSubExpr,Val,NewVal):-
-	Val=..[F|Args], 										% decomposition: f(a, b, g(a)) = ..[F|Args] 	--> F=f, Args=[a,b,g(a)]
-	subst_args1(OldSubExpr,NewSubExpr,Args,NewArgs),
-	NewVal=..[F|NewArgs]. 									% recomposition: NewVal = ..[f|[x,b,g(x)]] 		--> NewVal=f(x, b, g(x))
+subst1(Old,New,Expr,NewExpr):-
+	Expr=..[F|Args], 										% decomposition: f(a, b, g(a)) = ..[F|Args] 	--> F=f, Args=[a,b,g(a)]
+	subst_args1(Old,New,Args,NewArgs),
+	NewExpr=..[F|NewArgs]. 									% recomposition: NewExpr = ..[f|[x,b,g(x)]] 		--> NewExpr=f(x, b, g(x))
 
 
 % subst_args1 calls subst1 to process predicates
@@ -126,18 +128,18 @@ subst_args1(Old,New,[Arg|Args],[NewArg|NewArgs]):-
 subst2(Old,New,Old,New):- !. 	
 subst2(_,_,Old,Old):- 
 	atomic(Old), !.	
-subst2(OldSubExpr,NewSubExpr,Val,NewVal):-
-	functor(Val,F,N), 										% Val=f(a, b, g(a)) --> functor(f(a, b, g(a), F, N) --> F=f, N=3
-	functor(NewVal,F,N),									% F=f, N=3 			--> functor(NewVal, f, 3) 		--> NewVal=f(_1, _2, _3)
-	subst_args2(N,OldSubExpr,NewSubExpr,Val,NewVal).
+subst2(Old,New,Expr,NewExpr):-
+	functor(Expr,F,N), 										% Expr=f(a, b, g(a)) --> functor(f(a, b, g(a), F, N) --> F=f, N=3
+	functor(NewExpr,F,N),									% F=f, N=3 			--> functor(NewExpr, f, 3) 		--> NewExpr=f(_1, _2, _3)
+	subst_args2(N,Old,New,Expr,NewExpr).
 	
 subst_args2(0,_,_,_,_):-!. 
-subst_args2(N,Old,New,Val,NewVal):-
-	arg(N,Val,OldArg),										% N=3, Val=f(a, b, g(a)) 	--> arg(3, f(a, b, g(a)), OldArg)	--> OldArg=g(a)
- 	arg(N,NewVal,NewArg),									% N=3, NewVal=f(_1, _2, _3) --> arg(3, f(_1, _2, _3), NewArg) 	--> NewArg=_3 	(variable _3 which will be instantiated in subst2 call)
+subst_args2(N,Old,New,Expr,NewExpr):-
+	arg(N,Expr,OldArg),										% N=3, Expr=f(a, b, g(a)) 	--> arg(3, f(a, b, g(a)), OldArg)	--> OldArg=g(a)
+ 	arg(N,NewExpr,NewArg),									% N=3, NewExpr=f(_1, _2, _3) --> arg(3, f(_1, _2, _3), NewArg) 	--> NewArg=_3 	(variable _3 which will be instantiated in subst2 call)
  	subst2(Old,New,OldArg,NewArg),
 	N1 is N-1,	
-	subst_args2(N1,Old,New,Val,NewVal). 
+	subst_args2(N1,Old,New,Expr,NewExpr). 
 	
 % similar to replace from laboratory
 % [q] ?- subst2(a, x, f(a, b, g(a)), R).

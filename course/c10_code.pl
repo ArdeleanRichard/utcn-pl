@@ -3,6 +3,7 @@
 %--------------------------------------------------
 % neighb/2 (+Vertex, +NeighborList).
 neighb(a,[b,c]).
+
 neighb(z,[]).	% isolated node
 
 
@@ -11,6 +12,7 @@ neighb(z,[]).	% isolated node
 % edge/2 (+Vertex1, +Vertex2).
 edge(a,b).
 edge(a,c).
+
 edge(z,nil). 	% isolated node
 
 % is_edge/2 (+Vertex1, +Vertex2).
@@ -94,8 +96,8 @@ try2(X,Y,PPath,[X|FPath]):-
 % will have correct order as try3/3 adds into result backwards
 path3(X,Y,Path):-
 	retractall(seen(_)),
-	try3(X,Y,Path), 		% try a path from X to Y with the partial path 				
-							% containing just the starting vertex at this point
+	try3(X,Y,Path), 			% try a path from X to Y with the partial path 				
+								% containing just the starting vertex at this point
 	is_objective(Y), !. 		% why not start with this? 
 
 
@@ -110,13 +112,13 @@ try3(X,Y,[X|Path]):-
 
 % accept/1 (+Vertex). 
 accept(X):-
-	seen(X),!, 			% is the contradiction! The ONLY contradiction is that the vertex is 
-	fail.	 			% ALREADY in the solution. If there, don’t loop; fail to backtrack!
+	seen(X),!, 				% is the contradiction! The ONLY contradiction is that the vertex is 
+	fail.	 				% ALREADY in the solution. If there, don’t loop; fail to backtrack!
 accept(X):-
-	assert(seen(X)). 	% no contradiction, add it in the solution 
+	assert(seen(X)). 		% no contradiction, add it in the solution 
 accept(X):-
-	retract(seen(X)),!, % cannot conclude with X in solution, remove and
-	fail.			  	% backtrack to try WITHOUT it!
+	retract(seen(X)),!, 	% cannot conclude with X in solution, remove and
+	fail.			  		% backtrack to try WITHOUT it!
 
 % Call it with:
 % ?- path3(a,X,Path). 
@@ -134,7 +136,7 @@ best_path(X,Y,_):-
 	assert(best([],1000)), 			% not a wise init; better sum of all weights
 	a_path(X,Y,[X],1).
 best_path(_,_,Thread):-
-	retract(best(Thread,_)).
+	retract(best(Thread,_)).		% The best path is retracted here only once
 
 
 
@@ -142,12 +144,12 @@ a_path(Y,Y,Path,PathLen):-
 	is_objective(Y), !, 
 	retract(best(_,_)), !,
 	asserta(best(Path,PathLen)),
-	fail. 						% cut above. So, where does backtracking fail? Mistake?
+	fail. 							% cut above. So, where does backtracking fail? Mistake? No. It is the best path until now, might find an even better one.
 a_path(X,Y, Path,PathLen):-
 	best(_,BestLen),
 	PathLen1 is PathLen +1,
 	PathLen1 < BestLen,
-	is_pass(X,Z), 				% nondetermistic call. Why nondetermistic?
+	is_pass(X,Z), 					% nondetermistic call. Why nondetermistic?
 	not(member(Z,Path)),
 	a_path(Z,Y, [Z|Path],PathLen1).
 

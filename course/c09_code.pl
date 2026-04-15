@@ -62,11 +62,11 @@ move_discs(N,X,Y,Z):-
 	move_disc(X, Z),
 	move_discs(N1,Y,X,Z).
 
-move_disc(IP,OP):-
-	DI=..[IP,Size],
-	retract(DI),!,
-	DO=..[OP,Size], 
-	asserta(DO).
+move_disc(IP,OP):-			% Let us consider a move from X/in  to Z/out of the last disc in(3)
+	DI=..[IP,Size],			% DI =.. [IP, Size] -> DI=in(Size) 		% where size is an uninstantiated variable
+	retract(DI),!,			% retract(DI) <--> retract(in(Size)) where in(Size) unifies with in(3), resulting in the instantiation of Size=3
+	DO=..[OP,Size], 		% DO =.. [OP, Size] -> DO=out(Size), where Size has already been instantiated, thus: DO=out(3)
+	asserta(DO).			% asserta(DO) <--> asserta(out(3)).
 
 
 % ?- retractall(out(_)), hanoi(3), listing(in/1), listing(out/1).

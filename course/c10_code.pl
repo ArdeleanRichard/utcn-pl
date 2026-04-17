@@ -102,7 +102,7 @@ path3(X,Y,Path):-
 
 
 % try /3 (+Source, +Target, -FinalPath)
-try3(X,X,[X]). 
+try3(Y,Y,[Y]). 
 try3(X,Y,[X|Path]):-
 	is_pass(X,Z),
 	accept(Z), 			% can Z be part of the thread
@@ -243,7 +243,8 @@ path1(Graph, X, Y, Path):-
 
 path1(_, Y, Y, _, []).
 path1(G, X, Y, PPath, [Z|FPath]):-
- 	Edge=..[G, X, Z], 	% Edge becomes → G(X, Z),
+ 	Edge=..[G, X, Z], 	% G= edge from query, 
+						% Edge = G(X, Z) = edge(X, Z)
  	call(Edge),
  	not(member(Z, PPath)),
  	path1(G, Z, Y, [Z|PPath], FPath).

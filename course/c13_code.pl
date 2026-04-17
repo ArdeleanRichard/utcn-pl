@@ -22,18 +22,18 @@ is_edge(X,Y,W):-
 
 hamilton(N,X,Cycle,Cost):-
 	N1 is N-1,
-	try(N1,X,X,[X],Cycle,0,Cost).
+	try(N1,X,X,0,Cost,[X],Cycle).
 
-try(N,X,Y,Pway,Cycle,Pcost,Cost):-
+try(N,X,Y,PCost,Cost,PPath,Cycle):-
 	is_edge(Y,Z,W),
 	not(member(Z,Pway)),
 	N1 is N-1, 
 	N1>0,
-	NewPcost is Pcost+W,
-	try(N1,X,Z,[Z|Pway],Cycle,NewPcost,Cost).
-try(0,X,Y,Pway,[X|Pway],Pcost,Cost):-
+	NewPCost is PCost+W,
+	try(N1,X,Z,NewPCost,Cost,[Z|PPath],Cycle).
+try(0,X,Y,PCost,Cost,PPath,[X|PPath]):-
 	is_edge(Y,X,W),
-	Cost is Pcost+W.
+	Cost is PCost+W.
 
 
 
@@ -75,26 +75,26 @@ search(N,X,[C|Cands],Exp,Way):-
 
 % 3rd arg is the best candidate list which is expanded, take first node (last added) and find neighbours
 expand(N,X,[n(Y,Len,Fi)|Cy],_,_):-
-	is_edge(Y,Z,W), 							% nondeterministically take Z,  first neighbor of Y (eventually all of them) and weight W
-	(not(member_thread(Z,Cy));(Len is N-1,Z=X)), 	% should NOT be already processed just if is the source
-	FiW is Fi+W, Len1 is Len+1, 			% estimate the new parameters
-	assertz(desc(n(Z,Len1,FiW))),			% put it in the akb
-	fail.										% backtrack to a new neighbor of Y 
+	is_edge(Y,Z,W), 								% nondeterministically take Z,  first neighbor of Y (eventually all of them) and weight W
+	(not(member_thread(Z,Cy));(Len is N-1,Z=X)), 	% should NOT be already processed just if it is the source
+	FiW is Fi+W, Len1 is Len+1, 					% estimate the new parameters
+	assertz(desc(n(Z,Len1,FiW))),					% put it in the akb
+	fail.											% backtrack to a new neighbor of Y 
 expand(_,_,C,Cands,NewCands):-
-	collect(C,Cands,NewCands).					% start collecting from akb and place in NewCand
+	collect(C,Cands,NewCands).						% start collecting from akb and place in NewCand
 
-member_thread(X,[n(X,_,_)|_]). % checks if a node is in a list
+member_thread(X,[n(X,_,_)|_]). 						% checks if a node is in a list
 member_thread(X,[_|T]):- member_thread(X,T).
 
 % take the current best candidate list L, create a number of Lists that contain the next options and add them to candidate paths
 collect(C,Cands,NewCands):- 				% L is the parent, a whole path. Is Y in Candidate from clause 2 in search
-	retract(desc(Z)),!,	 				% take top from akb 
-	ins_ord_list([Z|C],Cands,IntCands),	% add in Cand with the whole path (+L, parent of path)
+	retract(desc(Z)),!,	 					% take top from akb 
+	ins_ord_list([Z|C],Cands,IntCands),		% add in Cand with the whole path (+L, parent of path)
 	collect(C,IntCands,NewCands).			% continue with the Intermediate Candidate 
 collect(_,Cands,Cands).
 
-ins_ord_list(X,[H|T],[H|R]):-		% in the right (ordered by Fi function) place in the list
+ins_ord_list(X,[H|T],[H|R]):-				% in the right (ordered by Fi function) place in the list
 	X = [n(_,_,Xfi)|_], H = [n(_,_,Yfi)|_], 
     Xfi>=Yfi,!,
     ins_ord_list(X, T, R).
-ins_ord_list(X,L,[X|L]):-!. 		% adds an element
+ins_ord_list(X,L,[X|L]):-!. 				% adds an element

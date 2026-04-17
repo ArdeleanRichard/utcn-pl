@@ -11,14 +11,14 @@ findall1(X,G,_):-
 	asserta(found(X)),
 	fail. 	
 findall1(_,_,L):-			
-	collect_found([],L). 	
+	collect([],L). 	
 
-
-collect_found(P,L):-
+% forward recursion, 1st argument is the accumulator
+collect(P,L):-
 	retract(found(X)),	
 	X\=end,!, 	
-	collect_found([X|P],L). 
-collect_found(L,L).
+	collect([X|P],L). 
+collect(L,L).
 
 
 % likes/2 (+Person, +Drink).
@@ -63,16 +63,17 @@ not1(P):-
 	P, !, fail.
 not1(_).
 
-member1(X, [X|_]).
-member1(X, [_|T]):-member1(X, T).
+
 
 is_neighbor1(X,Y):-		% to find all edges in G1, call nondeterminist(X,Y,free)
 	neighbor1(X,L),		% finds first pair first (and next on backtrack), instantiates both X and L. 
-	member1(Y,L).		% nondeterm call on member; instantiate Y, one at a time, eventually all.
+	member(Y,L).		% nondeterm call on member; instantiate Y, one at a time, eventually all.
 
 is_edge1(X,Y):-
 	edge1(X,Y);
 	edge1(Y,X).
+
+
 
 eq1:-
 	is_neighbor1(X,Y),			% for each edge in the first representation
@@ -95,8 +96,6 @@ same_graph:- eq1, eq2.
 %--------------------------------------------------
 % Transform between graph representations %
 %--------------------------------------------------
-
-
 
 
 edge2(a, b, 15).
@@ -127,6 +126,11 @@ convert(X,Z):-
 
 :-dynamic node/1.
 
+collect([X|R]):-
+	retract(node(X)),!, 
+	collect(R).
+collect([]).
+
 
 %--------------------------------------------------
 % DFS %
@@ -134,28 +138,34 @@ convert(X,Z):-
 
 
 edge3(a,b).
+edge3(b,c).
+edge3(c,a).
+edge3(c,d).
 % ...
+
 
 is_edge3(X,Y):-
 	edge3(X,Y);
 	edge3(Y,X).
 
-dfs(X,_):-
+dfs(X,L):-
 	assertz(node(X)),	% place start/current node in Q
 	is_edge3(X,Y), 		% take first/next neighbor of current node X
 	not(node(Y)), 		% if already visited, backtrack to take another; 
 						% 	if not, continue from Y
-	dfs(Y,_).
+	dfs(Y,L).
 dfs(_,L):-
-	assertz(node(end)),
-	collect2([],L). 		% similar to collect in findall, but on vert akb.
+	collect(L). 		% similar to collect in findall, but on vert akb.
+
+
+% ?- dfs(a, R), listing(node/1).
 
 
 %--------------------------------------------------
 % BFS %
 %--------------------------------------------------
 
-bfs(X,_):-
+bfs_wrong(X,_):-
 	assertz(node(X)), 	% add at the end of the Q the current node
 	node(Y), 			% reads from front of Q (first time is first=X=ONLY one in Q) 
 						% current Y (gets Y instantiated)
@@ -164,55 +174,39 @@ bfs(X,_):-
     not(node(Z)), 		% if Z already visited, backtrack to take another; 
 	assertz(node(Z)), 	% if not, put Z in Q and
 	fail.				% backtrack anyway to another neighbor of Y
-bfs(_,L):-
-	assertz(node(end)),
-	collect2([],L). 		% similar to collect in findall, but on node akb.
+bfs_wrong(_,L):-
+	collect(L). 		% similar to collect in findall, but on node akb.
 
 
-collect1(P, L):-
-	retract(node(X)),!, 
-	collect2([X|P], L).
-collect1(L, L).
-
-
-collect2(P, L):-
-    retract(node(X)), 
-	X\=end, !,
-	collect2([X|P], L).
-collect2(L, L).
-
+% ?- bfs_wrong(a, R), listing(node/1).
+% It can only see the neighbours of the given node, does not go through all the graph.
 	.
 
 %--------------------------------------------------
 % BFS with Queue %
 %--------------------------------------------------
 
-
 % bfs /3 (+Queue, +ExpansionList, -Result).
-bfs(Cand,Exp,Exp):-			% when Q is empty, end exe, the Exp becomes Rez
-	var(Cand),!.
-bfs([X|Cand],Exp,Rez):-		% else, take first from Q
-	expand(X,Cand,Exp),				% and expand (put all white neighbors in Q) and
-	bfs(Cand,[X|Exp],Rez).	% continue by moving it in expanded 						% = make it black
+bfs(Q,R,R):- var(Q),!.	% when Q is empty, end exe, the Exp becomes R 
+bfs([X|Q],Exp,R):-		% else, take first from Q
+	expand(X,Q,Exp),			% and expand (put all white neighbors in Q) and
+	bfs(Q,[X|Exp],R).	% continue by moving it in expanded 						% = make it black
 
 
-:-dynamic desc/1.
 
 expand(X,_,Exp):-
-	is_edge(X,Z,_), 		% nondeterministically take Z,  first neighbor of X (eventually all of them)
+	is_edge3(X,Z), 			% nondeterministically take Z,  first neighbor of X (eventually all of them)
 	not(member(Z,Exp)),		% should NOT be already processed (=not  a black node)
-	assertz(desc(Z)), 		% potentially add it in Q
+	assertz(node(Z)), 		% potentially add it in Q
 	fail. 					% backtrack to evaluate another neighbor of X
-expand(_,Cand,_):-
-	assertz(desc(end)),		% mark end of akb
-	collect(Cand).
+expand(_,Q,_):-
+	collect1(Q).
 
-collect(Cand):-
-	retract(desc(X)),		% take X and if not under processing (not a grey one)
-	X\=end,	!,				% as long as akb not empty
-	insert_IL(X,Cand),		% take one and if not under processing (not a grey one) add it in Q
-	collect(Cand).			% continue. How is possible with the SAME argument?
-collect(_).					% end when akb empty
+collect1(Q):-
+	retract(node(X)),!,		% take X and if not under processing (not a grey one)
+	insert_IL(X,Q),			% take one and if not under processing (not a grey one) add it in Q
+	collect1(Q).			% continue. How is possible with the SAME argument?
+collect1(_).				% end when akb empty
 
 
 
@@ -220,5 +214,5 @@ insert_IL(X,[X|_]):-!.
 insert_IL(X,[_|L]):-
 	insert_IL(X,L).
 
-% ?- bfs([a|_],[],Rez). 
+% ?- bfs([a|_],[],R). 
 % for the first graph – search for a path

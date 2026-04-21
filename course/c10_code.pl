@@ -218,7 +218,7 @@ path_obj(X,Y,Path):-
 	try2(X,Y,[X],Path), 	% any try from v1, v2, v3
 	is_objective(Y).		% why test here and not before try? Would it be better?
 
-restrict([H|TR],[H|T]):- !,		% what is this cut cutting?
+restrict([HR|TR],[HR|T]):- !,		% what is this cut cutting?
 	restrict(TR,T).
 restrict([HR|TR],[_|T]):-
 	restrict([HR|TR],T).

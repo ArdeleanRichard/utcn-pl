@@ -5,7 +5,6 @@
 % findall1/3 (+CollectedVar, +CollectorPred, -CollectorVar). 	
 
 findall1(X,G,_):- 	
-	asserta(found(end)),	
 	G,					
 
 	asserta(found(X)),
@@ -15,8 +14,7 @@ findall1(_,_,L):-
 
 % forward recursion, 1st argument is the accumulator
 collect(P,L):-
-	retract(found(X)),	
-	X\=end,!, 	
+	retract(found(X)),!, 	
 	collect([X|P],L). 
 collect(L,L).
 

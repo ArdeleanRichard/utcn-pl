@@ -60,6 +60,8 @@ path1(X,Y,Path):-
 
 
 
+
+
 % try1 /4 (+Source, +Target, +PartialPath, -FinalPath)
 try1(Y,Y,FPath,FPath). 					% at every step, stop and check if over
 try1(X,Y,PPath,FPath):-					% if not over (how do we know is not over here?)
@@ -101,7 +103,12 @@ path3(X,Y,Path):-
 	is_objective(Y), !. 		% why not start with this? 
 
 
-% try /3 (+Source, +Target, -FinalPath)
+
+
+
+
+
+% try3 /3 (+Source, +Target, -FinalPath)
 try3(Y,Y,[Y]). 
 try3(X,Y,[X|Path]):-
 	is_pass(X,Z),
@@ -151,7 +158,7 @@ a_path(X,Y, Path,PathLen):-
 	PathLen1 < BestLen,
 	is_pass(X,Z), 					% nondetermistic call. Why nondetermistic?
 	not(member(Z,Path)),
-	a_path(Z,Y, [Z|Path],PathLen1).
+	a_path(Z,Y,[Z|Path],PathLen1).
 
 
 % Call it with:
@@ -183,17 +190,14 @@ neighb1(e, [f,g]).
 
 % neighb2/2 due to the a-b and b-a generates an infinite path between them
 % neighb2(a, [b]).
-% neighb2(b, [a,c,e]).
-% neighb2(c, [b,d]).
-% neighb2(d, [c,e]).
-% neighb2(e, [f,g]).
+% neighb2(b, [a]).
 
 
 % a_path /3 (+Source, +Target, -Path).
 a_path(Y,Y,[Y]).
-a_path(X,Y,[X|Rest]):-
+a_path(X,Y,[X|Path]):-
 	neighb1(X,L),
-	all_paths(L,Y,Rest).
+	all_paths(L,Y,Path).
 
 % all_paths /3 (+SourcesList, +Target, -Path).
 all_paths([X|_],Y,Path):-
@@ -214,11 +218,11 @@ restricted_path(X,Y,Restrictions,Path):-
 	restrict(Restrictions,Path).	% how else could we do?
 
 path_obj(X,Y,Path):-
-	nonvar(X), 		 		% meaning? Why needed?	
-	try2(X,Y,[X],Path), 	% any try from v1, v2, v3
+	nonvar(X), 		 		% meaning? Why needed?
+	try2(X,Y,[X],Path), 	% any try works (v1, v2, v3)
 	is_objective(Y).		% why test here and not before try? Would it be better?
 
-restrict([H|TR],[H|T]):- !,		% what is this cut cutting?
+restrict([HT|TR],[HR|T]):- !,		% what is this cut cutting?
 	restrict(TR,T).
 restrict([HR|TR],[_|T]):-
 	restrict([HR|TR],T).
@@ -243,8 +247,7 @@ path1(Graph, X, Y, Path):-
 
 path1(_, Y, Y, _, []).
 path1(G, X, Y, PPath, [Z|FPath]):-
- 	Edge=..[G, X, Z], 	% G= edge from query, 
-						% Edge = G(X, Z) = edge(X, Z)
+ 	Edge=..[G, X, Z], 	% G = edge from query '?-',  Edge = G(X, Z) = edge(X, Z)
  	call(Edge),
  	not(member(Z, PPath)),
  	path1(G, Z, Y, [Z|PPath], FPath).

@@ -4,10 +4,8 @@
 
 % findall1/3 (+CollectedVar, +CollectorPred, -CollectorVar). 	
 
-findall1(X,G,_):- 	
-	asserta(found(end)),	
-	G,					
-
+findall1(X,P,_):- 	
+	P,					
 	asserta(found(X)),
 	fail. 	
 findall1(_,_,L):-			
@@ -15,8 +13,7 @@ findall1(_,_,L):-
 
 % forward recursion, 1st argument is the accumulator
 collect(P,L):-
-	retract(found(X)),	
-	X\=end,!, 	
+	retract(found(X)),!, 	
 	collect([X|P],L). 
 collect(L,L).
 
@@ -180,7 +177,6 @@ bfs_wrong(_,L):-
 
 % ?- bfs_wrong(a, R), listing(node/1).
 % It can only see the neighbours of the given node, does not go through all the graph.
-	.
 
 %--------------------------------------------------
 % BFS with Queue %

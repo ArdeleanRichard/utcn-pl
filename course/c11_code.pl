@@ -147,7 +147,7 @@ is_edge3(X,Y):-
 	edge3(Y,X).
 
 dfs(X,L):-
-	assertz(node(X)),	% place start/current node in Q
+	assertz(node(X)),	% place start/current node as visited
 	is_edge3(X,Y), 		% take first/next neighbor of current node X
 	not(node(Y)), 		% if already visited, backtrack to take another; 
 						% 	if not, continue from Y
@@ -197,7 +197,8 @@ expand(X,_,Exp):-
 	assertz(node(Z)), 		% potentially add it in Q
 	fail. 					% backtrack to evaluate another neighbor of X
 expand(_,Q,_):-
-	collect1(Q).
+	collect1(Q).			% we get here, end
+
 
 collect1(Q):-
 	retract(node(X)),!,		% take X and if not under processing (not a grey one)

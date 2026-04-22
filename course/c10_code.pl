@@ -188,6 +188,7 @@ neighb1(c, [d]).
 neighb1(d, [e]).
 neighb1(e, [f,g]).
 
+% % How does it avoid loops? It doesnt
 % neighb2/2 due to the a-b and b-a generates an infinite path between them
 % neighb2(a, [b]).
 % neighb2(b, [a]).
@@ -209,6 +210,7 @@ all_paths([_|Rest],Y,Path):-
 % ?- all_paths([a], X, Path).
 
 
+
 %--------------------------------------------------
 % Graph - Restricted path %
 %--------------------------------------------------
@@ -222,7 +224,8 @@ path_obj(X,Y,Path):-
 	try2(X,Y,[X],Path), 	% any try works (v1, v2, v3)
 	is_objective(Y).		% why test here and not before try? Would it be better?
 
-restrict([HT|TR],[HR|T]):- !,		% what is this cut cutting?
+
+restrict([HR|TR],[HR|T]):- !,		% what is this cut cutting?
 	restrict(TR,T).
 restrict([HR|TR],[_|T]):-
 	restrict([HR|TR],T).

@@ -50,7 +50,8 @@ for_all_is_true(_,_).
 %--------------------------------------------------
 
 % ?- same_graph
-% this garbage works only if unoriented, and all are provided only with 'edge1(a,b).neighbor1(a,[b]).' it fails
+% works only if unoriented and all combinations are provided as below 
+% check only with 'edge1(a,b). neighbor1(a,[b]).' -> it fails
 edge1(a,b).
 edge1(b,a).
 neighbor1(a,[b]).
@@ -62,9 +63,9 @@ not1(_).
 
 
 
-is_neighbor1(X,Y):-		% to find all edges in G1, call nondeterminist(X,Y,free)
-	neighbor1(X,L),		% finds first pair first (and next on backtrack), instantiates both X and L. 
-	member(Y,L).		% nondeterm call on member; instantiate Y, one at a time, eventually all.
+is_neighbor1(X,Y):-				% to find all edges in G1, call nondeterminist(X,Y,free)
+	neighbor1(X,L),				% finds first pair first (and next on backtrack), instantiates both X and L. 
+	member(Y,L).				% nondeterm call on member; instantiate Y, one at a time, eventually all.
 
 is_edge1(X,Y):-
 	edge1(X,Y);
@@ -74,9 +75,9 @@ is_edge1(X,Y):-
 
 eq1:-
 	is_neighbor1(X,Y),			% for each edge in the first representation
-	not1(is_edge1(X,Y)),!, 	% there is one edge in the other graph 
-	fail.		 			% otherwise we reach here, hence, fail.
-eq1. 						% when we get here, G1=>G2 shown
+	not1(is_edge1(X,Y)),!, 		% there is one edge in the other graph 
+	fail.		 				% otherwise we reach here, hence, fail.
+eq1. 							% if we get here, G1=>G2 shown
 
 eq2:-
 	is_edge1(X,Y),

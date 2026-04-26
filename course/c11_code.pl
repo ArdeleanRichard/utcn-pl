@@ -162,7 +162,8 @@ dfs(_,L):-
 %--------------------------------------------------
 % BFS %
 %--------------------------------------------------
-
+% Optimization strategy of SWI prolog - makes node(Y) backtracking to not detect new nodes added by assertz(node(Z)) -> it only finds the neighbours of the first node
+% not wrong - just doesnt work
 bfs_wrong(X,_):-
 	assertz(node(X)), 	% add at the end of the Q the current node
 	node(Y), 			% reads from front of Q (first time is first=X=ONLY one in Q) 

@@ -184,6 +184,20 @@ bfs_wrong(_,L):-
 % BFS with Queue %
 %--------------------------------------------------
 
+edge4(a,b).
+edge4(a,c).
+edge4(a,d).
+edge4(b,c).
+edge4(b,f).
+edge4(b,e).
+edge4(c,d).
+edge4(d,f).
+edge4(d,e).
+edge4(f,e).
+
+is_edge4(X, Y):- edge4(X,Y); edge4(Y, X).
+
+
 % bfs /3 (+Queue, +ExpansionList, -Result).
 bfs(Q,R,R):- var(Q),!.	% when Q is empty, end exe, the Exp becomes R 
 bfs([X|Q],Exp,R):-		% else, take first from Q

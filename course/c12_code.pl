@@ -87,7 +87,7 @@ eq_node1(N1,N2):-			% if at a later moment, although pair N1, N2 is a legitimate
 
 % VERSION 2 - can obtain result
 % ?- graph1(G1), graph2(G2), iso_graph2(G1,G2, R).
-iso_graph2(L1,L2,Lout):-eq_perm2(L1,L2,eq_neighb2,[],Lout).
+iso_graph2(L1,L2,Lout):- eq_perm2(L1,L2,eq_neighb2,[],Lout).
 
 
 eq_perm2([H1|T1],L2,EQ,LI,LO):-	% same as in v1
@@ -114,7 +114,7 @@ eq_node2(N1,N2,LI,[p(N1,N2)|LI]):-
 
 % VERSION 3
 % ?- graph1(G1), graph2(G2), iso_graph3(G1,G2, R).
-iso_graph3(L1,L2,Lout):-eq_perm3(L1,L2,eq_neighb3,Lout).
+iso_graph3(L1,L2,Lout):- eq_perm3(L1,L2,eq_neighb3,Lout).
 
 
 eq_perm3([H1|T1],L2,EQ,LO):-	% same as in v1
@@ -145,7 +145,7 @@ eq_node3(N1,N2,[_|T]):-
 
 % VERSION 4 - can obtain result
 % ?- graph1(G1), graph2(G2), iso_graph4(G1,G2, R).
-iso_graph4(L1,L2,Lout):-eq_perm4(L1,L2,eq_neighb4,Lout).
+iso_graph4(L1,L2,Lout):- eq_perm4(L1,L2,eq_neighb4,Lout).
 
 eq_perm4([H1|T1],L2,EQ,LO):-	% same as in v1
 	delete(H2,L2,T2),

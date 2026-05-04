@@ -48,9 +48,12 @@ eq_perm1([],[],_).
 
 eq_neighb1(n(N1,L1),n(N2,L2)):- 	% 2 neighb pairs are equivalent
 	eq_node1(N1,N2),				% if the nodes are equivalent
-	eq_perm1(L1,L2,eq_node1). 	% and the neighb lists are equivalent
+	eq_perm1(L1,L2,eq_node1). 		% and the neighb lists are equivalent
 
-delete(X,[X|T],T).				% what if we add a cut here?
+% We want to delete to gives all possibilities
+% If we add the cut, we make it deterministic which is wrong
+% If we add the last clause, the last answer includes all values which we dont want
+delete(X,[X|T],T).					% what if we add a cut here?
 delete(X,[H|T],[H|R]):-
 	delete(X,T,R).
 
@@ -58,12 +61,12 @@ delete(X,[H|T],[H|R]):-
 :-dynamic p/2.
 
 eq_node1(N1,N2):-	% if nodes N1 and N2 already form a pair in the akb
-	p(N1,N2).		% the evaluation continues
-eq_node1(N1,_):-		% if N1 forms a pair with some OTHER node
-	p(N1,_),!,		% we get an inconsistency, so should NOT allow
- 	fail.			% (N1,N2) form a pair, so, fail to backtrack
-eq_node1(_,N2):-		% symmetric on N2
-eq_node1(_,N2),!,
+	p(N1,N2).			% the evaluation continues
+eq_node1(N1,_):-	% if N1 forms a pair with some OTHER node
+	p(N1,_),!,			% we get an inconsistency, so should NOT allow
+ 	fail.				% (N1,N2) form a pair, so, fail to backtrack
+eq_node1(_,N2):-	% symmetric on N2
+	p(_,N2),!,
 	fail.
 eq_node1(N1,N2):-			% if you reach here, the is no inconsistency
 	asserta(p(N1,N2)). 		% hence pair N1, N2 is a legitimate one.

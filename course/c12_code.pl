@@ -57,11 +57,10 @@ eq_perm1([H1|T1],L2,EQ):- 	% is the perm predicate
 	P=..[EQ,H1,H2],			% which is created here
 	call(P),				% and called here
 	eq_perm1(T1,T2,EQ).
-eq_perm1([],[],_):- listing(p/2).
+eq_perm1([],[],_).
 
 
 eq_neighb1(n(N1,L1),n(N2,L2)):- 	% 2 neighb pairs are equivalent
-	% length(L1, Len), length(L2, Len),		% improved version
 	eq_node1(N1,N2),				% if the nodes are equivalent
 	eq_perm1(L1,L2,eq_node1). 		% and the neighb lists are equivalent
 

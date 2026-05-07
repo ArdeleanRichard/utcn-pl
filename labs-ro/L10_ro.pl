@@ -299,7 +299,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 5. Filtrează elemente bazat pe o funcție dată (suggestie: predicatul univ).
+% 5. Filtrează elemente bazat pe o funcție dată (suggestie: predicatul call/n).
 % ?- filter(odd, [1, 2, 3, 4], Result).
 % Result = [1, 3].
 
@@ -313,7 +313,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 6. Returnează true dacă oricare element satisface o funcție dată (suggestie: predicatul univ).
+% 6. Returnează true dacă oricare element satisface o funcție dată (suggestie: predicatul call/n).
 % ?- any(greater_than_three, [1, 2, 4]).
 % true.
 
@@ -326,7 +326,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 7. Returnează true dacă toate elementele satisfac o funcție dată (suggestie: predicatul univ).
+% 7. Returnează true dacă toate elementele satisfac o funcție dată (suggestie: predicatul call/n).
 % ?- all(positive, [1, 2, 3]).
 % true.
 

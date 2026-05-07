@@ -210,8 +210,7 @@ path1(Graph, X, Y, Path):- path1(Graph, X, Y, [X], Path).
 
 path1(_, Y, Y, _, []).			
 path1(G, X, Y, PPath, [Z|FPath]):-
-    Edge=..[G, X, Z],                   % Edge becomes  G(X, Z),
-    call(Edge),				
+    call(G, X, Z),			% apelam G(X,Z)		
     not(member(Z, PPath)), 		
     path1(G, Z, Y, [Z|PPath], FPath).	          
 
@@ -297,7 +296,7 @@ edge_ex3(e,d).
 % 4. Scrie predicatul cycle(X,R) care găsește un ciclu ce pornește din nodul X dintrun graf G 
 % (folosind reprezentarea edge/2) și pune rezultatul în R. Predicatul trebuie să returneze toate 
 % ciclurile prin backtracking. În plus, predicatul trebuie să primească predicatul edge 
-% care definește graful ca și input (sugestie: predicatul univ).
+% care definește graful ca și input (sugestie: predicatul call/n).
 % ?- cycle(edge_ex4, a, R).
 % R = [a,d,b,a] ;
 % R = [a,e,c,a] ;
@@ -322,7 +321,7 @@ edge_ex4(d,a).
 %--------------------------------------------------
 % 5. Scrieți predicatul cycle(X,R) din exercițiul anterior folosind reprezentarea neighbour/2. 
 % În plus, predicatul trebuie să primească predicatul neighb care definește graful ca și input 
-% (sugestie: predicatul univ).
+% (sugestie: predicatul call/n).
 % ?- cycle_neighb(neighb_ex5, a, R).
 % R = [a,d,b,a] ;
 % R = [a,e,c,a] ;

@@ -26,19 +26,19 @@ dfs(_,_,L) :- !, collect(L).         % stage2. collecting results
 
 % traversal predicate
 df_search(G,X):-
-   % store X as visited node
+   	% store X as visited node
     assertz(visited_node(X)),
     % take a first edge from X to Y, rest are found through backtracking
-    Edge=..[G,X,Y], call(Edge), 
+    call(G, X, Y), 
     % check if this Y was already visited
     not(visited_node(Y)),
     % if it was not -this is why the negation is needed – 
-   % then we continue the traversal by moving the current node to Y
+   	% then we continue the traversal by moving the current node to Y
     df_search(G,Y).
 
 % collecting predicate - collecting is done in reverse order
 collect([X|R]):-
-   % we retract each stored visited node
+   	% we retract each stored visited node
     retract(visited_node(X)), !, 
     collect(R).
 % the result is constructed backwards
@@ -59,24 +59,24 @@ collect([]).
 :- dynamic queue/1.   % the queue stores nodes that need to be expanded
 
 % bfs(Source, Path)
-bfs(G,X, _):-   % stage1. traversal of nodes
-    assertz(visited_node(X)), % add source as visited
-    assertz(queue(X)), % add source as first element in queue
+bfs(G,X, _):-   				% stage1. traversal of nodes
+    assertz(visited_node(X)), 	% add source as visited
+    assertz(queue(X)), 			% add source as first element in queue
     bf_search(G). 
-bfs(_,_,R):- !, collect(R). % stage2. collecting results (same as previous)
+bfs(_,_,R):- !, collect(R). 	% stage2. collecting results (same as previous)
 
 bf_search(G):-
-    retract(queue(X)), %retract node that needs to be expanded
-    expand(G,X), !, % call expand predicate
-    bf_search(G). % recursion
+    retract(queue(X)), 			% retract node that needs to be expanded
+    expand(G,X), !,				% call expand predicate
+    bf_search(G). 				% recursion
 
 expand(G,X):-	
-    Edge=..[G,X,Y], call(Edge), % find a node Y linked to given X
-    not(visited_node(Y)), % check if Y was already visited
-    % if Y was not visited before
-    assertz(visited_node(Y)), % add Y to visited nodes
-    assertz(queue(Y)), % add Y to queue to be expanded 
-    % at some point
+    call(G, X, Y), 				% find a node Y linked to given X
+    not(visited_node(Y)), 		% check if Y was already visited
+    							% if Y was not visited before
+    assertz(visited_node(Y)), 	% add Y to visited nodes
+    assertz(queue(Y)), 			% add Y to queue to be expanded 
+    							% at some point
     fail. % fail required to find another Y
 expand(_,_).
 
@@ -101,7 +101,7 @@ bfs1(G, X, R) :-
 bfs1(_, [], _, []).
 bfs1(G, [X|Q], V, [X|R]):- 
     \+member(X, V),!,
-    Neighb =.. [G,X,Ns], call(Neighb), % Neighb = G(X, Ns)
+    call(G, X, Ns), % Neighb = G(X, Ns)
     remove_visited(Ns, V, RemNs),
     append(Q, RemNs, NewQ),
     bfs1(G, NewQ, [X|V], R).

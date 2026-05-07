@@ -204,9 +204,8 @@ path1(X, Y, PPath, [Z|FPath]):-
 path1(Graph, X, Y, Path):- path1(Graph, X, Y, [X], Path). 
 
 path1(_, Y, Y, _, []).			
-path1(G, X, Y, PPath, [Z|FPath]):-
-    Edge=..[G, X, Z],                   % Edge becomes  G(X, Z),
-    call(Edge),				
+path1(G, X, Y, PPath, [Z|FPath]):-   
+    call(G, X, Z),				% we call G(X, Z),
     not(member(Z, PPath)), 		
     path1(G, Z, Y, [Z|PPath], FPath).	          
 
@@ -296,7 +295,7 @@ edge_ex3(e,d).
 % 4. Write a predicate cycle(X,R) to find a closed path (cycle) starting at a given node X in 
 % the graph G (using the edge/2 representation)  and saves the result in R. The predicate should 
 % return all cycles via backtracking. Moreover, the predicate should receive the edge predicate 
-% defining the graph as an input (suggestion: univ predicate).
+% defining the graph as an input (suggestion: call/n predicate).
 % ?- cycle(edge_ex4, a, R).
 % R = [a,d,b,a] ;
 % R = [a,e,c,a] ;
@@ -321,7 +320,7 @@ edge_ex4(d,a).
 %--------------------------------------------------
 % 5. Write the cycle(X,R) predicate from the previous exercise using the neighbour/2 representation.
 % Moreover, the predicate should receive the neighb predicate defining the graph as an input 
-% (suggestion: univ predicate).
+% (suggestion: call/n predicate).
 % ?- cycle_neighb(neighb_ex5, a, R).
 % R = [a,d,b,a] ;
 % R = [a,e,c,a] ;

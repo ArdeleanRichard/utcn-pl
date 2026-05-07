@@ -25,10 +25,10 @@ hamilton(N,X,Cycle,Cost):-
 	try(N1,X,X,0,Cost,[X],Cycle).
 
 try(N,X,Y,PCost,Cost,PPath,Cycle):-
-	is_edge(Y,Z,W),
-	not(member(Z,Pway)),
+	N>0,
 	N1 is N-1, 
-	N1>0,
+	is_edge(Y,Z,W),
+	not(member(Z,PPath)),
 	NewPCost is PCost+W,
 	try(N1,X,Z,NewPCost,Cost,[Z|PPath],Cycle).
 try(0,X,Y,PCost,Cost,PPath,[X|PPath]):-
@@ -40,21 +40,6 @@ try(0,X,Y,PCost,Cost,PPath,[X|PPath]):-
 %--------------------------------------------------
 % Hamiltonian cycle with B&B %
 %--------------------------------------------------
-
-edge(a,b,7).
-edge(a,c,1).
-edge(a,d,8).
-edge(b,c,2).
-edge(b,f,5).
-edge(b,e,10).
-edge(c,d,3).
-edge(d,f,4).
-edge(d,e,8).
-edge(f,e,3).
-
-is_edge(X,Y,W):-
-	edge(X,Y,W);
-	edge(Y,X,W).
 
 
 % searches for N nodes to end in X the way; put in Cand a path containing just one element: [n(X,0,0)] 
@@ -73,6 +58,7 @@ search(N,X,[C|Cands],Exp,Way):-
 % expand takes the best candidate path C and tries to find the next nodes
 % from these next nodes, all are collected and they update Cand into NewCand
 
+
 % 3rd arg is the best candidate list which is expanded, take first node (last added) and find neighbours
 expand(N,X,[n(Y,Len,Fi)|Cy],_,_):-
 	is_edge(Y,Z,W), 								% nondeterministically take Z,  first neighbor of Y (eventually all of them) and weight W
@@ -83,8 +69,10 @@ expand(N,X,[n(Y,Len,Fi)|Cy],_,_):-
 expand(_,_,C,Cands,NewCands):-
 	collect(C,Cands,NewCands).						% start collecting from akb and place in NewCand
 
+
 member_thread(X,[n(X,_,_)|_]). 						% checks if a node is in a list
 member_thread(X,[_|T]):- member_thread(X,T).
+
 
 % take the current best candidate list L, create a number of Lists that contain the next options and add them to candidate paths
 collect(C,Cands,NewCands):- 				% L is the parent, a whole path. Is Y in Candidate from clause 2 in search
@@ -92,6 +80,7 @@ collect(C,Cands,NewCands):- 				% L is the parent, a whole path. Is Y in Candida
 	ins_ord_list([Z|C],Cands,IntCands),		% add in Cand with the whole path (+L, parent of path)
 	collect(C,IntCands,NewCands).			% continue with the Intermediate Candidate 
 collect(_,Cands,Cands).
+
 
 ins_ord_list(X,[H|T],[H|R]):-				% in the right (ordered by Fi function) place in the list
 	X = [n(_,_,Xfi)|_], H = [n(_,_,Yfi)|_], 

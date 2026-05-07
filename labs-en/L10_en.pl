@@ -195,11 +195,27 @@ recursion2:- listing(q/1).
 
 
 % map(+Predicate, +List, -MappedList)
+% map(_, [], []).
+% map(Pred, [H|T], [H1|R]) :-
+%    P=..[Pred, H, H1],
+%    call(P), !,
+%    map(Pred, T, R).
+
+
+
+%--------------------------------------------------
+% The issue with univ and SWISH %
+%--------------------------------------------------
+% Solution: Workaround
+% We may use the call/n predicate that has the behaviour of both univ and call, 
+% creating a predicate call with the first argument as the predicate, 
+% whilst the rest become the arguments of said predicate and calling it. 
+
 map(_, [], []).
 map(Pred, [H|T], [H1|R]) :-
-    P=..[Pred, H, H1],
-    call(P), !,
-    map(Pred, T, R).
+    call(Pred, H, H1), !,
+    map1(Pred, T, R).
+
 
 double(X, Y) :- Y is X * 2.
 halve(X, Y) :- Y is X / 2.
@@ -210,27 +226,6 @@ halve(X, Y) :- Y is X / 2.
 % Result = [2, 4, 6].
 % ?- trace, map(halve, [2, 4, 6], Result).
 % Result = [1, 2, 3].
-
-
-
-%--------------------------------------------------
-% The issue with univ and SWISH %
-%--------------------------------------------------
-% Solution 2: Workaround
-% We can create a safe_call/1 predicate that is a wrapper around the functions 
-% that we would create using univ. The disadvantage is that for each new functions, 
-% we would have to add a new clause to safe_call/1.
-
-map1(_, [], []).
-map1(Pred, [H|T], [H1|R]) :-
-    P=..[Pred, H, H1],    % create a predicate through univ  Pred(H, H1)
-    safe_call(P), !,                 % call the created predicate 
-    map1(Pred, T, R).
-
-
-safe_call(double(X,Y)):- double(X,Y).
-safe_call(halve(X,Y)):- halve(X,Y).
-
 
 
 

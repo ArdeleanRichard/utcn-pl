@@ -201,10 +201,24 @@ recursion2:- listing(p/1), listing(q/1), listing(seen/1).
 
 
 % map(+Predicate, +List, -MappedList)
+% map(_, [], []).
+% map(Pred, [H|T], [H1|R]) :-
+%    P=..[Pred, H, H1],
+%    call(P), !,
+%    map(Pred, T, R).
+
+
+%--------------------------------------------------
+% Problema cu univ și SWISH %
+%--------------------------------------------------
+% Soluția: Artificiu
+% Putem folosi predicatul call/n care are comportamentul lui univ și call simultan, 
+% creează un apel de predicat cu primul argument ca și predicat, 
+% iar restul devin argumentele acestui predicat și apelează. 
+
 map(_, [], []).
 map(Pred, [H|T], [H1|R]) :-
-    P=..[Pred, H, H1],
-    call(P), !,
+    call(Pred, H, H1), !,
     map(Pred, T, R).
 
 double(X, Y) :- Y is X * 2.
@@ -216,26 +230,6 @@ halve(X, Y) :- Y is X / 2.
 % Result = [2, 4, 6].
 % ?- trace, map(halve, [2, 4, 6], Result).
 % Result = [1, 2, 3].
-
-
-%--------------------------------------------------
-% Problema cu univ și SWISH %
-%--------------------------------------------------
-% Soluția 2: Artificiu
-% Putem crea un predicat safe_call/1 care să fie un wrapper în jurul funcțiilor 
-% pe care le-am crea folosind univ. Dezavantajul este că, pentru fiecare funcție nouă, 
-% ar trebui să adăugăm o nouă clauză în safe_call/1.
-
-map1(_, [], []).
-map1(Pred, [H|T], [H1|R]) :-
-    P=..[Pred, H, H1],    % creearea unei predicat cu univ  Pred(H, H1)
-    call(P), !,                 % apelarea predicatului creat 
-    map1(Pred, T, R).
-
-
-safe_call(double(X,Y)):- double(X,Y).
-safe_call(halve(X,Y)):- halve(X,Y).
-
 
 
 

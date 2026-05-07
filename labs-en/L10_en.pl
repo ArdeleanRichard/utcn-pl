@@ -294,7 +294,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 5. Filters out elements based on a given function (suggestion: univ predicate).
+% 5. Filters out elements based on a given function (suggestion: call/n predicate).
 % ?- filter(odd, [1, 2, 3, 4], Result).
 % Result = [1, 3].
 
@@ -308,7 +308,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 6. Returns true if any elements satisfies a given function (suggestion: univ predicate).
+% 6. Returns true if any elements satisfies a given function (suggestion: call/n predicate).
 % ?- any(greater_than_three, [1, 2, 4]).
 % true.
 
@@ -321,7 +321,7 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 7. Returns true if all elements satisfy a given function (suggestion: univ predicate).
+% 7. Returns true if all elements satisfy a given function (suggestion: call/n predicate).
 % ?- all(positive, [1, 2, 3]).
 % true.
 

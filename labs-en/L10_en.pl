@@ -234,8 +234,8 @@ halve(X, Y) :- Y is X / 2.
 %%%%%% 				EXERCISES				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Trees:
-complete_tree(t(6, t(4,t(2,nil,nil),t(5,nil,nil)), t(9,t(7,nil,nil),nil))).
-incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
+incomplete_tree(t(7, t(5, t(3, _, _), t(6, _, _)), t(11, _, _))). 
+complete_tree(t(7, t(5, t(3, nil, nil), t(6, nil, nil)), t(11, nil, nil))). 
 
 
 

@@ -29,11 +29,11 @@ df_search(G,X):-
     % salvăm X ca nod vizitat
     assertz(nod_vizitat(X)),
     % luăm un prim edge de la X la Y, restul le vom găsi prin backtracking
-    Edge=..[G,X,Y], call(Edge), 
+    call(G, X, Y), 
     % verificăm daca acest Y a fost deja vizitat
     not(nod_vizitat(Y)),
     % dacă nu a fost -  de aceea avem nevoie de negare – 
-   % atunci vom continua parcurgerea prin mutarea nodululi curent la Y
+   	% atunci vom continua parcurgerea prin mutarea nodululi curent la Y
     df_search(G,Y).
 
 % predicatul de colectare - colectarea se face în ordine
@@ -57,27 +57,27 @@ collect([]).
 % Predicatul BFS %
 %--------------------------------------------------
 :- dynamic nod_vizitat/1.
-:- dynamic coada/1. 	% coada reține nodurile care trebuie expandate
+:- dynamic coada/1. 			% coada reține nodurile care trebuie expandate
 
 % bfs(Source, Path)
-bfs(G,X, _):-      % pas1. parcurgerea nodurilor
-    assertz(nod_vizitat(X)), % adăugăm sursa ca nod vizitat
-    assertz(coada(X)), % adăugăm sursa în coadă
+bfs(G,X, _):-      				% pas1. parcurgerea nodurilor
+    assertz(nod_vizitat(X)), 	% adăugăm sursa ca nod vizitat
+    assertz(coada(X)), 			% adăugăm sursa în coadă
     bf_search(G).
-bfs(_,_,R):- !, collect(R). % pas2. colectarea rezultatelor
+bfs(_,_,R):- !, collect(R). 	% pas2. colectarea rezultatelor
 
 bf_search(G):-
-    retract(coada(X)), % scoatem nodul care trebuie expandat
-    expand(G,X), !, % apelăm predicatul de expansiune
-    bf_search(G). % recursivitate
+    retract(coada(X)), 			% scoatem nodul care trebuie expandat
+    expand(G,X), !, 			% apelăm predicatul de expansiune
+    bf_search(G). 				% recursivitate
 	
 expand(G,X):-	
-    Edge=..[G,X,Y], call(Edge), % găsim un nod Y cu o muchie la X-ul dat
-    not(nod_vizitat(Y)), % verificăm daca Y a fost vizitat
-    assertz(nod_vizitat(Y)), % adăugăm Y la nodurile vizitate
-    assertz(coada(Y)), % adăugam Y în coadă pentru a fi expandat 
-    % la un moment dat
-    fail. % fail-ul este necesar pentru a găsi un alt Y
+    call(G, X, Y), 				% găsim un nod Y cu o muchie la X-ul dat
+    not(nod_vizitat(Y)), 		% verificăm daca Y a fost vizitat
+	assertz(nod_vizitat(Y)), 	% adăugăm Y la nodurile vizitate
+    assertz(coada(Y)), 			% adăugam Y în coadă pentru a fi expandat 
+    							% la un moment dat
+    fail. 						% fail-ul este necesar pentru a găsi un alt Y
 expand(_,_).  
 
 
@@ -104,7 +104,7 @@ bfs1(G, X, R) :-
 bfs1(_, [], _, []).
 bfs1(G, [X|Q], V, [X|R]):- 
     \+member(X, V),!,
-    Neighb =.. [G,X,Ns], call(Neighb),          % Neighb = G(X, Ns)
+    call(G, X, Ns),          % Neighb = G(X, Ns)
     remove_visited(Ns, V, RemNs),
     append(Q, RemNs, NewQ),
     bfs1(G, NewQ, [X|V], R).

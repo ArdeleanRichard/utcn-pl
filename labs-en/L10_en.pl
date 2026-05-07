@@ -11,7 +11,27 @@
 %--------------------------------------------------
 
 % Your first query with side effects:
-% ?- assert(insect(ant)), assert(insect(bee)), (retract(insect(I)), writeln(I), retract(insect(II)), fail.
+% ?- assert(insect(ant)), assert(insect(bee)), retract(insect(A)), writeln(A), retract(insect(B)), fail.
+
+
+:-dynamic p/1.
+
+p(1).
+p(2).
+p(3).
+p(4).
+p(5).
+
+example:- 
+    retract(p(X)), 
+    retract(p(Y)),
+    format('q(~w, ~w).', [X, Y]), nl,
+    fail.
+example.
+
+% Try to think what the predicate will print with format/2.
+% ?- example.
+
 
 
 %--------------------------------------------------
@@ -193,6 +213,28 @@ halve(X, Y) :- Y is X / 2.
 
 
 
+%--------------------------------------------------
+% The issue with univ and SWISH %
+%--------------------------------------------------
+% Solution 2: Workaround
+% We can create a safe_call/1 predicate that is a wrapper around the functions 
+% that we would create using univ. The disadvantage is that for each new functions, 
+% we would have to add a new clause to safe_call/1.
+
+map1(_, [], []).
+map1(Pred, [H|T], [H1|R]) :-
+    P=..[Pred, H, H1],    % create a predicate through univ  Pred(H, H1)
+    safe_call(P), !,                 % call the created predicate 
+    map1(Pred, T, R).
+
+
+safe_call(double(X,Y)):- double(X,Y).
+safe_call(halve(X,Y)):- halve(X,Y).
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% 				EXERCISES				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -218,40 +260,20 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-
-% 2. Filters out elements based on a given function (suggestion: univ predicate).
-% ?- filter(even, [1, 2, 3, 4], Result).
-% Result = [2, 4].
-
-% filter(Pred, L, R):- % *IMPLEMENTATION HERE*
-
-% even( ... ) :- % *IMPLEMENTATION HERE*
+% 2.	Computes the number of occurrences of unique elements in a list 
+% and creates the list containing Element-Count pairs using assert and retract.
+% ?- count_elements([a,b,a,b,c], R).
+% R = [a-2, b-2, c-1]
 
 
-
-
-% 3. Returns true if any elements satisfies a given function (suggestion: univ predicate).
-% ?- any(greater_than_three, [1, 2, 4]).
-% true.
-
-% any(Pred, L):- % *IMPLEMENTATION HERE*
-
-% greater_than_three( ... ) :- % *IMPLEMENTATION HERE*
-
-
-
-% 4. Returns true if all elements satisfy a given function (suggestion: univ predicate).
-% ?- all(positive, [1, 2, 3]).
-% true.
-
-% all(Pred, L, R):- % *IMPLEMENTATION HERE*
-
-% positive( ... ) :- % *IMPLEMENTATION HERE*
+% count_elements(L, R):- % *IMPLEMENTATION HERE*
 
 
 
 
-% 5. Collects (using retracts through a 2-step process) in a difference list all even elements of a given incomplete list.
+
+
+% 3. Collects (using retracts through a 2-step process) in a difference list all even elements of a given incomplete list.
 % ?- even_dl([1,2,3|_], S, E).
 % S = [2|E]
 
@@ -263,9 +285,51 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 6. Collects (using retracts through a 2-step process) all internal nodes of an incomplete binary tree.
+% 4. Collects (using retracts through a 2-step process) all internal nodes of an incomplete binary tree.
 % ?- incomplete_tree(T), internal_list(T, R).
 % R = [7, 5|_].
 
 % internal_list(T, _):- % *IMPLEMENTATION HERE*
 % internal_list(_, R):- % *IMPLEMENTATION HERE*
+
+
+
+
+
+
+
+
+% 5. Filters out elements based on a given function (suggestion: univ predicate).
+% ?- filter(odd, [1, 2, 3, 4], Result).
+% Result = [1, 3].
+
+% filter(Pred, L, R):- % *IMPLEMENTATION HERE*
+
+% odd( ... ) :- % *IMPLEMENTATION HERE*
+
+
+
+
+
+
+
+% 6. Returns true if any elements satisfies a given function (suggestion: univ predicate).
+% ?- any(greater_than_three, [1, 2, 4]).
+% true.
+
+% any(Pred, L):- % *IMPLEMENTATION HERE*
+
+% greater_than_three( ... ) :- % *IMPLEMENTATION HERE*
+
+
+
+
+
+
+% 7. Returns true if all elements satisfy a given function (suggestion: univ predicate).
+% ?- all(positive, [1, 2, 3]).
+% true.
+
+% all(Pred, L, R):- % *IMPLEMENTATION HERE*
+
+% positive( ... ) :- % *IMPLEMENTATION HERE*

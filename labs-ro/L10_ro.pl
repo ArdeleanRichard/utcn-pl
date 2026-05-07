@@ -12,8 +12,26 @@
 %--------------------------------------------------
 
 % Prima voastră întrebare cu efecte laterale:
-% ?- assert(insect(ant)), assert(insect(bee)), (retract(insect(I)), writeln(I), retract(insect(II)), fail.
+% ?- assert(insect(ant)), assert(insect(bee)), retract(insect(A)), writeln(A), retract(insect(B)), fail.
 
+
+:-dynamic p/1.
+
+p(1).
+p(2).
+p(3).
+p(4).
+p(5).
+
+example:- 
+    retract(p(X)), 
+    retract(p(Y)),
+    format('q(~w, ~w).', [X, Y]), nl,
+    fail.
+example.
+
+% Incercati sa va ganditi la ce ar printa predicatul cu format/2.
+% ?- example.
 
 %--------------------------------------------------
 % Predicatul FIBONACCI %
@@ -200,6 +218,28 @@ halve(X, Y) :- Y is X / 2.
 % Result = [1, 2, 3].
 
 
+%--------------------------------------------------
+% Problema cu univ și SWISH %
+%--------------------------------------------------
+% Soluția 2: Artificiu
+% Putem crea un predicat safe_call/1 care să fie un wrapper în jurul funcțiilor 
+% pe care le-am crea folosind univ. Dezavantajul este că, pentru fiecare funcție nouă, 
+% ar trebui să adăugăm o nouă clauză în safe_call/1.
+
+map1(_, [], []).
+map1(Pred, [H|T], [H1|R]) :-
+    P=..[Pred, H, H1],    % creearea unei predicat cu univ  Pred(H, H1)
+    call(P), !,                 % apelarea predicatului creat 
+    map1(Pred, T, R).
+
+
+safe_call(double(X,Y)):- double(X,Y).
+safe_call(halve(X,Y)):- halve(X,Y).
+
+
+
+
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%% 				EXERCIȚII				%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -223,43 +263,20 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-
-% 2. Filtrează elemente bazat pe o funcție dată (suggestie: predicatul univ).
-% ?- filter(even, [1, 2, 3, 4], Result).
-% Result = [2, 4].
-
-% filter(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+% 2. Calculează numărul de apariții al elementelor unice dintr-o listă și 
+% creează lista care contine perechi Element-Număr folosind assert și retract.
+% ?- count_elements([a,b,a,b,c], R).
+% R = [a-2, b-2, c-1]
 
 
-
-
-
-
-% 3. Returnează true dacă oricare element satisface o funcție dată (suggestie: predicatul univ).
-% ?- any(greater_than_three, [1, 2, 4]).
-% true.
-
-% any(Pred, L):- % *IMPLEMENTAȚI AICI*
-
-% greater_than_three( ... ) :- % *IMPLEMENTAȚI AICI*
+% count_elements(L, R):- % *IMPLEMENTAȚI AICI*
 
 
 
 
 
 
-% 4. Returnează true dacă toate elementele satisfac o funcție dată (suggestie: predicatul univ).
-% ?- all(positive, [1, 2, 3]).
-% true.
-
-% all(Pred, L, R):- % *IMPLEMENTAȚI AICI*
-
-% positive( ... ) :- % *IMPLEMENTAȚI AICI*
-
-
-
-
-% 5. Colectează (folosind retract-uri printr-un proces format din 2 pași) într-o listă diferență toate elementele pare ale unei liste incomplete date.
+% 3. Colectează (folosind retract-uri printr-un proces format din 2 pași) într-o listă diferență toate elementele pare ale unei liste incomplete date.
 % ?- even_dl([1,2,3|_], S, E).
 % S = [2|E]
 
@@ -273,9 +290,52 @@ incomplete_tree(t(6, t(4,t(2,_,_),t(5,_,_)), t(9,t(7,_,_),_))).
 
 
 
-% 6. Colectează (folosind retract-uri printr-un proces format din 2 pași) toate nodurile interne ale unui arbore binar incomplet.
+% 4. Colectează (folosind retract-uri printr-un proces format din 2 pași) toate nodurile interne ale unui arbore binar incomplet.
 % ?- incomplete_tree(T), internal_list(T, R).
 % R = [7, 5|_].
 
 % internal_list(T, _):- % *IMPLEMENTAȚI AICI*
 % internal_list(_, R):- % *IMPLEMENTAȚI AICI*
+
+
+
+
+
+
+
+
+
+% 5. Filtrează elemente bazat pe o funcție dată (suggestie: predicatul univ).
+% ?- filter(odd, [1, 2, 3, 4], Result).
+% Result = [1, 3].
+
+% filter(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+
+% odd( ... ) :- % *IMPLEMENTAȚI AICI*
+
+
+
+
+
+
+
+% 6. Returnează true dacă oricare element satisface o funcție dată (suggestie: predicatul univ).
+% ?- any(greater_than_three, [1, 2, 4]).
+% true.
+
+% any(Pred, L):- % *IMPLEMENTAȚI AICI*
+
+% greater_than_three( ... ) :- % *IMPLEMENTAȚI AICI*
+
+
+
+
+
+
+% 7. Returnează true dacă toate elementele satisfac o funcție dată (suggestie: predicatul univ).
+% ?- all(positive, [1, 2, 3]).
+% true.
+
+% all(Pred, L, R):- % *IMPLEMENTAȚI AICI*
+
+% positive( ... ) :- % *IMPLEMENTAȚI AICI*

@@ -17,6 +17,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 %--------------------------------------------------
 % The DFS predicate %
 %--------------------------------------------------
+:- meta_predicate dfs(2, ?, ?).
 :- dynamic visited_node/1.
 
 % dfs(Source, Path)
@@ -55,6 +56,7 @@ collect([]).
 %--------------------------------------------------
 % The BFS predicate %
 %--------------------------------------------------
+:- meta_predicate bfs(2, ?, ?).
 :- dynamic visited_node/1.
 :- dynamic queue/1.   % the queue stores nodes that need to be expanded
 
@@ -88,7 +90,7 @@ expand(_,_).
 %--------------------------------------------------
 % The BFS predicate without side effects %
 %--------------------------------------------------
-:-meta_predicate bfs1(2, ?, ?).
+:- meta_predicate bfs1(2, ?, ?).
 
 neighbor(1, [2,5]).
 neighbor(2, [1,3,5]).

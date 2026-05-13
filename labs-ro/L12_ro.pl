@@ -17,6 +17,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 %--------------------------------------------------
 % Predicatul DFS %
 %--------------------------------------------------
+:- meta_predicate dfs(2, ?, ?).
 :- dynamic nod_vizitat/1.
 
 % dfs(Graph, Source, Path)
@@ -56,6 +57,7 @@ collect([]).
 %--------------------------------------------------
 % Predicatul BFS %
 %--------------------------------------------------
+:- meta_predicate bfs(2, ?, ?).
 :- dynamic nod_vizitat/1.
 :- dynamic coada/1. 			% coada reține nodurile care trebuie expandate
 
@@ -90,6 +92,7 @@ expand(_,_).
 %--------------------------------------------------
 % Predicatul BFS fara efecte laterale %
 %--------------------------------------------------
+:- meta_predicate bfs1(2, ?, ?).
 
 neighbor(1, [2,5]).
 neighbor(2, [1,3,5]).

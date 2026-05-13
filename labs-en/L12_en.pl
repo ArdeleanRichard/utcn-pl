@@ -88,6 +88,8 @@ expand(_,_).
 %--------------------------------------------------
 % The BFS predicate without side effects %
 %--------------------------------------------------
+:-meta_predicate bfs1(2, ?, ?).
+
 neighbor(1, [2,5]).
 neighbor(2, [1,3,5]).
 neighbor(3, [2,4]).

@@ -8,15 +8,15 @@
 % The GRAPH REPRESENTATIONS %
 %--------------------------------------------------
 % A1B2
-node(a). 
-node(b). %etc
+node1(a). 
+node1(b). %etc
 
 edge1(a,b). 
 edge1(b,a).
 edge1(b,c). 
 edge1(c,b). %etc
 
-is_edge(X,Y):- edge(X,Y); edge(Y,X).
+is_edge1(X,Y):- edge1(X,Y); edge1(Y,X).
 
 
 % A2B2
@@ -206,16 +206,19 @@ path1(X, Y, PPath, [Z|FPath]):-
 
 
 % Acum putem aplica path pe orice graph
-path1(Graph, X, Y, Path):- path1(Graph, X, Y, [X], Path). 
+% meta_predicate indica ca primul argument al path1/4 este un predicat in sine cu 2 argumente
+:- meta_predicate path1(2, ?, ?, ?).
 
-path1(_, Y, Y, _, []).			
-path1(G, X, Y, PPath, [Z|FPath]):-
-    call(G, X, Z),			% apelam G(X,Z)		
+path2(Graph, X, Y, Path):- path2(Graph, X, Y, [X], Path). 
+
+path2(_, Y, Y, _, [Y]).			
+path2(G, X, Y, PPath, [X|FPath]):-
+    call(G, X, Z),					% apelam G(X,Z)
     not(member(Z, PPath)), 		
-    path1(G, Z, Y, [Z|PPath], FPath).	          
+    path2(G, Z, Y, [Z|PPath], FPath).         
 
 % Urmărește execuția la:
-% ?- trace, path1(edge, a, c, P).    
+% ?- trace, path2(edge, a, c, P).    
 
 
 

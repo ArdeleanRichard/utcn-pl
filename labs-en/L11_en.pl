@@ -8,21 +8,22 @@
 % The GRAPH REPRESENTATIONS %
 %--------------------------------------------------
 % A1B2
-node(a). 
-node(b). %etc
+node1(a). 
+node1(b). %etc
 
 edge1(a,b). 
 edge1(b,a).
 edge1(b,c). 
 edge1(c,b). %etc
 
-is_edge(X,Y):- edge(X,Y); edge(Y,X).
+is_edge1(X,Y):- edge1(X,Y); edge1(Y,X).
 
 
 % A2B2
 neighbor1(a, [b, d]).
 neighbor1(b, [a, c, d]).
 neighbor1(c, [b, d]). %etc.
+
 
 
 
@@ -201,10 +202,12 @@ path1(X, Y, PPath, [Z|FPath]):-
 
 
 % Now we can apply path on any graph
+% meta_predicate indicates that the first argument of path1/4 is a predicate itself with 2 arguments
+:- meta_predicate path1(2, ?, ?, ?).
 path1(Graph, X, Y, Path):- path1(Graph, X, Y, [X], Path). 
 
-path1(_, Y, Y, _, []).			
-path1(G, X, Y, PPath, [Z|FPath]):-   
+path1(_, Y, Y, _, [Y]).			
+path1(G, X, Y, PPath, [X|FPath]):-   
     call(G, X, Z),				% we call G(X, Z),
     not(member(Z, PPath)), 		
     path1(G, Z, Y, [Z|PPath], FPath).	          

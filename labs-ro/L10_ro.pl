@@ -15,17 +15,17 @@
 % ?- assert(insect(ant)), assert(insect(bee)), retract(insect(A)), writeln(A), retract(insect(B)), fail.
 
 
-:-dynamic p/1.
+:-dynamic a/1.
 
-p(1).
-p(2).
-p(3).
-p(4).
-p(5).
+a(1).
+a(2).
+a(3).
+a(4).
+a(5).
 
 example:- 
-    retract(p(X)), 
-    retract(p(Y)),
+    retract(a(X)), 
+    retract(a(Y)),
     format('q(~w, ~w).', [X, Y]), nl,
     fail.
 example.

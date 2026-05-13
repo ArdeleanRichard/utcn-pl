@@ -207,7 +207,7 @@ path1(X, Y, PPath, [Z|FPath]):-
 
 % Acum putem aplica path pe orice graph
 % meta_predicate indica ca primul argument al path1/4 este un predicat in sine cu 2 argumente
-:- meta_predicate path1(2, ?, ?, ?).
+:- meta_predicate path2(2, ?, ?, ?).
 
 path2(Graph, X, Y, Path):- path2(Graph, X, Y, [X], Path). 
 
@@ -313,8 +313,10 @@ edge_ex4(b,d).
 edge_ex4(d,a).
 
 
+:- meta_predicate cycle(2, ?, ?).
 
-% cycle(G, X,Path):- % *IMPLEMENTAȚI AICI*
+
+% cycle(G, X, Path):- % *IMPLEMENTAȚI AICI*
 
 
 
@@ -337,8 +339,10 @@ neighb_ex5(d, [a]).
 neighb_ex5(e, [a]).
 
 
+:- meta_predicate cycle_neighb(2, ?, ?).
 
-% cycle_neighb(G, X,Path):- % *IMPLEMENTAȚI AICI*
+
+% cycle_neighb(G, X, Path):- % *IMPLEMENTAȚI AICI*
 
 
 

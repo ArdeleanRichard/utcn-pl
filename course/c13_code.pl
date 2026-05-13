@@ -22,18 +22,18 @@ is_edge(X,Y,W):-
 
 hamilton(N,X,Cycle,Cost):-
 	N1 is N-1,
-	try(N1,X,X,0,Cost,[X],Cycle).
+	try(N1,X,X,[X],0,Cycle,Cost).
 
-try(N,X,Y,PCost,Cost,PPath,Cycle):-
-	N>0,
-	N1 is N-1, 
-	is_edge(Y,Z,W),
-	not(member(Z,PPath)),
-	NewPCost is PCost+W,
-	try(N1,X,Z,NewPCost,Cost,[Z|PPath],Cycle).
-try(0,X,Y,PCost,Cost,PPath,[X|PPath]):-
-	is_edge(Y,X,W),
-	Cost is PCost+W.
+try(N, X, Y, PPath, PCost, Cycle, Cost):-
+    N > 0,
+    N1 is N-1,
+    is_edge(Y, Z, W),
+    not(member(Z, PPath)),
+    PCost1 is PCost + W,
+    try(N1, X, Z, [Z|PPath], PCost1, Cycle, Cost). 
+try(0, X, Y, PPath, PCost, [X|PPath], Cost):-
+    is_edge(Y, X, W), 
+    Cost is PCost + W.
 
 
 
@@ -76,8 +76,8 @@ member_path(X,[_|T]):- member_path(X,T).
 
 % take the current best candidate list L, create a number of Lists that contain the next options and add them to candidate paths
 collect(C,Cands,NewCands):- 				% L is the parent, a whole path. Is Y in Candidate from clause 2 in search
-	retract(node(Z)),!,	 					% take top from akb 
-	ins_ord_list([Z|C],Cands,IntCands),		% add in Cand with the whole path (+L, parent of path)
+	retract(node(Node)),!,	 					% take top from akb 
+	ins_ord_list([Node|C],Cands,IntCands),		% add in Cand with the whole path (+L, parent of path)
 	collect(C,IntCands,NewCands).			% continue with the Intermediate Candidate 
 collect(_,Cands,Cands).
 

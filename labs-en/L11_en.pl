@@ -203,14 +203,15 @@ path1(X, Y, PPath, [Z|FPath]):-
 
 % Now we can apply path on any graph
 % meta_predicate indicates that the first argument of path1/4 is a predicate itself with 2 arguments
-:- meta_predicate path1(2, ?, ?, ?).
-path1(Graph, X, Y, Path):- path1(Graph, X, Y, [X], Path). 
+:- meta_predicate path2(2, ?, ?, ?).
 
-path1(_, Y, Y, _, [Y]).			
-path1(G, X, Y, PPath, [X|FPath]):-   
+path2(Graph, X, Y, Path):- path2(Graph, X, Y, [X], Path). 
+
+path2(_, Y, Y, _, [Y]).			
+path2(G, X, Y, PPath, [X|FPath]):-   
     call(G, X, Z),				% we call G(X, Z),
     not(member(Z, PPath)), 		
-    path1(G, Z, Y, [Z|PPath], FPath).	          
+    path2(G, Z, Y, [Z|PPath], FPath).	          
 
 % Follow the execution of: 
 % ?- trace, path1(edge, a, c, P).
@@ -312,6 +313,7 @@ edge_ex4(b,d).
 edge_ex4(d,a).
 
 
+:- meta_predicate cycle(2, ?, ?).
 
 
 % cycle(G, X,Path):- % *IMPLEMENTATION HERE* 
@@ -336,8 +338,10 @@ neighb_ex5(d, [a]).
 neighb_ex5(e, [a]).
 
 
+:- meta_predicate cycle_neighb(2, ?, ?).
 
-% cycle_neighb(G, X,Path):- % *IMPLEMENTATION HERE* 
+
+% cycle_neighb(G, X, Path):- % *IMPLEMENTATION HERE* 
 
 
 

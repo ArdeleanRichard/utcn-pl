@@ -99,21 +99,57 @@ edge(c,e).
 
 % path(Source, Target, Path)
 % drumul parțial începe cu nodul sursă – acesta este un wrapper
-path(X, Y, Path):-path(X, Y, [X], Path). 
+path_fw(X, Y, Path):-path_fw(X,Y,[X],Path).  
 
 % când sursa (primul argument) este egal cu destinația (al doilea argument),
 % atunci știm că drumul a ajuns la final 
 % și putem unifica drumul parțial cu cel final
-path(Y, Y, PPath, PPath).			
-path(X, Y, PPath, FPath):-
-    edge(X, Z), 				% căutăm o muchie
-    not(member(Z, PPath)), 		% care nu a mai fost parcursă
-    path(Z, Y, [Z|PPath], FPath).	          % și o adăugăm în rezultatul parțial
+path_fw(Y, Y, PPath, PPath).			
+path_fw(X, Y, PPath, FPath):-
+    edge(X, Z), 								% căutăm o muchie
+    not(member(Z, PPath)), 						% care nu a mai fost parcursă
+    path_fw(Z, Y, [Z|PPath], FPath).	        % și o adăugăm în rezultatul parțial
 
 
 	
 % Urmărește execuția la:
-% ?- trace, trace, path(a,c,R).
+% ?- trace, path_fw(a,e,R).
+
+
+
+%--------------------------------------------------
+% O implementare mai bună a drumurilor %
+%--------------------------------------------------
+
+% Ordinea drumului este corectă acum (nu este inversat)
+path1(X, Y, Path):- path1(X, Y, [X], Path). 
+
+path_bw(Y, Y, _, [Y]).			
+path_bw(X, Y, Visited, [X|Path]):-
+    edge(X, Z), 				
+    not(member(Z, Visited)), 		
+    path_bw(Z, Y, [Z|Visited], Path).	     
+
+
+% Urmărește execuția la:
+% ?- trace, path_bw(a,e,R).
+
+
+
+% Acum putem aplica path pe orice graph
+% meta_predicate indică că primul argument al path1/4 este un predicat în sine cu 2 argumente
+:- meta_predicate path2(2, ?, ?, ?).
+
+gpath(Graph, X, Y, Path):- gpath(Graph, X, Y, [X], Path). 
+
+gpath(_, Y, Y, _, [Y]).			
+gpath(G, X, Y, Visited, [X|Path]):-   
+    call(G, X, Z),					% apelăm G(X,Z)
+    not(member(Z, Visited)), 		
+    gpath(G, Z, Y, [Z|Visited], Path).	         
+
+% Urmărește execuția la:
+% ?- trace, gpath(edge, a, e, P).    
 
 
 
@@ -122,15 +158,15 @@ path(X, Y, PPath, FPath):-
 % Predicatul RESTRICTED PATH %
 %--------------------------------------------------
 % restricted_path(Source, Target, RestrictionsList, Path)
-restricted_path(X,Y,LR,P):- 
+restricted_path(X,Y,RL,P):- 
     path(X,Y,P), 
     reverse(P,PR), 
-    check_restrictions(LR, PR).
+    check_restrictions(RL, PR).
 
 % predicate that verifies the restrictions
 check_restrictions([],_):- !.
 check_restrictions([H|TR], [H|TP]):- !, check_restrictions(TR,TP).
-check_restrictions(LR, [_|TP]):-check_restrictions(LR,TP).
+check_restrictions(RL, [_|TP]):-check_restrictions(RL,TP).
 
 
 
@@ -139,6 +175,7 @@ check_restrictions(LR, [_|TP]):-check_restrictions(LR,TP).
 % ?- trace, check_restrictions([1,3], [1,2,3,4]).
 % ?- trace, check_restrictions([1,3], [1,2]).
 % ?- trace, restricted_path(a, c, [a,c,d], R).
+% ?- trace, restricted_path(a, e, [a,c,e], R).
 
 
 %--------------------------------------------------
@@ -186,40 +223,7 @@ path(X,Y,PPath,FPath,LPath):-
 
 
 % Urmărește execuția la:
-% ?- trace, optimal_path(a,c,R).
-
-
-%--------------------------------------------------
-% A better implementation of paths %
-%--------------------------------------------------
-
-% Ordinea drumului este corecta acum (nu este inversat)
-path1(X, Y, Path):- path1(X, Y, [X], Path). 
-
-path1(Y, Y, _, []).			
-path1(X, Y, PPath, [Z|FPath]):-
-    edge(X, Z), 				
-    not(member(Z, PPath)), 		
-    path1(Z, Y, [Z|PPath], FPath).	          
-
-
-
-
-% Acum putem aplica path pe orice graph
-% meta_predicate indica ca primul argument al path1/4 este un predicat in sine cu 2 argumente
-:- meta_predicate path2(2, ?, ?, ?).
-
-path2(Graph, X, Y, Path):- path2(Graph, X, Y, [X], Path). 
-
-path2(_, Y, Y, _, [Y]).			
-path2(G, X, Y, PPath, [X|FPath]):-
-    call(G, X, Z),					% apelam G(X,Z)
-    not(member(Z, PPath)), 		
-    path2(G, Z, Y, [Z|PPath], FPath).         
-
-% Urmărește execuția la:
-% ?- trace, path2(edge, a, c, P).    
-
+% ?- trace, optimal_path(a,e,R).
 
 
 
@@ -234,11 +238,12 @@ path2(G, X, Y, PPath, [X|FPath]):-
 
 
 %--------------------------------------------------
-% 1. Rescrie optimal_path/3 astfel încât să funcționeze pe grafuri ponderate:
+% 1. Predicatul optimal_path/3 a fost rescris cu nume de predicate schimbate în optimal_weighted_path/3
+% Trebuie să faceți schimbări astfel încât să funcționeze pe grafuri ponderate:
 % atașați o pondere pentru fiecare muchie din graf și calculați drumul de cost
 % minim dintr-un nod sursă la un nod destinație.
 % ?- optimal_weighted_path(a, e, P).
-% P = [e, b, a]
+% P = [a, b, e]
 
 edge_ex1(a,c,7).
 edge_ex1(a,b,10).
@@ -246,7 +251,28 @@ edge_ex1(c,d,3).
 edge_ex1(b,e,1).
 edge_ex1(d,e,2).
 
-% opt_weight_path(a, e, P):- % *IMPLEMENTAȚI AICI*
+
+:- dynamic sol_part_w/2.
+
+% optimal_weighted_path(Source, Target, Path)
+optimal_weighted_path(X,Y,Path):-
+    asserta(sol_part_w([], 9999)),
+    weighted_path(X, Y, [X], Path, 1).
+optimal_weighted_path(_,_,Path):- 
+    retract(sol_part_w(Path,_)).
+
+% weighted_path(Source, Target, PartialPath, FinalPath, PathCost)
+weighted_path(Y,Y,Path,Path,LPath):-	
+    retract(sol_part_w(_,_)),!, 
+    asserta(sol_part_w(Path,LPath)), 	
+    fail.					
+weighted_path(X,Y,PPath,FPath,LPath):-
+    edge_o(X,Z),										% poate că nu ar trebui să fie edge_o/2
+    not(member(Z,PPath)),
+    LPath1 is LPath+1,			
+    sol_part_w(_,Lopt),			
+    LPath1<Lopt,		
+    weighted_path(Z,Y,[Z|PPath],FPath,LPath1).
 
 
 
@@ -266,11 +292,12 @@ edge_ex2(e,a).
 
 
 % hamilton(NumOfNodes, Source, Path)
-hamilton(NN, X, Path):- 
-    NN1 is NN-1, 
-    hamilton_path(NN1, X, X,[X],Path).
+hamilton(N, X, Path):- 
+    N1 is N-1, 
+    hamilton_path(N1, X, X,[X],Path).
 
-% *IMPLEMENTAȚI AICI*
+% hamilton_path(+NumOfNodes, +Source, +Target, +PartialPath, -Path)
+% hamilton_path(N, X, Y, PPath, Path):- % *IMPLEMENTAȚI AICI*
 
 
 
@@ -278,8 +305,7 @@ hamilton(NN, X, Path):-
 %--------------------------------------------------
 % 3. Scrieți predicatul euler/3 care poate să găsească drumuri Euleriane într-un graf dat de la un nod dat. 
 % ?- euler(5, a, R).
-% R = [[b, a], [e, b], [d, e], [c, d], [a, c]];
-% R = [[c, a], [d, c], [e, d], [b, e], [a, b]]
+% R = [[b, a], [e, b], [d, e], [c, d], [a, c]]
 
 edge_ex3(a,b).
 edge_ex3(b,e).
@@ -288,6 +314,7 @@ edge_ex3(d,c).
 edge_ex3(e,d).
 
 
+% euler(+NumOfEdges, +Source, -Path)
 % euler(NE, X, Path):- % *IMPLEMENTAȚI AICI*
 
 

@@ -89,43 +89,76 @@ neighb_to_edge_v3.
 %--------------------------------------------------
 % The PATH predicate %
 %--------------------------------------------------
-edge(a,c).
+edge(a,b).
 edge(b,c).
 edge(c,d).
 edge(d,e).
-edge(c,e).
 
-% path(Source, Target, Path)
+% path(+Source, +Target, -Path)
 % the partial path starts with the source node – it is a wrapper
-path(X, Y, Path):-path(X, Y, [X], Path). 
+path_fw(X, Y, Path):-path_fw(X,Y,[X],Path). 
 
 % when source (1st argument) is equal to target (2nd argument), 
 % we finished the path and we unify the partial and final paths.
-path(Y, Y, PPath, PPath).			
-path(X, Y, PPath, FPath):-
-    edge(X, Z), 				% search for an edge
-    not(member(Z, PPath)), 		% that was not traversed
-    path(Z, Y, [Z|PPath], FPath).	          % add to partial result
+path_fw(Y, Y, PPath, PPath).			
+path_fw(X, Y, PPath, FPath):-
+    edge(X, Z), 									% search for an edge
+    not(member(Z, PPath)), 							% that was not traversed
+    path_fw(Z, Y, [Z|PPath], FPath).	          	% add to partial result
 
 	
 % Follow the execution of:
-% ?- trace, path(a,c,R).
+% ?- trace, path_fw(a,e,R).
+
+
+%--------------------------------------------------
+% A better implementation of paths %
+%--------------------------------------------------
+
+% Order of paths is now correct (not reversed)
+path_bw(X, Y, Path):- path_bw(X, Y, [X], Path). 
+
+path_bw(Y, Y, _, [Y]).			
+path_bw(X, Y, Visited, [X|Path]):-
+    edge(X, Z), 				
+    not(member(Z, Visited)), 		
+    path_bw(Z, Y, [Z|Visited], Path).	          
+
+
+% Follow the execution of:
+% ?- trace, path_bw(a,e,R).
+
+
+% Now we can apply path on any graph
+% meta_predicate indicates that the first argument of path1/4 is a predicate itself with 2 arguments
+:- meta_predicate gpath(2, ?, ?, ?).
+
+% gpath(+Graph, +Source, +Target, -Path)
+gpath(Graph, X, Y, Path):- gpath(Graph, X, Y, [X], Path). 
+
+gpath(_, Y, Y, _, [Y]).			
+gpath(G, X, Y, Visited, [X|Path]):-   
+    call(G, X, Z),				% we call G(X, Z),
+    not(member(Z, Visited)), 		
+    gpath(G, Z, Y, [Z|Visited], Path).	          
+
+% Follow the execution of: 
+% ?- trace, gpath(edge, a, e, P).
 
 
 
 %--------------------------------------------------
 % The RESTRICTED PATH predicate %
 %--------------------------------------------------
-% restricted_path(Source, Target, RestrictionsList, Path)
-restricted_path(X,Y,LR,P):- 
-    path(X,Y,P), 
-    reverse(P,PR), 
-    check_restrictions(LR, PR).
+% restricted_path(+Source, +Target, +RestrictionsList, -Path)
+restricted_path(X,Y,RL,P):- 
+    path_bw(X,Y,P), 
+    check_restrictions(RL, P).
 
 % predicate that verifies the restrictions
 check_restrictions([],_):- !.
 check_restrictions([H|TR], [H|TP]):- !, check_restrictions(TR,TP).
-check_restrictions(LR, [_|TP]):-check_restrictions(LR,TP).
+check_restrictions(RL, [_|TP]):-check_restrictions(RL,TP).
 
 
 
@@ -134,6 +167,7 @@ check_restrictions(LR, [_|TP]):-check_restrictions(LR,TP).
 % ?- trace, check_restrictions([1,3], [1,2,3,4]).
 % ?- trace, check_restrictions([1,3], [1,2]).
 % ?- trace, restricted_path(a, c, [a,c,d], R).
+% ?- trace, restricted_path(a, e, [a,c,e], R).
 
 
 
@@ -148,73 +182,44 @@ edge_o(c,e).
 edge_o(a,b).
 edge_o(b,e).
 
+% sol_part(+Length, +Path)
 :- dynamic sol_part/2.
 
-% optimal_path(Source, Target, Path)
-optimal_path(X,Y,Path):-
+% optimal_path(+Source, +Target, -Path)
+optimal_path(X,Y,_):-
     asserta(sol_part([], 100)), 	% 100 = max initial distance
-    path(X, Y, [X], Path, 1).
-optimal_path(_,_,Path):- 
-    retract(sol_part(Path,_)).
+    path(X, Y, [X], 1).
+optimal_path(_,_,RPath):- 
+    retract(sol_part(Path,_)),
+    reverse(Path, RPath).			% Path is created forwards, we must reverse to get the correct order
 
-% path(Source, Target, PartialPath, FinalPath, PathLength)
-% when target is equal to source, we save the current solution
-path(Y,Y,Path,Path,LPath):-	
+% path(+Source, +Target, -PartialPath, -PathLength)
+path(Y,Y,Path,LPath):-	
+	% when target is equal to source, we save the current solution
     % we retract the last solution	
     retract(sol_part(_,_)),!, 		
     % save current solution
     asserta(sol_part(Path,LPath)), 	
     % search for another solution
     fail.					
-path(X,Y,PPath,FPath,LPath):-
+path(X,Y,PPath,LPath):-
     edge_o(X,Z),
-    not(member(Z,PPath)),
-    % compute partial distance
-    LPath1 is LPath+1,			
+    not(member(Z,PPath)),	
     % extract distance from previous solution
     sol_part(_,Lopt),			
+    % compute partial distance
+    LPath1 is LPath+1,		
     % if current distance is smaller than the previous distance, 
     LPath1<Lopt,		
     % we keep going		
-    path(Z,Y,[Z|PPath],FPath,LPath1).
+    path(Z,Y,[Z|PPath],LPath1).
 
 
 % Follow the execution of:
-% ?- trace, optimal_path(a,c,R).
+% ?- trace, optimal_path(a,e,R).
 
 
 
-
-%--------------------------------------------------
-% A better implementation of paths %
-%--------------------------------------------------
-
-% Order of paths is now correct (not reversed)
-path1(X, Y, Path):- path1(X, Y, [X], Path). 
-
-path1(Y, Y, _, []).			
-path1(X, Y, PPath, [Z|FPath]):-
-    edge(X, Z), 				
-    not(member(Z, PPath)), 		
-    path1(Z, Y, [Z|PPath], FPath).	          
-
-
-
-
-% Now we can apply path on any graph
-% meta_predicate indicates that the first argument of path1/4 is a predicate itself with 2 arguments
-:- meta_predicate path2(2, ?, ?, ?).
-
-path2(Graph, X, Y, Path):- path2(Graph, X, Y, [X], Path). 
-
-path2(_, Y, Y, _, [Y]).			
-path2(G, X, Y, PPath, [X|FPath]):-   
-    call(G, X, Z),				% we call G(X, Z),
-    not(member(Z, PPath)), 		
-    path2(G, Z, Y, [Z|PPath], FPath).	          
-
-% Follow the execution of: 
-% ?- trace, path1(edge, a, c, P).
 
 
 
@@ -233,11 +238,12 @@ path2(G, X, Y, PPath, [X|FPath]):-
 
 
 %--------------------------------------------------
-% 1. Rewrite the optimal_path/3 predicate such that it operates on weighted graphs: attach a 
+% 1. The optimal_path/3 predicate has been rewritten with changed predicate names into optimal_weighted_path/3. 
+% You must make changes such that it operates on weighted graphs: attach a 
 % weight to each edge on the graph and compute the minimum cost path from a source node to a 
 % destination node. 
 % ?- optimal_weighted_path(a, e, P).
-% P = [e, b, a]
+% P = [a, b, e]
 
 edge_ex1(a,c,7).
 edge_ex1(a,b,10).
@@ -245,10 +251,28 @@ edge_ex1(c,d,3).
 edge_ex1(b,e,1).
 edge_ex1(d,e,2).
 
+:- dynamic sol_part_w/2.
 
-% opt_weight_path(a, e, P):- % *IMPLEMENTATION HERE* 
+% optimal_weighted_path(Source, Target, Path)
+optimal_weighted_path(X,Y,_):-
+    asserta(sol_part_w([], 9999)),
+    weighted_path(X, Y, [X], 1).
+optimal_weighted_path(_,_,RPath):- 
+    retract(sol_part_w(Path,_)),
+    reverse(Path, RPath).
 
-
+% weighted_path(Source, Target, PartialPath, FinalPath, PathCost)
+weighted_path(Y,Y,Path,LPath):-	
+    retract(sol_part_w(_,_)),!, 
+    asserta(sol_part_w(Path,LPath)), 	
+    fail.					
+weighted_path(X,Y,PPath,LPath):-
+    edge_o(X,Z),										% maybe it shouldn't run on edge_o/2
+    not(member(Z,PPath)),	
+    sol_part_w(_,Lopt),		
+    LPath1 is LPath+1,			
+    LPath1<Lopt,		
+    weighted_path(Z,Y,[Z|PPath],LPath1).
 
 
 % 2. Continue the implementation of the Hamiltonian Cycle using the hamilton/3 predicate.
@@ -264,12 +288,13 @@ edge_ex2(d,e).
 edge_ex2(e,a).
 
 
-% hamilton(NumOfNodes, Source, Path)
-hamilton(NN, X, Path):- 
-    NN1 is NN-1, 
-    hamilton_path(NN1, X, X,[X],Path).
+% hamilton(+NumOfNodes, +Source, Path)
+hamilton(N, X, Path):- 
+    N1 is N-1, 
+    hamilton_path(N1, X, X, [X], Path).
 
-% *IMPLEMENTATION HERE* 
+% hamilton_path(+NumOfNodes, +Source, +Target, +PartialPath, -Path)
+% hamilton_path(N, X, Y, PPath, Path):- % *IMPLEMENTATION HERE* 
 
 
 
@@ -287,7 +312,7 @@ edge_ex3(d,c).
 edge_ex3(e,d).
 
 
-
+% euler(+NumOfEdges, +Source, -Path)
 % euler(NE, X, Path):- % *IMPLEMENTATION HERE* 
 
 
@@ -316,7 +341,7 @@ edge_ex4(d,a).
 :- meta_predicate cycle(2, ?, ?).
 
 
-% cycle(G, X,Path):- % *IMPLEMENTATION HERE* 
+% cycle(G, X, Path):- % *IMPLEMENTATION HERE* 
 
 
 
@@ -357,8 +382,6 @@ edge_ex6(a,b).
 edge_ex6(a,c).
 edge_ex6(b,d).
 
-
-
 :- dynamic gen_neighb/2.
 
 % edge_to_neighb:- % *IMPLEMENTATION HERE* 
@@ -375,9 +398,9 @@ edge_ex6(b,d).
 % – path and restrictions list. Try to motivate why this strategy is not efficient (use trace to 
 % see what happens). Write a more efficient predicate which searches for the restricted path  
 % between a source and a target node.
-% ? - restricted_path_efficient(a, e, [c,d], P2).
-% P = [a, b, c, d, e];
+% ? - restricted_path_efficient(a, e, [c,d], P).
 % P = [a, c, d, e];
+% P = [a, b, c, d, e];
 % false
 
 edge_ex7(a,b).

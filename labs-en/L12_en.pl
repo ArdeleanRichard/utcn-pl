@@ -21,9 +21,9 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 :- dynamic visited_node/1.
 
 % dfs(Source, Path)
-dfs(G,X,_) :- df_search(G,X). % stage1. traversal of nodes
+dfs(G,X,_) :- df_search(G,X). 			% stage1. traversal of nodes
 % when finished, collection starts
-dfs(_,_,L) :- !, collect(L).         % stage2. collecting results
+dfs(_,_,L) :- !, collect(L).         	% stage2. collecting results
 
 % traversal predicate
 df_search(G,X):-
@@ -198,7 +198,7 @@ is_target(Target),
 
 %--------------------------------------------------
 % 1. Modify the DFS predicate such that it searches nodes only to a given depth (DLS – Depth-Limited Search). Set the depth limit via a predicate, depth_max(2). for example.
-% ?- dfs(is_edge,a,DFS), dls(is_edge,a,DLS).
+% ?- dfs(edge_ex1,a,DFS), dls(edge_ex1,a,DLS).
 % DFS = [a, b, d, e, g, c, f, h],
 % DLS = [a, b, d, c, f].
 
@@ -212,14 +212,18 @@ edge_ex1(f,h).
 
 % dls(G, X, R):- % *IMPLEMENTATION HERE* 
  
+
  
  
  
  
 % 2. Having the BFS algorithm implementation without side effects, modify it without side effects 
 % such that it works on the edge representation instead of the neighbor representation
-% ?- bfs2(is_edge,a, R).
-% R = [1, 2, 5, 3, 4, 6].
+% ?- bfs(is_edge,1,R), bfs1(neighbor,1,R1), bfs2(is_edge,1,R2).
+% R = R1 = R2 = [1, 2, 5, 3, 4, 6].
+
+:- meta_predicate bfs2(2, ?, ?).
+
 
 
 % bfs2(G, X, R):- % *IMPLEMENTAȚI AICI*
@@ -227,13 +231,17 @@ edge_ex1(f,h).
 
 
 
-% 3. Write the DFS algorithm implementations without side effects for the edge and neighbor representations.
-% ?- dfs1(neighbor,1,R).
-% R = [1, 2, 3, 4, 5, 6].
-%
-% ?- dfs2(is_edge,1,R).
-% R = [1, 2, 3, 4, 5, 6].
 
+
+
+
+
+% 3. Write the DFS algorithm implementations without side effects for the edge and neighbor representations.
+% ?- dfs(is_edge,1,R), dfs1(neighbor,1,R1), dfs2(is_edge,1,R2).
+% R = R1 = R2 = [1, 2, 3, 4, 5, 6].
+
+:- meta_predicate dfs1(2, ?, ?).
+:- meta_predicate dfs2(2, ?, ?).
 
 
 

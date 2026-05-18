@@ -21,9 +21,9 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 :- dynamic nod_vizitat/1.
 
 % dfs(Graph, Source, Path)
-dfs(G,X,_) :- df_search(G,X). % parcurgerea nodurilor
+dfs(G,X,_) :- df_search(G,X). 			% pas1. parcurgerea nodurilor
 % când parcurgerea se termină, începe colectarea
-dfs(_,_,L) :- !, collect(L). % colectarea rezultatelor
+dfs(_,_,L) :- !, collect(L). 			% pas2. colectarea rezultatelor
 
 % predicatul de traversare
 df_search(G,X):-
@@ -221,8 +221,11 @@ edge_ex1(f,h).
  
 % 2. Având implementarea algoritmului BFS fără efecte laterale, modificați fără efecte laterale 
 % astfel încât să funcționeze pe reprezentarea de edge în loc de reprezentarea de neighbor.
-% ?- bfs2(is_edge,a, R).
-% R = [1, 2, 5, 3, 4, 6].
+% ?- bfs(is_edge,1,R), bfs1(neighbor,1,R1), bfs2(is_edge,1,R2).
+% R = R1 = R2 = [1, 2, 5, 3, 4, 6].
+
+:- meta_predicate bfs2(2, ?, ?).
+
 
 
 % bfs2(G, X, R):- % *IMPLEMENTAȚI AICI*
@@ -230,12 +233,16 @@ edge_ex1(f,h).
 
 
 
+
+
+
+
 % 3. Scrieți implementarea algoritmului DFS fără efecte laterale pentru reprezentările de edge si neighbor.
-% ?- dfs1(neighbor,1,R).
-% R = [1, 2, 3, 4, 5, 6].
-%
-% ?- dfs2(is_edge,1,R).
-% R = [1, 2, 3, 4, 5, 6].
+% ?- dfs(is_edge,1,R), dfs1(neighbor,1,R1), dfs2(is_edge,1,R2).
+% R = R1 = R2 = [1, 2, 3, 4, 5, 6].
+
+:- meta_predicate dfs1(2, ?, ?).
+:- meta_predicate dfs2(2, ?, ?).
 
 
 

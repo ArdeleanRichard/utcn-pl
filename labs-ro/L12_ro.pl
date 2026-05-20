@@ -20,7 +20,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 :- meta_predicate dfs(2, ?, ?).
 :- dynamic nod_vizitat/1.
 
-% dfs(Graph, Source, Path)
+% dfs(+Graph, +Source, -Path)
 dfs(G,X,_) :- df_search(G,X). 			% pas1. parcurgerea nodurilor
 % când parcurgerea se termină, începe colectarea
 dfs(_,_,L) :- !, collect(L). 			% pas2. colectarea rezultatelor
@@ -61,7 +61,7 @@ collect([]).
 :- dynamic nod_vizitat/1.
 :- dynamic coada/1. 			% coada reține nodurile care trebuie expandate
 
-% bfs(Source, Path)
+% bfs(+Graph, +Source, -Path)
 bfs(G,X, _):-      				% pas1. parcurgerea nodurilor
     assertz(nod_vizitat(X)), 	% adăugăm sursa ca nod vizitat
     assertz(coada(X)), 			% adăugăm sursa în coadă

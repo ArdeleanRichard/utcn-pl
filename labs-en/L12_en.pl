@@ -20,7 +20,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 :- meta_predicate dfs(2, ?, ?).
 :- dynamic visited_node/1.
 
-% dfs(Source, Path)
+% dfs(+Graph, +Source, -Path)
 dfs(G,X,_) :- df_search(G,X). 			% stage1. traversal of nodes
 % when finished, collection starts
 dfs(_,_,L) :- !, collect(L).         	% stage2. collecting results
@@ -60,7 +60,7 @@ collect([]).
 :- dynamic visited_node/1.
 :- dynamic queue/1.   % the queue stores nodes that need to be expanded
 
-% bfs(Source, Path)
+% bfs(+Graph, +Source, -Path)
 bfs(G,X, _):-   				% stage1. traversal of nodes
     assertz(visited_node(X)), 	% add source as visited
     assertz(queue(X)), 			% add source as first element in queue

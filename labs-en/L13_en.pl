@@ -4,7 +4,7 @@
 
 
 %--------------------------------------------------
-% 1	Arithmetic Operations %
+% 1.	Arithmetic Operations %
 %--------------------------------------------------
 
 %1.	Compute the greatest common divisor of two numbers.
@@ -41,7 +41,7 @@
 
 
 %--------------------------------------------------
-% 2	Operations on Lists %
+% 2.	Operations on Lists %
 %--------------------------------------------------
 
 
@@ -164,7 +164,7 @@
 
 
 %--------------------------------------------------
-% 3	Deep Lists %
+% 3.	Deep Lists %
 %--------------------------------------------------
 %25. Compute the maximum depth of a deep list.
 % ?- depth_list([1, [2, [3]], [4]], R1), depth_list([], R2). 
@@ -211,7 +211,7 @@
 
 
 %--------------------------------------------------
-% 4	Trees %
+% 4.	Trees %
 %--------------------------------------------------
 %32. Compute the depth of a binary complete/incomplete tree.
 % ?- tree_ex32(T), depth_tree(T, R). 
@@ -324,30 +324,36 @@ tree_ex44(t(14,t(6,t(4,nil,nil),t(12,t(10,nil,nil),nil)),t(17,t(16,nil,nil),t(20
 
 
 %--------------------------------------------------
-% 5	Graphs %
+% 5.	Graphs %
 %--------------------------------------------------
 %45. Collect all nodes of a graph.
-%Ex: node(1). node(2). node(3). 
+
 % ?- collect(R). 
 % R = [1,2,3].
 
 
-node(1). 
-node(2). 
-node(3). 
+node_ex45(1). 
+node_ex45(2). 
+node_ex45(3). 
 
 
 
-%46. Compute the indegree and the outdegree for each node in a graph using the dynamic predicate info(Node, OutDegree, InDegree). 
-%Ex: edge(1,2). edge(2,1). edge(1,4). edge(1,3). edge(3,2). 
+%46. Compute the indegree and the outdegree for each node in a graph 
+% using the dynamic predicate info(Node, OutDegree, InDegree). 
+% Use listing/1 to print the created predicate.
+
 % ?- gen_info.
-% => info(1,3,1). info(2,1,2). info(3,1,1). info(4,0,1).
+% 
+% 		info(1,3,1). 
+% 		info(2,1,2). 
+% 		info(3,1,1). 
+% 		info(4,0,1).
 
-edge(1,2).
-edge(2,1).
-edge(1,4).
-edge(1,3).
-edge(3,2). 
+edge_ex46(1,2).
+edge_ex46(2,1).
+edge_ex46(1,4).
+edge_ex46(1,3).
+edge_ex46(3,2). 
 
 
 
@@ -357,7 +363,7 @@ edge(3,2).
 
 
 %--------------------------------------------------
-% 6	Bonus %
+% 6.	Bonus %
 %--------------------------------------------------
 
 % 47. (Problema Rucsacului / Knapsack Problem) A person has a backpack that can carry a maximum weight G. The person has N objects 
@@ -374,6 +380,105 @@ edge(3,2).
 
 
 
+
 % 48. (DIGITS) Consider the digits: 1234567890. First remove one digit, then swap two adjacent digits and then insert some number 
-% of plus signs between the digits. There is a way to do this so that the answer to the resulting arithmetic expression is 2004! 
-% But how? Write a Prolog program to do it! 
+% of plus signs between the digits. There is a way to do this so that the answer to the resulting arithmetic expression 
+% is 2004. There is only one answer to this puzzle.
+
+digits([1,2,3,4,5,6,7,8,9,0]). 
+
+% ?- solve(R).
+% R = [1, 2, 4, 5, plus, 6, 7, 9, plus, 8, 0]
+
+
+
+
+
+
+
+
+
+%--------------------------------------------------
+% 7. Colloquy subject examples %
+%--------------------------------------------------
+% 7.1. Grade 6 level %
+%--------------------------------------------------
+% 1. Write a predicate that alternates (based on position in the list):
+% -	on even positions, it will decrement the current value
+% -	on odd positions, it will increment the current value
+% -	the first element has index 1
+
+% ?- alternative([1,2,3,4], R).
+% R = [2, 1, 4, 3]
+
+
+
+
+
+
+%--------------------------------------------------
+% 7.2. Grade 8 level %
+%--------------------------------------------------
+% 2. Write a predicate that replaces the key of a node 
+% with the sum of all its ancestors (on an incomplete ternary tree).
+% Hint. The ancestor is any node on the upward path from the current node to the root.
+
+
+tree(t(2,t(8,_,_,_),t(3,_,_,t(1,_,_,_)),t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,t(9,_,_,_))))).
+
+% ?- tree(T), anc_sum(T, R).
+% R = t(2, t(10, _, _,_), t(5,_,_, t(6,_,_,_)), t(7, t(14,_,_,_), t(12,_,_,_), t(8,_,_, t(17,_,_,_)))),
+% T = t(2, t(8,_,_,_), t(3,_,_, t(1,_,_,_)), t(5, t(7,_,_,_), t(5,_,_,_), t(1,_,_, t(9,_,_,_))))
+
+
+
+
+
+
+
+
+%--------------------------------------------------
+% 7.3. Grade 10 level %
+%--------------------------------------------------
+% 3. Write a predicate that groups the elements of a set into disjoint subsets 
+% by distributing the elements of G into the groups Gs. The group sizes are given in the list Ns. 
+% The predicate will generate all the possible combinations. 
+% Note. we do not want permutations of the group members; i.e. [[a,b],...] is the same solution 
+% as [[b,a],...]. However, we make a difference between [[a,b],[c,d],...] and [[c,d],[a,b],...].
+
+% group(G,Ns,Gs)
+% ?- group([a,b,c,d,e,f,g,h,i],[2,2,5],Gs).
+% Gs = [[a, b], [c, d], [e, f, g, h, i]] ;
+% Gs = [[a, b], [c, e], [d, f, g, h, i]] ;
+% Gs = [[a, b], [c, f], [d, e, g, h, i]] ;
+% Gs = [[a, b], [c, g], [d, e, f, h, i]] ;
+% …
+
+
+
+
+
+
+
+
+
+% 4. Write a predicate that computes the density of a given graph. 
+% The density is the ratio of the number of edges to the number of possible edges in the graph.
+
+
+node(a).
+node(b).
+node(c).
+node(d).
+node(e).
+
+edge(a, c).
+edge(b, c).
+edge(c, d).
+edge(d, e).
+edge(c, e).
+edge(a, b).
+edge(b, e).
+
+% ?- density(R).
+% R = 0.7.

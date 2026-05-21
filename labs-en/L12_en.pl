@@ -23,7 +23,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 % dfs(+Graph, +Source, -Path)
 dfs(G,X,_) :- df_search(G,X). 			% stage1. traversal of nodes
 % when finished, collection starts
-dfs(_,_,L) :- !, collect(L).         	% stage2. collecting results
+dfs(_,_,R) :- !, collect(R).         	% stage2. collecting results
 
 % traversal predicate
 df_search(G,X):-

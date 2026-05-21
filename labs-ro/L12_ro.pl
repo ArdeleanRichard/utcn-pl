@@ -23,7 +23,7 @@ is_edge(X,Y):- edge(X,Y);edge(Y,X).
 % dfs(+Graph, +Source, -Path)
 dfs(G,X,_) :- df_search(G,X). 			% pas1. parcurgerea nodurilor
 % când parcurgerea se termină, începe colectarea
-dfs(_,_,L) :- !, collect(L). 			% pas2. colectarea rezultatelor
+dfs(_,_,R) :- !, collect(R). 			% pas2. colectarea rezultatelor
 
 % predicatul de traversare
 df_search(G,X):-

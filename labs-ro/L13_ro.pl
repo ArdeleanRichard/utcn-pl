@@ -330,27 +330,34 @@ tree_ex44(t(14,t(6,t(4,nil,nil),t(12,t(10,nil,nil),nil)),t(17,t(16,nil,nil),t(20
 % 5	Graphs %
 %--------------------------------------------------
 %45. Colectați toate nodurile unui graf. 
-%Ex: node(1). node(2). node(3). 
+
 % ?- collect(R). 
 % R = [1,2,3].
 
 
-node(1). 
-node(2). 
-node(3). 
+node_ex45(1). 
+node_ex45(2). 
+node_ex45(3). 
 
 
 
-%46. Calculați gradul interior/exterior al fiecărui nod dintr-un graf folosind predicatul dinamic info(Node, OutDegree, InDegree).  
-%Ex: edge(1,2). edge(2,1). edge(1,4). edge(1,3). edge(3,2). 
+
+%46. Calculați gradul interior/exterior al fiecărui nod dintr-un graf 
+% folosind predicatul dinamic info(Node, OutDegree, InDegree).  
+% Utilizați listing/1 pentru a printa predicatul creat. 
+
 % ?- gen_info.
-% => info(1,3,1). info(2,1,2). info(3,1,1). info(4,0,1).
+% 
+% 		info(1,3,1). 
+% 		info(2,1,2). 
+% 		info(3,1,1). 
+% 		info(4,0,1).
 
-edge(1,2).
-edge(2,1).
-edge(1,4).
-edge(1,3).
-edge(3,2).
+edge_ex46(1,2).
+edge_ex46(2,1).
+edge_ex46(1,4).
+edge_ex46(1,3).
+edge_ex46(3,2). 
 
 
 
@@ -378,6 +385,101 @@ edge(3,2).
 
 
 
+
+
 % 48. (DIGITS) Consideră cifrele: 1234567890. Mai întâi elimină o cifră, apoi schimbă locul a două cifre adiacente, iar apoi inserează 
 % un anumit număr de semne plus între cifre. Există o modalitate de a face acest lucru astfel încât răspunsul expresiei aritmetice 
-% rezultate să fie 2004! (2004 factorial). Dar cum? Scrie un program în Prolog pentru a rezolva asta!
+% rezultate să fie 2004. Există o singură soluție pentru această enigmă.
+
+digits([1,2,3,4,5,6,7,8,9,0]). 
+
+% ?- solve(R).
+% R = [1, 2, 4, 5, plus, 6, 7, 9, plus, 8, 0]
+
+
+
+
+
+
+
+
+%--------------------------------------------------
+% 7. Exemple de subiecte de colocviu %
+%--------------------------------------------------
+% 7.1. Nivel nota 6 %
+%--------------------------------------------------
+% 1. Scrieți un predicat care alternează (pe baza poziției din listă):
+% -	pe poziții pare, va decrementa valoarea curentă
+% -	pe pozițiile impare, va crește valoarea curentă
+% -	primul element are indicele 1
+
+% ?- alternative([1,2,3,4], R).
+% R = [2, 1, 4, 3]
+
+
+
+
+
+
+
+
+%--------------------------------------------------
+% 7.2. Nivel nota 8 %
+%--------------------------------------------------
+% 2. Scrieți un predicat care înlocuiește cheia unui nod 
+% cu suma tuturor strămoșilor săi (pe un arbore ternar incomplet).
+% Observație. Strămoșul este orice nod pe calea ascendentă de la nodul curent la rădăcină.
+
+tree(t(2,t(8,_,_,_),t(3,_,_,t(1,_,_,_)),t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,t(9,_,_,_))))).
+
+% ?- tree(T), anc_sum(T, R).
+% R = t(2, t(10, _, _,_), t(5,_,_, t(6,_,_,_)), t(7, t(14,_,_,_), t(12,_,_,_), t(8,_,_, t(17,_,_,_)))),
+% T = t(2, t(8,_,_,_), t(3,_,_, t(1,_,_,_)), t(5, t(7,_,_,_), t(5,_,_,_), t(1,_,_, t(9,_,_,_))))
+
+
+
+
+
+
+%--------------------------------------------------
+% 7.3. Nivel nota 10 %
+%--------------------------------------------------
+% 3. Scrieți un predicat care grupează elementele unei mulțimi în submulțimi disjuncte 
+% prin distribuirea elementelor lui G în grupurile Gs. Mărimile grupurilor sunt date în lista Ns. 
+% Predicatul va genera toate combinațiile posibile.
+% Observație. Nu dorim permutări ale membrilor grupului; adică [[a,b],...] este aceeași soluție 
+% ca [[b,a],...]. Totuși, facem diferența între [[a,b],[c,d],...] și [[c,d],[a,b],...].
+
+% group(G,Ns,Gs)
+% ?- group([a,b,c,d,e,f,g,h,i],[2,2,5],Gs).
+% Gs = [[a, b], [c, d], [e, f, g, h, i]] ;
+% Gs = [[a, b], [c, e], [d, f, g, h, i]] ;
+% Gs = [[a, b], [c, f], [d, e, g, h, i]] ;
+% Gs = [[a, b], [c, g], [d, e, f, h, i]] ;
+% …
+
+
+
+
+
+
+
+% 4. Scrieți un predicat care calculează densitatea unui graf dat. 
+% Densitatea este raportul dintre numărul de muchii și numărul de muchii posibile din graf.
+
+node(a).
+node(b).
+node(c).
+node(d).
+node(e).
+
+edge(a, c).
+edge(b, c).
+edge(c, d).
+edge(d, e).
+edge(c, e).
+edge(a, b).
+edge(b, e).
+
+% ?- density(R).
+% R = 0.7.

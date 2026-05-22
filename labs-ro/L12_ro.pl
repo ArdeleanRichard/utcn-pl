@@ -101,19 +101,20 @@ neighbor(4, [3,5,6]).
 neighbor(5, [1,2,4]).
 neighbor(6, [4]).
 
+% bfs1(+Graph, +Source, -Path)
 bfs1(G, X, R) :-
-    bfs1(G, [X], [], R).
+    % bfs1(+Graph, +Queue, +Visited, -Path)
+    bfs1(G, [X], [X], R).
 
-bfs1(_, [], _, []).
-bfs1(G, [X|Q], V, [X|R]):- 
-    \+member(X, V),!,
-    call(G, X, Ns),          % Neighb = G(X, Ns)
+bfs1(_, [], R, R).
+bfs1(G, [X|Q], V, R):- 
+    call(G, X, Ns), 					% Neighb = G(X, Ns)
     remove_visited(Ns, V, RemNs),
+    append(V, RemNs, NewV),
     append(Q, RemNs, NewQ),
-    bfs1(G, NewQ, [X|V], R).
-bfs1(G, [_|Q], V, R):- 
-    bfs1(G, Q, V, R).
+    bfs1(G, NewQ, NewV, R).
 
+% este de fapt acelasi ca si predicatul difference/3 de la seturi
 remove_visited([], _, []).
 remove_visited([H|T], V, [H|R]):- \+member(H, V), !, remove_visited(T, V, R).
 remove_visited([_|T], V, R):- remove_visited(T, V, R).

@@ -20,12 +20,12 @@
 
 
 %3.	Calculați divizorii unui număr natural.
-% ?-  divisor(15,R1), divisor(2,R2), divisor(1,R3), divisor(0,R4),divisor(6,R5). 
+% ?-  divisor(15,R1), divisor(2,R2), divisor(1,R3), divisor(0,R4), divisor(6,R5). 
 % R1 = [1,3,5,15], R2 = [1,2], R3 = [1], R4 = alot, R5 = [1,2,3,6]. 
 
 
 %4.	Convertiți un număr în binar (puterile lui 2 cresc de la dreapta la stânga). 
-% ?- to_binary(5,R1),to_binary(8,R2),to_binary(11,R3). 
+% ?- to_binary(5,R1), to_binary(8,R2), to_binary(11,R3). 
 % R1 = [1,0,1], R2 = [1,0,0,0], R3 = [1,0,1,1]. 
 
 
@@ -57,7 +57,7 @@
 
 
 
-%8.	Extrageți numerele pare în E și numerele impare în O (indexarea începe de la 1). 
+%8.	Extrageți numerele pare de pe poziții în E și numerele impare în O (indexarea începe de la 1). 
 % ?- separate([1,2,2,3,4,5,6,6,12,44,8,5,5,10,5],Even,Rest). 
 % Even = [2,4,6,12,8], Rest = [1,2,3,6,44,5,5,10,5]. 
 
@@ -70,7 +70,7 @@
 
 
 %10. Înlocuiți toate aparițiile lui of X într-o listă diferență (al doilea si al treilea argument) cu secvența [Y,X,Y].
-%% replace_all(X, S, E, Y, R). unde lista diferență este S-E = [1,2,3,4,2,1,2]
+% replace_all(X, S, E, Y, R). unde lista diferență este S-E = [1,2,3,4,2,1,2]
 % ?- replace_all(2,[1,2,3,4,2,1,2,2,3],[2,3],8,R). 
 % R = [1,8,2,8,3,4,8,2,8,1,8,2,8]. 
 
@@ -234,7 +234,7 @@ tree_ex33(t(6, t(4, t(2, nil, nil), t(5, nil, nil)), t(9, t(7, nil, nil), nil)))
 
 
 %34. Colectați toate frunzele dintr-un arbore binar
-% ?- tree_ex34(T), collect_k(T, R). 
+% ?- tree_ex34(T), collect_leaves(T, R). 
 % R = [2,5,7]. 
 
 tree_ex34(t(6, t(4, t(2, nil, nil), t(5, nil, nil)), t(9, t(7, nil, nil), nil))). 
@@ -301,11 +301,11 @@ tree_ex41(t(26,t(14,_,t(15,_,_)),t(50,t(35,t(29,_,_),_),t(51,_,t(58,_,_))))).
 % Observație. Mediana este "mijlocul" listei sortate de chei
 % ?- tree_ex42(T), median(T,R). 
 % R = [
-%	t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,t(9,_,_,_)))), 
+%	t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,_))), 
 %	t(5,_,_,_)
 %].
 
-tree_ex42(t(2,t(8,_,_,_),t(3,_,_,t(1,_,_,_)),t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,t(9,_,_,_))))). 
+tree_ex42(t(2,t(8,_,_,_),t(3,_,_,_),t(5,t(7,_,_,_),t(5,_,_,_),t(1,_,_,_)))).
 
 
 
@@ -320,9 +320,9 @@ tree_ex43(t(2,t(4,t(5,_,_),t(7,_,_)),t(3,t(0,t(4,_,_),_),t(8,_,t(5,_,_))))).
 % argument) cu un singur nod care are cheia suma cheilor subarborelui acelui nod (dacă nu
 % există un nod cu aceea cheie, rămâne neschimbat).
 % ?- tree_ex44(T), sum_subtree(T,6,R). 
-% R = t(14,t(32,nil,nil),t(17,t(16,nil,nil),t(20,nil,nil)))).
+% R = t(14,t(24,nil,nil),t(17,t(16,nil,nil),t(20,nil,nil)))).
 
-tree_ex44(t(14,t(6,t(4,nil,nil),t(12,t(10,nil,nil),nil)),t(17,t(16,nil,nil),t(20,nil,nil)))).
+tree_ex44(t(14,t(6,t(4,nil,nil),t(8,t(6,nil,nil),nil)),t(17,t(16,nil,nil),t(20,nil,nil)))).
 
 
 
